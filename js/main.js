@@ -379,3 +379,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+// --- Mobile Menu Toggle ---
+document.addEventListener('DOMContentLoaded', () => {
+  const menuToggle = document.getElementById('mobile-menu');
+  const mainNav = document.querySelector('.main-nav');
+  if(menuToggle && mainNav) {
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('active');
+      mainNav.classList.toggle('active');
+    });
+  }
+});

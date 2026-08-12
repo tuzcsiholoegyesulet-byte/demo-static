@@ -2922,15 +2922,6 @@ body.cafe-theme .floating-cafe-btn {
 .news-card {
   position: relative;
 }
-.news-read-more::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-}
 .news-read-more {
   position: relative;
   z-index: 2;
@@ -3013,4 +3004,98 @@ body.cafe-theme .floating-cafe-btn {
 }
 .back-to-news:hover svg {
   transform: scaleX(-1) translateX(-4px);
+}
+
+/* Mobile Menu Toggle (Hamburger) */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.menu-toggle .bar {
+  height: 3px;
+  width: 100%;
+  background-color: var(--color-beige);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+body.cafe-theme .menu-toggle .bar {
+  background-color: #3e2723;
+}
+
+/* Mobile Nav Styles */
+@media (max-width: 992px) {
+  .menu-toggle {
+    display: flex;
+  }
+  
+  .main-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background-color: rgba(235, 32, 59, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    padding: 80px 20px 30px;
+    transition: right 0.4s ease;
+    z-index: 1000;
+    overflow-y: auto;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+  }
+  
+  body.dark-theme .main-nav {
+    background-color: rgba(11, 25, 41, 0.95);
+  }
+  
+  body.cafe-theme .main-nav {
+    background-color: rgba(244, 236, 228, 0.98);
+  }
+
+  .main-nav.active {
+    right: 0;
+  }
+  
+  .main-nav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  /* Hamburger Animation to X */
+  .menu-toggle.active .bar:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+  }
+  .menu-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .menu-toggle.active .bar:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+  }
+  
+  .dropdown-menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    backdrop-filter: none;
+    padding-left: 1rem;
+    display: none;
+  }
+  
+  .dropdown:hover .dropdown-menu,
+  .dropdown.active .dropdown-menu {
+    display: block;
+  }
 }
