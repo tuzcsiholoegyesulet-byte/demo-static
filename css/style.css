@@ -3557,9 +3557,9 @@ input[type="checkbox"], input[type="radio"] {
   animation-delay: 0s;
 }
 @keyframes heroFade {
-  0%   { opacity: 1; }
-  25%  { opacity: 1; }
-  33%  { opacity: 0; }
-  92%  { opacity: 0; }
-  100% { opacity: 1; }
+  0%      { opacity: 1; }
+  20%     { opacity: 1; }
+  33.33%  { opacity: 0; }
+  86.66%  { opacity: 0; }
+  100%    { opacity: 1; }
 }
