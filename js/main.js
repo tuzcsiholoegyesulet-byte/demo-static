@@ -118,20 +118,30 @@ document.addEventListener('DOMContentLoaded', () => {
   if (donationCard && heartsContainer) {
     const numHearts = 45;
     const hearts = [];
-    const colors = ['#eb203b', '#ff7eb3', '#1ab5a8', '#ffdf85', '#ff9a9e']; // Red, Pink, Teal, Yellow, Light Pink
+    const baseColor = '#1ab5a8'; // Brand Teal color
 
     for (let i = 0; i < numHearts; i++) {
       const el = document.createElement('div');
-      el.innerHTML = '<svg viewBox="0 0 512 512"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>';
       
-      const size = Math.random() * 20 + 10; // 10px to 30px
-      const color = colors[Math.floor(Math.random() * colors.length)];
+      const size = Math.random() * 25 + 15; // 15px to 40px (logo might need to be slightly larger than heart)
       
       el.style.position = 'absolute';
       el.style.width = `${size}px`;
       el.style.height = `${size}px`;
-      el.style.fill = color;
-      el.style.opacity = Math.random() * 0.4 + 0.2; // 0.2 to 0.6 opacity
+      
+      // Use CSS mask to colorize the PNG logo
+      el.style.backgroundColor = baseColor;
+      el.style.webkitMaskImage = "url('images/global/Logo_BEZS_emblema.png')";
+      el.style.webkitMaskSize = "contain";
+      el.style.webkitMaskRepeat = "no-repeat";
+      el.style.webkitMaskPosition = "center";
+      el.style.maskImage = "url('images/global/Logo_BEZS_emblema.png')";
+      el.style.maskSize = "contain";
+      el.style.maskRepeat = "no-repeat";
+      el.style.maskPosition = "center";
+      
+      // Different opacities create the "different shades" effect
+      el.style.opacity = Math.random() * 0.6 + 0.1; // 0.1 to 0.7 opacity
       el.style.transformOrigin = 'center';
       
       const startX = Math.random() * 100;
