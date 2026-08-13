@@ -159,10 +159,60 @@ document.addEventListener('DOMContentLoaded', () => {
     let mouseY = -1000;
     let cardRect = donationCard.getBoundingClientRect();
 
+    let lastSparkleTime = 0;
     donationCard.addEventListener('mousemove', (e) => {
       cardRect = donationCard.getBoundingClientRect();
       mouseX = e.clientX - cardRect.left;
       mouseY = e.clientY - cardRect.top;
+      
+      // Sparkler effect (white hearts)
+      const now = Date.now();
+      if (now - lastSparkleTime > 30) { // Limit creation rate
+        lastSparkleTime = now;
+        
+        // Randomly skip to make it look more organic like a sparkler
+        if (Math.random() > 0.4) {
+          const spark = document.createElement('div');
+          // White heart SVG
+          spark.innerHTML = '<svg viewBox="0 0 512 512" style="width: 100%; height: 100%; fill: #ffffff;"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>';
+          
+          const size = Math.random() * 15 + 10; // 10px to 25px
+          spark.style.position = 'absolute';
+          spark.style.width = `${size}px`;
+          spark.style.height = `${size}px`;
+          spark.style.pointerEvents = 'none'; // Don't block interactions
+          spark.style.zIndex = '0'; // Behind the form
+          
+          // Starting position at mouse with slight random offset
+          const startX = mouseX + (Math.random() * 20 - 10);
+          const startY = mouseY + (Math.random() * 20 - 10);
+          spark.style.left = `${startX}px`;
+          spark.style.top = `${startY}px`;
+          spark.style.opacity = '1';
+          
+          // Initial transform and transition for animation
+          spark.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 45 - 22}deg)`;
+          spark.style.transition = 'all 0.8s cubic-bezier(0.1, 0.8, 0.3, 1)';
+          
+          heartsContainer.appendChild(spark);
+          
+          // Force reflow
+          spark.getBoundingClientRect();
+          
+          // End state
+          spark.style.opacity = '0';
+          const endX = (Math.random() * 100 - 50); // move randomly left/right
+          const endY = -(Math.random() * 50 + 30); // always move upwards (like sparks or smoke)
+          spark.style.transform = `translate(calc(-50% + ${endX}px), calc(-50% + ${endY}px)) scale(0.3) rotate(${Math.random() * 90 - 45}deg)`;
+          
+          // Remove from DOM after animation
+          setTimeout(() => {
+            if(spark.parentNode) {
+              spark.parentNode.removeChild(spark);
+            }
+          }, 800);
+        }
+      }
     });
 
     donationCard.addEventListener('mouseleave', () => {
