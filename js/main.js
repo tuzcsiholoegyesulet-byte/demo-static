@@ -392,3 +392,57 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// Project Modal Logic
+document.addEventListener('DOMContentLoaded', () => {
+  const projectModal = document.getElementById('project-modal');
+  if (!projectModal) return;
+
+  const openButtons = document.querySelectorAll('.open-project-modal');
+  const closeButton = projectModal.querySelector('.close-modal');
+  const modalTitle = document.getElementById('modal-project-title');
+  const amountButtons = projectModal.querySelectorAll('.donation-options .btn');
+  const customInput = document.getElementById('project-custom-amount');
+
+  // Open modal
+  openButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const projectName = btn.getAttribute('data-project');
+      if (modalTitle && projectName) {
+        modalTitle.textContent = `${projectName} - Támogatás`;
+      }
+      projectModal.classList.add('active');
+    });
+  });
+
+  // Close modal
+  const closeModal = () => {
+    projectModal.classList.remove('active');
+  };
+
+  if (closeButton) {
+    closeButton.addEventListener('click', closeModal);
+  }
+
+  projectModal.addEventListener('click', (e) => {
+    if (e.target === projectModal) {
+      closeModal();
+    }
+  });
+
+  // Amount selection
+  amountButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      amountButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (customInput) customInput.value = ''; // clear custom input
+    });
+  });
+
+  if (customInput) {
+    customInput.addEventListener('input', () => {
+      amountButtons.forEach(b => b.classList.remove('active'));
+    });
+  }
+});
