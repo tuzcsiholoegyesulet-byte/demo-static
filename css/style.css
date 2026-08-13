@@ -3294,3 +3294,12 @@ body.cafe-theme .menu-toggle .bar {
   position: relative;
   z-index: 2;
 }
+
+/* Highlight data privacy links in yellow */
+a[href="adatkezelesi-tajekoztato.html"] {
+  color: #ffdf85 !important;
+  text-decoration: underline;
+}
+a[href="adatkezelesi-tajekoztato.html"]:hover {
+  color: #ffd040 !important;
+}
