@@ -255,7 +255,8 @@ header a.logo img {
 }
 
 /* Circular background behind logo when scrolled */
-header.scrolled a.logo::before {
+header.scrolled a.logo::before,
+header:not(.transparent-header) a.logo::before {
   content: "";
   position: absolute;
   top: -16px; /* Touches exactly the top of the viewport (padding is 1rem=16px) */
@@ -1009,7 +1010,8 @@ body.dark-theme header.transparent-header.scrolled {
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-body.dark-theme header.scrolled a.logo::before {
+body.dark-theme header.scrolled a.logo::before,
+body.dark-theme header:not(.transparent-header) a.logo::before {
   background-color: var(--color-dark-blue) !important;
 }
 
@@ -1599,7 +1601,9 @@ body.cafe-theme .floating-cafe-btn {
   }
 }
 .menu-item {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
