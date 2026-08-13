@@ -1284,8 +1284,8 @@ body.dark-theme footer a:hover {
 /* Spectacular Donation Card - Cheerful Theme */
 .donation-card-spectacular {
   position: relative;
-  background: linear-gradient(135deg, #ffffff 0%, #fdf5f5 50%, #f0fcfa 100%);
-  color: var(--color-dark-blue);
+  background: linear-gradient(135deg, var(--color-red) 0%, #a01020 100%);
+  color: var(--color-white);
   border-radius: 24px;
   padding: 3rem 2rem;
   box-shadow: 0 15px 35px rgba(26, 181, 168, 0.15), 0 5px 15px rgba(235, 32, 59, 0.1);
@@ -1300,7 +1300,7 @@ body.dark-theme footer a:hover {
 
 
 .donation-card-spectacular h3 {
-  color: var(--color-red) !important;
+  color: var(--color-white) !important;
   font-size: 2rem;
   margin-bottom: 2rem !important;
 }
@@ -1340,7 +1340,7 @@ body.dark-theme footer a:hover {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--color-red);
+  background: var(--color-teal);
   transform: scaleY(0);
   transform-origin: bottom;
   transition: transform 0.3s ease;
@@ -1356,7 +1356,7 @@ body.dark-theme footer a:hover {
 .donation-card-spectacular .donation-btn:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(235, 32, 59, 0.3);
-  border-color: var(--color-red);
+  border-color: var(--color-teal);
   background: rgba(255, 255, 255, 0.8);
 }
 
@@ -1365,9 +1365,9 @@ body.dark-theme footer a:hover {
 }
 
 .donation-card-spectacular .donation-btn.active {
-  background: var(--color-red);
-  border-color: var(--color-red);
-  box-shadow: 0 10px 20px rgba(235, 32, 59, 0.4);
+  background: var(--color-teal);
+  border-color: var(--color-teal);
+  box-shadow: 0 10px 20px rgba(26, 181, 168, 0.4);
   transform: translateY(-5px) scale(1.05);
 }
 
@@ -1396,24 +1396,24 @@ body.dark-theme footer a:hover {
 
 .donation-card-spectacular input[type="number"]:focus {
   outline: none;
-  border-color: var(--color-red) !important;
+  border-color: var(--color-teal) !important;
   background: rgba(255, 255, 255, 0.9) !important;
   box-shadow: 0 0 15px rgba(26, 181, 168, 0.2);
 }
 
 .donation-card-spectacular hr {
-  border-top: 1px solid rgba(26, 37, 53, 0.1) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
   margin: 2rem 0;
 }
 
 .donation-card-spectacular label {
-  color: var(--color-dark-blue);
+  color: var(--color-white);
   font-weight: 500;
   text-align: left;
 }
 
 .donation-card-spectacular a {
-  color: var(--color-red);
+  color: var(--color-beige);
   font-weight: 600;
 }
 
