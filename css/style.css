@@ -1511,14 +1511,14 @@ body.dark-theme footer a:hover {
 
 .frequency-label:hover span {
   background: rgba(255, 255, 255, 0.9);
-  border-color: var(--color-red);
+  border-color: var(--color-teal);
 }
 
 .frequency-label input:checked ~ span {
-  background: var(--color-red);
+  background: var(--color-teal);
   color: var(--color-white);
-  border-color: var(--color-red);
-  box-shadow: 0 4px 15px rgba(235, 32, 59, 0.4);
+  border-color: var(--color-teal);
+  box-shadow: 0 4px 15px rgba(26, 181, 168, 0.4);
   transform: translateY(-2px);
 }
 
