@@ -118,30 +118,19 @@ document.addEventListener('DOMContentLoaded', () => {
   if (donationCard && heartsContainer) {
     const numHearts = 45;
     const hearts = [];
-    const baseColor = '#1ab5a8'; // Brand Teal color
-
     for (let i = 0; i < numHearts; i++) {
       const el = document.createElement('div');
       
-      const size = Math.random() * 25 + 15; // 15px to 40px (logo might need to be slightly larger than heart)
+      const size = Math.random() * 25 + 15; 
+      
+      el.innerHTML = '<img src="images/global/Logo_BEZS_emblema.png" style="width: 100%; height: 100%; object-fit: contain;">';
       
       el.style.position = 'absolute';
       el.style.width = `${size}px`;
       el.style.height = `${size}px`;
       
-      // Use CSS mask to colorize the PNG logo
-      el.style.backgroundColor = baseColor;
-      el.style.webkitMaskImage = "url('images/global/Logo_BEZS_emblema.png')";
-      el.style.webkitMaskSize = "contain";
-      el.style.webkitMaskRepeat = "no-repeat";
-      el.style.webkitMaskPosition = "center";
-      el.style.maskImage = "url('images/global/Logo_BEZS_emblema.png')";
-      el.style.maskSize = "contain";
-      el.style.maskRepeat = "no-repeat";
-      el.style.maskPosition = "center";
-      
-      // Different opacities create the "different shades" effect
-      el.style.opacity = Math.random() * 0.6 + 0.1; // 0.1 to 0.7 opacity
+      // A különböző opacity adja meg a "különböző árnyalatok" hatását
+      el.style.opacity = Math.random() * 0.6 + 0.1; 
       el.style.transformOrigin = 'center';
       
       const startX = Math.random() * 100;
