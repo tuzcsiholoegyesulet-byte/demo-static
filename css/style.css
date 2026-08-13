@@ -790,13 +790,13 @@ footer .footer-links {
   align-items: center;
   justify-content: flex-end;
   padding: 1.25rem; /* Larger padding */
-  border-radius: 16px 0 0 16px;
+  border-radius: 50px 0 0 50px;
   text-decoration: none !important;
   z-index: 1000;
-  box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: -5px 5px 20px rgba(0,0,0,0.15);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
-  max-width: 72px; /* 32px icon + 40px padding */
+  max-width: 65px;
   white-space: nowrap;
 }
 
@@ -850,13 +850,13 @@ footer .footer-links {
   align-items: center;
   justify-content: flex-end;
   padding: 1.25rem;
-  border-radius: 16px 0 0 16px;
+  border-radius: 50px 0 0 50px;
   text-decoration: none !important;
   z-index: 1000;
-  box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: -5px 5px 20px rgba(0,0,0,0.15);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
-  max-width: 72px;
+  max-width: 65px;
   white-space: nowrap;
 }
 
@@ -913,13 +913,13 @@ footer .footer-links {
   align-items: center;
   justify-content: flex-end;
   padding: 1.25rem;
-  border-radius: 16px 0 0 16px;
+  border-radius: 50px 0 0 50px;
   text-decoration: none !important;
   z-index: 1000;
-  box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: -5px 5px 20px rgba(0,0,0,0.15);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
-  max-width: 72px;
+  max-width: 65px;
   white-space: nowrap;
 }
 
@@ -3477,7 +3477,7 @@ input[type="checkbox"], input[type="radio"] {
 /* Floating Projects Button */
 .floating-projects-btn {
   position: fixed;
-  top: 15%; /* Above housing btn */
+  top: calc(30% - 85px); /* Above housing btn */
   right: 0;
   transform: translateY(-50%);
   background-color: var(--color-red);
