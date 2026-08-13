@@ -3303,3 +3303,9 @@ a[href="adatkezelesi-tajekoztato.html"] {
 a[href="adatkezelesi-tajekoztato.html"]:hover {
   color: #ffd040 !important;
 }
+
+/* Global accent color for checkboxes and radios */
+input[type="checkbox"], input[type="radio"] {
+  accent-color: var(--color-teal);
+  cursor: pointer;
+}
