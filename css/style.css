@@ -902,7 +902,7 @@ footer .footer-links {
 }
 
 /* Floating Cafe Button */
-.floating-cafe-btn {
+.floating-bistro-btn {
   position: fixed;
   top: calc(30% + 170px); /* Below the fecske button */
   right: 0;
@@ -923,14 +923,14 @@ footer .footer-links {
   white-space: nowrap;
 }
 
-.floating-cafe-btn svg.cafe-icon {
+.floating-bistro-btn svg.bistro-icon {
   width: 32px;
   height: 32px;
   fill: currentColor;
   flex-shrink: 0;
 }
 
-.floating-cafe-btn span.text {
+.floating-bistro-btn span.text {
   margin-right: 1.25rem;
   font-weight: 600;
   font-size: 1.25rem;
@@ -938,17 +938,17 @@ footer .footer-links {
   transition: opacity 0.3s ease;
 }
 
-.floating-cafe-btn:hover, .floating-cafe-btn.auto-peek {
+.floating-bistro-btn:hover, .floating-bistro-btn.auto-peek {
   max-width: 380px;
   background-color: #d68910; 
 }
 
-.floating-cafe-btn:hover span.text, .floating-cafe-btn.auto-peek span.text {
+.floating-bistro-btn:hover span.text, .floating-bistro-btn.auto-peek span.text {
   opacity: 1;
 }
 
 @media (max-width: 768px) {
-  .floating-cafe-btn {
+  .floating-bistro-btn {
     top: auto;
     bottom: -2rem; /* Will be adjusted dynamically or hidden on mobile, let's stack them nicely */
     transform: none;
@@ -1524,57 +1524,57 @@ body.dark-theme footer a:hover {
 
 
 /* --- Cafe Theme --- */
-body.cafe-theme {
+body.bistro-theme {
   background-color: #f4ece4; /* Warm beige */
   color: #3e2723; /* Dark coffee brown */
 }
-body.cafe-theme h1, body.cafe-theme h2, body.cafe-theme h3, body.cafe-theme h4, body.cafe-theme h5, body.cafe-theme h6 {
+body.bistro-theme h1, body.bistro-theme h2, body.bistro-theme h3, body.bistro-theme h4, body.bistro-theme h5, body.bistro-theme h6 {
   color: #3e2723;
 }
-body.cafe-theme p, body.cafe-theme span, body.cafe-theme li {
+body.bistro-theme p, body.bistro-theme span, body.bistro-theme li {
   color: #4e342e;
 }
-body.cafe-theme header.transparent-header .main-nav a {
+body.bistro-theme header.transparent-header .main-nav a {
   color: #3e2723;
 }
-body.cafe-theme header.scrolled, body.cafe-theme header.transparent-header.scrolled {
+body.bistro-theme header.scrolled, body.bistro-theme header.transparent-header.scrolled {
   background-color: rgba(244, 236, 228, 0.95);
   box-shadow: 0 4px 20px rgba(62, 39, 35, 0.1);
 }
-body.cafe-theme .dropdown-menu {
+body.bistro-theme .dropdown-menu {
   background-color: #f4ece4;
   border-top: 2px solid #d35400;
 }
-body.cafe-theme .dropdown-menu a:hover {
+body.bistro-theme .dropdown-menu a:hover {
   background-color: rgba(62, 39, 35, 0.05);
 }
-body.cafe-theme footer {
+body.bistro-theme footer {
   background-color: #3e2723;
   color: #f4ece4;
 }
-body.cafe-theme footer p, body.cafe-theme footer a {
+body.bistro-theme footer p, body.bistro-theme footer a {
   color: #f4ece4;
 }
-body.cafe-theme .subpage-hero .container p {
+body.bistro-theme .subpage-hero .container p {
   color: #f4ece4; /* Keep text white on hero bg */
 }
-body.cafe-theme .subpage-hero h1 {
+body.bistro-theme .subpage-hero h1 {
   color: #fff;
 }
 /* Hide the cafe button on the cafe page */
-body.cafe-theme .floating-cafe-btn {
+body.bistro-theme .floating-bistro-btn {
   display: none !important;
 }
 
 /* Cafe Layout Styles */
-.cafe-layout {
+.bistro-layout {
   display: flex;
   flex-direction: column;
   gap: 2rem;
   margin-top: 2rem;
 }
 @media (min-width: 992px) {
-  .cafe-layout {
+  .bistro-layout {
     flex-direction: row;
   }
 }
@@ -1584,7 +1584,7 @@ body.cafe-theme .floating-cafe-btn {
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
 }
-.cafe-tray {
+.bistro-tray {
   width: 100%;
   background: #fff;
   border-radius: 16px;
@@ -1596,7 +1596,7 @@ body.cafe-theme .floating-cafe-btn {
   top: 100px;
 }
 @media (min-width: 992px) {
-  .cafe-tray {
+  .bistro-tray {
     width: 320px;
   }
 }
@@ -3029,7 +3029,7 @@ body.cafe-theme .floating-cafe-btn {
   transition: all 0.3s ease;
 }
 
-body.cafe-theme .menu-toggle .bar {
+body.bistro-theme .menu-toggle .bar {
   background-color: #3e2723;
 }
 
@@ -3061,7 +3061,7 @@ body.cafe-theme .menu-toggle .bar {
     background-color: rgba(11, 25, 41, 0.95);
   }
   
-  body.cafe-theme .main-nav {
+  body.bistro-theme .main-nav {
     background-color: rgba(244, 236, 228, 0.98);
   }
 
@@ -3587,4 +3587,76 @@ input[type="checkbox"], input[type="radio"] {
   66% { opacity: 1; }   /* Fade in over Img2 */
   86% { opacity: 1; }   /* Stay solid */
   100% { opacity: 0; }  /* Fade out to reveal Img1 */
+}
+
+/* Bistro Interactive Card */
+.bistro-card-spectacular {
+  position: relative;
+  background: linear-gradient(135deg, #3e2723 0%, #2b1714 100%);
+  color: var(--color-beige);
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  box-shadow: 0 15px 35px rgba(62, 39, 35, 0.4), 0 5px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border: 2px solid rgba(243, 156, 18, 0.4);
+  transition: transform 0.3s ease;
+  z-index: 1;
+  margin-bottom: 3rem;
+}
+.bistro-card-spectacular label {
+  color: #f4ece4 !important;
+}
+.bistro-card-spectacular h2 {
+  color: #ffd040 !important;
+}
+.bistro-card-spectacular .text-input {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.bistro-card-spectacular .text-input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+.bistro-card-spectacular .share-option label {
+  color: #f4ece4;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.bistro-card-spectacular .share-option input[type="radio"]:checked + label {
+  background: #f39c12;
+  color: #fff;
+  border-color: #f39c12;
+}
+
+#bistro-effects-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.floating-mug {
+  position: absolute;
+  animation: floatMug linear forwards;
+  opacity: 0;
+  fill: rgba(243, 156, 18, 0.15); /* light orange/gold mug */
+}
+@keyframes floatMug {
+  0% { transform: translateY(100px) rotate(-10deg) scale(0.5); opacity: 0; }
+  20% { opacity: 0.8; }
+  80% { opacity: 0.8; }
+  100% { transform: translateY(-150px) rotate(20deg) scale(1.2); opacity: 0; }
+}
+
+.bistro-star {
+  position: absolute;
+  animation: starSparkle 0.8s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes starSparkle {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(180deg); opacity: 0; }
 }

@@ -735,7 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.floating-housing-btn'),
     document.querySelector('.floating-projects-btn'),
     document.querySelector('.floating-fecske-btn'),
-    document.querySelector('.floating-cafe-btn')
+    document.querySelector('.floating-bistro-btn')
   ].filter(btn => btn !== null);
 
   if (floatingBtns.length > 0) {
@@ -768,3 +768,83 @@ document.addEventListener('DOMContentLoaded', () => {
       triggerNextPeek(); // First peek
     }, 5000); // Initial delay before first peek
   }
+
+// --- Bistro Interactive Effects ---
+document.addEventListener('DOMContentLoaded', () => {
+  const bistroCard = document.getElementById('bistro-card');
+  const effectsContainer = document.getElementById('bistro-effects-container');
+  
+  if (bistroCard && effectsContainer) {
+    // 1. Floating Mugs (similar to hearts)
+    function createMug() {
+      const mug = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      mug.setAttribute('viewBox', '0 0 512 512');
+      mug.classList.add('floating-mug');
+      // Coffee mug SVG path
+      mug.innerHTML = '<path d="M400 32H48C21.5 32 0 53.5 0 80v272c0 70.7 57.3 128 128 128h144c70.7 0 128-57.3 128-128v-32h16c61.9 0 112-50.1 112-112V144c0-61.9-50.1-112-112-112h-16zm16 176h-16v-96h16c26.5 0 48 21.5 48 48s-21.5 48-48 48z"/>';
+      
+      const size = Math.random() * 20 + 20; // 20px to 40px
+      mug.style.width = `${size}px`;
+      mug.style.height = `${size}px`;
+      
+      // Random position from bottom
+      const left = Math.random() * 100;
+      mug.style.left = `${left}%`;
+      mug.style.bottom = '-50px';
+      
+      // Random animation duration between 6s and 12s
+      const duration = Math.random() * 6 + 6;
+      mug.style.animationDuration = `${duration}s`;
+      
+      effectsContainer.appendChild(mug);
+      
+      setTimeout(() => {
+        if (effectsContainer.contains(mug)) {
+          effectsContainer.removeChild(mug);
+        }
+      }, duration * 1000);
+    }
+    
+    // Spawn a mug every 1.5 seconds
+    setInterval(createMug, 1500);
+    
+    // 2. Star Sparkler on mousemove
+    bistroCard.addEventListener('mousemove', (e) => {
+      // Throttle slightly
+      if (Math.random() > 0.4) return;
+      
+      const rect = bistroCard.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const star = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      star.setAttribute('viewBox', '0 0 576 512');
+      star.classList.add('bistro-star');
+      // Star SVG path
+      star.innerHTML = '<path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>';
+      
+      const size = Math.random() * 10 + 8; // 8px to 18px
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.fill = '#ffd040'; // gold star
+      
+      // Center on mouse exactly
+      star.style.left = `${x - size/2}px`;
+      star.style.top = `${y - size/2}px`;
+      
+      // Random throw direction
+      const tx = (Math.random() - 0.5) * 80;
+      const ty = (Math.random() - 0.5) * 80 + 30; // Tend to fall down a bit
+      star.style.setProperty('--tx', `${tx}px`);
+      star.style.setProperty('--ty', `${ty}px`);
+      
+      effectsContainer.appendChild(star);
+      
+      setTimeout(() => {
+        if (effectsContainer.contains(star)) {
+          effectsContainer.removeChild(star);
+        }
+      }, 800);
+    });
+  }
+});
