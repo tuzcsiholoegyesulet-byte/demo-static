@@ -277,6 +277,71 @@ document.addEventListener('DOMContentLoaded', () => {
       donationBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       
+      // Balloon pop effect
+      const balloon = document.createElement('div');
+      balloon.innerHTML = '<svg viewBox="0 0 512 512" style="width: 100%; height: 100%; fill: #ffffff;"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>';
+      
+      balloon.style.position = 'absolute';
+      balloon.style.width = '60px';
+      balloon.style.height = '60px';
+      balloon.style.left = '50%';
+      balloon.style.top = '50%';
+      balloon.style.transform = 'translate(-50%, -50%) scale(0)';
+      balloon.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+      balloon.style.pointerEvents = 'none';
+      balloon.style.zIndex = '10';
+      
+      btn.appendChild(balloon);
+      
+      // Force reflow
+      balloon.getBoundingClientRect();
+      
+      // Inflate
+      balloon.style.transform = 'translate(-50%, -50%) scale(1.5)';
+      
+      // Pop!
+      setTimeout(() => {
+        balloon.style.opacity = '0';
+        balloon.style.transform = 'translate(-50%, -50%) scale(2)';
+        balloon.style.transition = 'all 0.1s ease-out';
+        
+        // Spawn tiny confetti hearts
+        for(let i=0; i<6; i++) {
+          const confetti = document.createElement('div');
+          confetti.innerHTML = '<svg viewBox="0 0 512 512" style="width: 100%; height: 100%; fill: #ffffff;"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>';
+          confetti.style.position = 'absolute';
+          confetti.style.width = '15px';
+          confetti.style.height = '15px';
+          confetti.style.left = '50%';
+          confetti.style.top = '50%';
+          confetti.style.pointerEvents = 'none';
+          
+          const angle = (Math.PI * 2 / 6) * i;
+          const velocity = 40;
+          const vx = Math.cos(angle) * velocity;
+          const vy = Math.sin(angle) * velocity;
+          
+          confetti.style.transform = `translate(-50%, -50%)`;
+          confetti.style.transition = 'all 0.4s ease-out';
+          btn.appendChild(confetti);
+          
+          confetti.getBoundingClientRect();
+          
+          confetti.style.transform = `translate(calc(-50% + ${vx}px), calc(-50% + ${vy}px)) scale(0)`;
+          confetti.style.opacity = '0';
+          
+          setTimeout(() => {
+            if(confetti.parentNode) confetti.parentNode.removeChild(confetti);
+          }, 400);
+        }
+        
+      }, 350);
+      
+      setTimeout(() => {
+        if(balloon.parentNode) balloon.parentNode.removeChild(balloon);
+      }, 500);
+
+      
       if (btn.dataset.amount === 'custom') {
         customAmountInput.style.display = 'block';
         customAmountInput.required = true;
