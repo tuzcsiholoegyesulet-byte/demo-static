@@ -3534,6 +3534,8 @@ input[type="checkbox"], input[type="radio"] {
   }
 }
 
+
+
 /* --- Hero Slider --- */
 .hero-slider {
   position: absolute;
@@ -3550,16 +3552,39 @@ input[type="checkbox"], input[type="radio"] {
   height: 100%;
   background-size: cover;
   background-position: center;
-  opacity: 0;
-  animation: heroFade 15s infinite;
 }
+
+/* Image 1 is at the bottom */
 .hero-slide:nth-child(1) {
-  animation-delay: 0s;
+  z-index: 1;
+  opacity: 1; 
+  animation: none;
 }
-@keyframes heroFade {
-  0%      { opacity: 1; }
-  20%     { opacity: 1; }
-  33.33%  { opacity: 0; }
-  86.66%  { opacity: 0; }
-  100%    { opacity: 1; }
+
+/* Image 2 is in the middle */
+.hero-slide:nth-child(2) {
+  z-index: 2;
+  opacity: 0;
+  animation: fadeImg2 15s infinite ease-in-out;
+}
+@keyframes fadeImg2 {
+  0% { opacity: 0; }
+  20% { opacity: 0; }   /* Wait */
+  33% { opacity: 1; }   /* Fade in over Img1 */
+  86% { opacity: 1; }   /* Stay solid */
+  100% { opacity: 0; }  /* Fade out at the end */
+}
+
+/* Image 3 is on top */
+.hero-slide:nth-child(3) {
+  z-index: 3;
+  opacity: 0;
+  animation: fadeImg3 15s infinite ease-in-out;
+}
+@keyframes fadeImg3 {
+  0% { opacity: 0; }
+  53% { opacity: 0; }   /* Wait */
+  66% { opacity: 1; }   /* Fade in over Img2 */
+  86% { opacity: 1; }   /* Stay solid */
+  100% { opacity: 0; }  /* Fade out to reveal Img1 */
 }
