@@ -48,7 +48,6 @@
           <ul class="dropdown-menu">
             <li><a href="hogyan-segithetsz.html">Támogatási formák</a></li>
             <li><a href="hogyan-segithetsz.html#projektjeink">Projektjeink</a></li>
-            <li><a href="futo-projektjeink.html">Futó projektjeink részletei</a></li>
             <li><a href="hogyan-segithetsz.html#tamogass">Támogass minket</a></li>
             <li><a href="hogyan-segithetsz.html#felajanlas">Felajánlás</a></li>
             <li><a href="hogyan-segithetsz.html#szolgaltatasok">Válaszd szolgáltatásainkat</a></li>
@@ -175,7 +174,7 @@
           <div class="project-content">
             <div class="project-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
               <h3 style="margin-bottom: 0;">
-                <a href="futo-projektjeink.html#kovacs-csalad" class="stretched-link" style="color: inherit; text-decoration: none;">Kovács család lakhatása</a>
+                <button type="button" class="stretched-link open-details-modal" data-project-id="kovacs-csalad" style="color: inherit; border: none; background: none; padding: 0; font-family: inherit; font-size: inherit; font-weight: inherit; text-align: left; cursor: pointer;">Kovács család lakhatása</button>
             </h3>
               <button class="btn btn-red open-project-modal" data-project="Kovács család lakhatása" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Támogatom</button>
             </div>
@@ -198,7 +197,7 @@
           <div class="project-content">
             <div class="project-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
               <h3 style="margin-bottom: 0;">
-                <a href="futo-projektjeink.html#natalia" class="stretched-link" style="color: inherit; text-decoration: none;">Natália középiskolai taníttatása</a>
+                <button type="button" class="stretched-link open-details-modal" data-project-id="natalia" style="color: inherit; border: none; background: none; padding: 0; font-family: inherit; font-size: inherit; font-weight: inherit; text-align: left; cursor: pointer;">Natália középiskolai taníttatása</button>
             </h3>
               <button class="btn btn-red open-project-modal" data-project="Natália középiskolai taníttatása" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Támogatom</button>
             </div>
@@ -221,7 +220,7 @@
           <div class="project-content">
             <div class="project-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
               <h3 style="margin-bottom: 0;">
-                <a href="futo-projektjeink.html#csopaki-tabor" class="stretched-link" style="color: inherit; text-decoration: none;">Csopaki nyári tábor 2027</a>
+                <button type="button" class="stretched-link open-details-modal" data-project-id="csopaki-tabor" style="color: inherit; border: none; background: none; padding: 0; font-family: inherit; font-size: inherit; font-weight: inherit; text-align: left; cursor: pointer;">Csopaki nyári tábor 2027</button>
             </h3>
               <button class="btn btn-red open-project-modal" data-project="Csopaki nyári tábor 2027" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Támogatom</button>
             </div>
@@ -423,6 +422,23 @@
   </a>
 
   <script src="js/main.js"></script>
+
+  
+  <!-- Projekt Részletek Modal -->
+  <div id="details-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 600px;">
+      <button class="close-modal">&times;</button>
+      <img id="details-modal-img" src="" alt="Projekt fotó" style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 1.5rem;">
+      <h2 id="details-modal-title" class="title-teal" style="margin-bottom: 1rem;">Projekt Címe</h2>
+      <div id="details-modal-desc" style="color: var(--color-dark-blue); margin-bottom: 2rem; line-height: 1.6;">
+        Ide jön a részletes leírás...
+      </div>
+      <div style="text-align: center; border-top: 1px solid #eee; padding-top: 1.5rem;">
+        <button id="details-to-donation-btn" class="btn btn-red" style="width: 100%; font-size: 1.1rem; padding: 0.8rem;">Ezt a projektet támogatom!</button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Projekt Támogatási Modal -->
   <div id="project-modal" class="modal-overlay">

@@ -446,3 +446,83 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// Project Details Modal Logic
+document.addEventListener('DOMContentLoaded', () => {
+  const detailsModal = document.getElementById('details-modal');
+  if (!detailsModal) return;
+
+  const openDetailsButtons = document.querySelectorAll('.open-details-modal');
+  const detailsCloseButton = detailsModal.querySelector('.close-modal');
+  const detailsTitle = document.getElementById('details-modal-title');
+  const detailsDesc = document.getElementById('details-modal-desc');
+  const detailsImg = document.getElementById('details-modal-img');
+  const toDonationBtn = document.getElementById('details-to-donation-btn');
+
+  // Hardcoded mock data for the 3 projects
+  const projectData = {
+    'kovacs-csalad': {
+      title: 'Kovács család lakhatása',
+      img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      desc: '<p>A Kovács család egy hirtelen jött betegség miatt elveszítette a családfenntartó munkáját. Emiatt tetemes lakbérhátralékot halmoztak fel, és a kilakoltatás szélére kerültek.</p><p>Ezzel a gyűjtéssel célunk, hogy kifizessük az elmaradást és biztosítsuk számukra a lakhatásukat a következő hat hónapra, amíg újra talpra tudnak állni.</p>'
+    },
+    'natalia': {
+      title: 'Natália középiskolai taníttatása',
+      img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      desc: '<p>Natália egy rendkívül tehetséges, állami gondoskodásból kikerült diáklány, aki most nyert felvételt az ország egyik legjobb gimnáziumába. Azonban a kollégiumi díjak, étkezés és tanszerek hatalmas terhet rónak rá.</p><p>A gyűjtésből egy teljes tanévnyi költségét szeretnénk fedezni, hogy csak a tanulásra koncentrálhasson.</p>'
+    },
+    'csopaki-tabor': {
+      title: 'Csopaki nyári tábor 2027',
+      img: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      desc: '<p>Idén nyáron 50 hátrányos helyzetű gyermeket szeretnénk elvinni a Balatonhoz egy egyhetes élménytáborba.</p><p>A legtöbbjük még sosem látta a Balatont. A támogatás fedezi a szállást, a teljes ellátást és a szabadidős programokat.</p>'
+    }
+  };
+
+  let currentProjectTitle = '';
+
+  // Open Details Modal
+  openDetailsButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const projectId = btn.getAttribute('data-project-id');
+      const data = projectData[projectId];
+      
+      if (data) {
+        detailsTitle.textContent = data.title;
+        detailsImg.src = data.img;
+        detailsDesc.innerHTML = data.desc;
+        currentProjectTitle = data.title; // Store for the donation button
+        detailsModal.classList.add('active');
+      }
+    });
+  });
+
+  // Close Details Modal
+  const closeDetailsModal = () => {
+    detailsModal.classList.remove('active');
+  };
+
+  if (detailsCloseButton) {
+    detailsCloseButton.addEventListener('click', closeDetailsModal);
+  }
+
+  detailsModal.addEventListener('click', (e) => {
+    if (e.target === detailsModal) {
+      closeDetailsModal();
+    }
+  });
+
+  // Switch to Donation Modal
+  if (toDonationBtn) {
+    toDonationBtn.addEventListener('click', () => {
+      closeDetailsModal();
+      // Open the donation modal for the current project
+      const projectModal = document.getElementById('project-modal');
+      const modalProjectTitle = document.getElementById('modal-project-title');
+      if (projectModal && modalProjectTitle) {
+        modalProjectTitle.textContent = `${currentProjectTitle} - Támogatás`;
+        projectModal.classList.add('active');
+      }
+    });
+  }
+});
