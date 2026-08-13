@@ -815,12 +815,12 @@ footer .footer-links {
   transition: opacity 0.3s ease;
 }
 
-.floating-housing-btn:hover {
+.floating-housing-btn:hover, .floating-housing-btn.auto-peek {
   max-width: 380px; /* Expands wider to fit larger text */
   background-color: #111a25;
 }
 
-.floating-housing-btn:hover span.text {
+.floating-housing-btn:hover span.text, .floating-housing-btn.auto-peek span.text {
   opacity: 1;
 }
 
@@ -830,7 +830,7 @@ footer .footer-links {
     bottom: 3rem; /* slightly higher on mobile too */
     transform: none;
   }
-  .floating-housing-btn:hover {
+  .floating-housing-btn:hover, .floating-housing-btn.auto-peek {
     max-width: 340px;
   }
   .floating-housing-btn span.text {
@@ -875,12 +875,12 @@ footer .footer-links {
   transition: opacity 0.3s ease;
 }
 
-.floating-fecske-btn:hover {
+.floating-fecske-btn:hover, .floating-fecske-btn.auto-peek {
   max-width: 380px;
   background-color: #159b90; /* darker teal */
 }
 
-.floating-fecske-btn:hover span.text {
+.floating-fecske-btn:hover span.text, .floating-fecske-btn.auto-peek span.text {
   opacity: 1;
 }
 
@@ -893,7 +893,7 @@ footer .footer-links {
     bottom: 1rem; /* Place below housing btn on mobile */
     transform: none;
   }
-  .floating-fecske-btn:hover {
+  .floating-fecske-btn:hover, .floating-fecske-btn.auto-peek {
     max-width: 340px;
   }
   .floating-fecske-btn span.text {
@@ -938,12 +938,12 @@ footer .footer-links {
   transition: opacity 0.3s ease;
 }
 
-.floating-cafe-btn:hover {
+.floating-cafe-btn:hover, .floating-cafe-btn.auto-peek {
   max-width: 380px;
   background-color: #d68910; 
 }
 
-.floating-cafe-btn:hover span.text {
+.floating-cafe-btn:hover span.text, .floating-cafe-btn.auto-peek span.text {
   opacity: 1;
 }
 
@@ -3510,12 +3510,12 @@ input[type="checkbox"], input[type="radio"] {
   transform: translateX(20px);
   transition: all 0.3s ease;
 }
-.floating-projects-btn:hover {
+.floating-projects-btn:hover, .floating-projects-btn.auto-peek {
   max-width: 250px;
   padding-left: 1.5rem;
   background-color: #a01020;
 }
-.floating-projects-btn:hover span.text {
+.floating-projects-btn:hover span.text, .floating-projects-btn.auto-peek span.text {
   opacity: 1;
   visibility: visible;
   transform: translateX(0);
@@ -3526,7 +3526,7 @@ input[type="checkbox"], input[type="radio"] {
     bottom: 7rem; /* Above housing btn on mobile */
     transform: none;
   }
-  .floating-projects-btn:hover {
+  .floating-projects-btn:hover, .floating-projects-btn.auto-peek {
     max-width: 250px;
   }
   .floating-projects-btn span.text {

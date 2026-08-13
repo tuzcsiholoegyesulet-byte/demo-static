@@ -729,3 +729,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+
+  // --- Auto-Peek Floating Buttons ---
+  const floatingBtns = [
+    document.querySelector('.floating-housing-btn'),
+    document.querySelector('.floating-projects-btn'),
+    document.querySelector('.floating-fecske-btn'),
+    document.querySelector('.floating-cafe-btn')
+  ].filter(btn => btn !== null);
+
+  if (floatingBtns.length > 0) {
+    let peekIndex = 0;
+    
+    function triggerNextPeek() {
+      // Remove auto-peek from all
+      floatingBtns.forEach(btn => btn.classList.remove('auto-peek'));
+      
+      // If user is hovering any of them, don't auto-peek right now to avoid confusion
+      const isHovering = floatingBtns.some(btn => btn.matches(':hover'));
+      
+      if (!isHovering) {
+        // Add auto-peek to current
+        floatingBtns[peekIndex].classList.add('auto-peek');
+        
+        // Remove it after 2.5 seconds
+        setTimeout(() => {
+          floatingBtns[peekIndex].classList.remove('auto-peek');
+          peekIndex = (peekIndex + 1) % floatingBtns.length;
+        }, 2500);
+      } else {
+        peekIndex = (peekIndex + 1) % floatingBtns.length;
+      }
+    }
+    
+    // Start peeking every 8 seconds
+    setTimeout(() => {
+      setInterval(triggerNextPeek, 8000);
+      triggerNextPeek(); // First peek
+    }, 5000); // Initial delay before first peek
+  }
