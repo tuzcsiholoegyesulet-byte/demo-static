@@ -231,11 +231,11 @@
           Minden támogatás számít. Kérjük, válassz az alábbi lehetőségek közül, vagy adj meg egy egyedi összeget, amellyel hozzájárulnál egyesületünk céljaihoz.
         </p>
 
-        <div class="donation-split-layout">
-          <div class="donation-card-wrapper">
-            <div id="donation-card" class="donation-card-spectacular">
+        <div id="donation-card" class="donation-split-layout donation-card-spectacular" style="max-width: 100%;">
           <div id="hearts-container"></div>
-          <form id="donation-form" style="position: relative; z-index: 1;">
+          
+          <div class="donation-card-wrapper" style="position: relative; z-index: 1;">
+            <form id="donation-form">
             <h3>Támogatás Összege</h3>
             
             <div class="donation-grid">
@@ -269,21 +269,16 @@
 
             <button type="submit" class="btn btn-spectacular-submit" style="width: 100%; font-size: 1.2rem; padding: 1rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">Tovább a fizetéshez</button>
           </form>
-        </div>
           </div>
           
-          <div class="donation-gallery-wrapper">
+          <div class="donation-gallery-wrapper" style="position: relative; z-index: 1;">
             <div class="scattered-gallery" id="scattered-gallery">
               <div class="scatter-group" data-group="0">
                 <div class="scatter-card" style="--r: -12deg; --x: -15px; --y: 10px; background-image: url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
                 <div class="scatter-card" style="--r: 4deg; --x: 0px; --y: -5px; background-image: url('https://images.unsplash.com/photo-1532629345422-7515f3d16bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
                 <div class="scatter-card" style="--r: 16deg; --x: 15px; --y: 5px; background-image: url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
               </div>
-              <div class="scatter-group" data-group="1" style="margin-top: 2rem;">
-                <div class="scatter-card" style="--r: -16deg; --x: -10px; --y: 0px; background-image: url('https://images.unsplash.com/photo-1593113580332-628a50975618?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
-                <div class="scatter-card" style="--r: -2deg; --x: 5px; --y: -15px; background-image: url('https://images.unsplash.com/photo-1509099836639-18ba1795216d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
-                <div class="scatter-card" style="--r: 14deg; --x: -15px; --y: 15px; background-image: url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
-              </div>
+
             </div>
             <p style="margin-top: 2rem; color: var(--color-dark-blue); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;" onclick="document.getElementById('scattered-gallery').click()">
               <svg viewBox="0 0 512 512" style="width: 20px; fill: var(--color-teal);"><path d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/></svg>
