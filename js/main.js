@@ -475,6 +475,16 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'Csopaki nyári tábor 2027',
       img: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       desc: '<p>Idén nyáron 50 hátrányos helyzetű gyermeket szeretnénk elvinni a Balatonhoz egy egyhetes élménytáborba.</p><p>A legtöbbjük még sosem látta a Balatont. A támogatás fedezi a szállást, a teljes ellátást és a szabadidős programokat.</p>'
+    },
+    'iskolakezdes': {
+      title: 'Tanszercsomagok 50 rászoruló diáknak',
+      img: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      desc: '<p>Óriási sikerrel zárult az őszi kampányunk! Köszönhetően a támogatóknak, 50 állami gondozásból kikerült, de továbbtanuló fiatal számára tudtunk biztosítani teljes iskolakezdési tanszercsomagot.</p><p>Ezzel a csomaggal esélyt kaptak arra, hogy ne induljanak hátrányból az osztálytársaikkal szemben.</p>'
+    },
+    'kozossegi-ter': {
+      title: 'Közösségi tér felújítása',
+      img: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      desc: '<p>A pesterzsébeti ifjúsági találkozópontunk végre új életre kelt! A közösségi finanszírozásból befolyt összegből sikerült szigetelni a tetőt, kicserélni az ablakokat, és beszerezni a szükséges bútorokat.</p><p>Most már télen-nyáron biztonságos és meleg menedéket nyújt a fiataloknak.</p>'
     }
   };
 
