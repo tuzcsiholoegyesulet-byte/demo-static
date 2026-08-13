@@ -650,3 +650,82 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+  // --- Lightbox Gallery Logic ---
+  const scatteredGallery = document.getElementById('scattered-gallery');
+  const lightboxModal = document.getElementById('gallery-lightbox');
+  
+  if (scatteredGallery && lightboxModal) {
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = lightboxModal.querySelector('.lightbox-close');
+    const prevBtn = lightboxModal.querySelector('.lightbox-prev');
+    const nextBtn = lightboxModal.querySelector('.lightbox-next');
+    
+    // Extract all image URLs from the scatter-cards
+    const cards = scatteredGallery.querySelectorAll('.scatter-card');
+    const images = Array.from(cards).map(card => {
+      // get the background-image url
+      const bg = card.style.backgroundImage;
+      return bg.replace(/(url\(|\)|'|")/gi, ''); // clean url('...')
+    });
+    
+    let currentIndex = 0;
+
+    function openLightbox(index) {
+      if (images.length === 0) return;
+      currentIndex = index;
+      lightboxImg.src = images[currentIndex];
+      lightboxModal.style.display = 'block';
+      document.body.style.overflow = 'hidden'; // prevent scrolling
+    }
+
+    function closeLightbox() {
+      lightboxModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    function changeSlide(step) {
+      currentIndex += step;
+      if (currentIndex >= images.length) currentIndex = 0;
+      if (currentIndex < 0) currentIndex = images.length - 1;
+      
+      // Animate transition
+      lightboxImg.style.animation = 'none';
+      lightboxImg.offsetHeight; // trigger reflow
+      lightboxImg.style.animation = 'zoomIn 0.3s ease';
+      
+      lightboxImg.src = images[currentIndex];
+    }
+
+    // Event listeners
+    scatteredGallery.addEventListener('click', () => openLightbox(0));
+    
+    closeBtn.addEventListener('click', closeLightbox);
+    
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      changeSlide(1);
+    });
+    
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      changeSlide(-1);
+    });
+    
+    // Close on background click
+    lightboxModal.addEventListener('click', (e) => {
+      if (e.target === lightboxModal) {
+        closeLightbox();
+      }
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (lightboxModal.style.display === 'block') {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') changeSlide(1);
+        if (e.key === 'ArrowLeft') changeSlide(-1);
+      }
+    });
+  }
+
