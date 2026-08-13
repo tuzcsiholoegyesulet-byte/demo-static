@@ -3473,3 +3473,63 @@ input[type="checkbox"], input[type="radio"] {
     width: 40px;
   }
 }
+
+/* Floating Projects Button */
+.floating-projects-btn {
+  position: fixed;
+  top: 15%; /* Above housing btn */
+  right: 0;
+  transform: translateY(-50%);
+  background-color: var(--color-red);
+  color: var(--color-white) !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1.25rem;
+  border-radius: 50px 0 0 50px;
+  box-shadow: -5px 5px 20px rgba(0,0,0,0.15);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1000;
+  text-decoration: none;
+  overflow: hidden;
+  max-width: 65px;
+  white-space: nowrap;
+}
+.floating-projects-btn svg.project-icon {
+  width: 25px;
+  height: 25px;
+  fill: currentColor;
+  flex-shrink: 0;
+  transition: transform 0.4s ease;
+}
+.floating-projects-btn span.text {
+  margin-right: 15px;
+  font-weight: 600;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(20px);
+  transition: all 0.3s ease;
+}
+.floating-projects-btn:hover {
+  max-width: 250px;
+  padding-left: 1.5rem;
+  background-color: #a01020;
+}
+.floating-projects-btn:hover span.text {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+@media (max-width: 991px) {
+  .floating-projects-btn {
+    top: auto;
+    bottom: 7rem; /* Above housing btn on mobile */
+    transform: none;
+  }
+  .floating-projects-btn:hover {
+    max-width: 250px;
+  }
+  .floating-projects-btn span.text {
+    display: none;
+  }
+}
