@@ -427,18 +427,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Nyitás időzítése (pontosan azonos baseline-hoz viszonyítva)
         setTimeout(() => {
           btn.classList.add('auto-peek');
-        }, index * 200);
+        }, index * 100);
         
-        // Csukás időzítése (pontosan 200ms múlva azután, hogy nyílni kezdett)
+        // Csukás időzítése (pontosan 100ms múlva azután, hogy nyílni kezdett)
         setTimeout(() => {
           btn.classList.remove('auto-peek');
-        }, index * 200 + 200);
+        }, index * 100 + 100);
       });
 
       // A hullám végén levesszük a gyors transition class-t (visszaáll a normál hover 0.4s-re)
       setTimeout(() => {
         floatingBtns.forEach(btn => btn.classList.remove('wave-fast-transition'));
-      }, floatingBtns.length * 200 + 200);
+      }, floatingBtns.length * 100 + 100);
     }
     
     setTimeout(() => {

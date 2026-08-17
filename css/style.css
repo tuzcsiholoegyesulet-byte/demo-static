@@ -3666,11 +3666,11 @@ input[type="checkbox"], input[type="radio"] {
 .floating-fecske-btn.wave-fast-transition,
 .floating-bistro-btn.wave-fast-transition,
 .floating-projects-btn.wave-fast-transition {
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
 .floating-housing-btn.wave-fast-transition span.text,
 .floating-fecske-btn.wave-fast-transition span.text,
 .floating-bistro-btn.wave-fast-transition span.text,
 .floating-projects-btn.wave-fast-transition span.text {
-  transition: all 0.2s ease !important;
+  transition: all 0.1s ease !important;
 }
