@@ -1072,6 +1072,7 @@
                 if (name === 'Tejszínhab') endY = 40; // Top of the shake
             } else if (drinkCategory === 'cocktail') {
                 endY = 35; // Higher for cocktails to stay in the glass
+                if (name === 'Esernyő') endY = 15; // Umbrella on the rim
             } else {
                 if (name === 'Tejszínhab') endY = 20; // Top of the coffee
             }
@@ -1080,6 +1081,8 @@
             let offset = 40;
             if (name === 'Tejszínhab') {
                 offset = 40; // True visual center accounting for emoji width (approx 10%)
+            } else if (name === 'Esernyő') {
+                offset = 62; // Rim of the glass (right side)
             } else {
                 const cnt = drinkExtras.length;
                 if (cnt === 1) offset = 40;      // Center
