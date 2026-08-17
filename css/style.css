@@ -3680,3 +3680,37 @@ input[type="checkbox"], input[type="radio"] {
 .floating-projects-btn.wave-fast-transition span.text {
   transition: all 0.1s ease !important;
 }
+
+/* Cafe Layout and Tray */
+.cafe-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+@media (min-width: 1024px) {
+  .cafe-layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.cafe-tray {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+  margin-top: 3rem; /* Lentebb a gomboktól */
+  max-width: 400px; /* Ne legyen ennyire széles */
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (min-width: 1024px) {
+  .cafe-tray {
+    flex: 1;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    position: sticky;
+    top: 120px;
+  }
+}
