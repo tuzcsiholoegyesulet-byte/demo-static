@@ -947,7 +947,8 @@
             const liquid = document.getElementById('cup-liquid');
             if (liquid) {
                 let color = '#3e2723'; // Espresso
-                if (name.includes('Latte') || name.includes('Melange')) color = '#a67c52';
+                if (name.includes('Latte')) color = '#a67c52';
+                else if (name.includes('Melange')) color = 'linear-gradient(to top, #e6b800 25%, #5d4037 25%, #5d4037 100%)'; // Honey bottom, coffee top
                 else if (name.includes('Cappuccino')) color = '#8b5a2b';
                 liquid.style.background = color;
             }
