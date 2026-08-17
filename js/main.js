@@ -423,22 +423,33 @@ document.addEventListener('DOMContentLoaded', () => {
       // Alkalmazzuk a gyors transition-t minden gombra a hullám idejére (nyitás és csukás is gyors lesz)
       floatingBtns.forEach(btn => btn.classList.add('wave-fast-transition'));
 
+      // Első hullám
       floatingBtns.forEach((btn, index) => {
-        // Nyitás időzítése (pontosan azonos baseline-hoz viszonyítva)
         setTimeout(() => {
           btn.classList.add('auto-peek');
         }, index * 100);
         
-        // Csukás időzítése (pontosan 100ms múlva azután, hogy nyílni kezdett)
         setTimeout(() => {
           btn.classList.remove('auto-peek');
         }, index * 100 + 100);
       });
 
-      // A hullám végén levesszük a gyors transition class-t (visszaáll a normál hover 0.4s-re)
+      // Második hullám (500ms csúsztatással az első után)
+      floatingBtns.forEach((btn, index) => {
+        setTimeout(() => {
+          btn.classList.add('auto-peek');
+        }, 500 + index * 100);
+        
+        setTimeout(() => {
+          btn.classList.remove('auto-peek');
+        }, 500 + index * 100 + 100);
+      });
+
+      // A hullámok végén levesszük a gyors transition class-t (visszaáll a normál hover 0.4s-re)
+      // Két hullám összesen kb 900ms alatt fut le, így 1000ms után biztosan biztonságos levenni.
       setTimeout(() => {
         floatingBtns.forEach(btn => btn.classList.remove('wave-fast-transition'));
-      }, floatingBtns.length * 100 + 100);
+      }, 1000);
     }
     
     setTimeout(() => {
