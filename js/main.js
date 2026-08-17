@@ -416,12 +416,19 @@ document.addEventListener('DOMContentLoaded', () => {
   ].filter(btn => btn !== null);
 
   if (floatingBtns.length > 0) {
-    function runWave() {
-      const isHovering = floatingBtns.some(btn => btn.matches(':hover'));
-      if (isHovering) return;
+    const currentPath = window.location.pathname;
+    const isTargetPage = currentPath.includes('hogyan-segithetsz.html') || 
+                         currentPath.includes('szocialis-lakasugynokseg.html') || 
+                         currentPath.includes('fecske-adomanybolt.html') || 
+                         currentPath.includes('digitalis-bisztro.html');
 
-      // Alkalmazzuk a gyors transition-t minden gombra a hullám idejére (nyitás és csukás is gyors lesz)
-      floatingBtns.forEach(btn => btn.classList.add('wave-fast-transition'));
+    if (!isTargetPage) {
+      function runWave() {
+        const isHovering = floatingBtns.some(btn => btn.matches(':hover'));
+        if (isHovering) return;
+
+        // Alkalmazzuk a gyors transition-t minden gombra a hullám idejére (nyitás és csukás is gyors lesz)
+        floatingBtns.forEach(btn => btn.classList.add('wave-fast-transition'));
 
       // 1. Hullám (Fentről lefelé, 0-500ms)
       floatingBtns.forEach((btn, index) => {
@@ -447,6 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setInterval(runWave, 10000);
       runWave();
     }, 3000);
+    }
   }
 
   // --- Bistro Interactive Effects ---
