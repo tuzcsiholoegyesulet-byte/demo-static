@@ -1062,7 +1062,16 @@
             
             drop.className = 'extra-emoji extra-falling';
             drop.style.position = 'absolute';
-            drop.style.left = (46 + Math.random() * 8) + '%'; // Center more tightly (46% - 54%)
+            let offset = 50;
+            const cnt = drinkExtras.length;
+            if (cnt === 1) offset = 50;
+            else if (cnt === 2) offset = 40;
+            else if (cnt === 3) offset = 60;
+            else if (cnt === 4) offset = 30;
+            else if (cnt === 5) offset = 70;
+            else offset = 50 + (Math.random() * 40 - 20);
+            
+            drop.style.left = offset + '%';
             drop.style.zIndex = '10';
             drop.textContent = icon;
             targetZone.appendChild(drop);
