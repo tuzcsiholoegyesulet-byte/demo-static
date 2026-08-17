@@ -49,32 +49,64 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- Spectacular Donation Card Heart Particles ---
-  const donationCard = document.getElementById('donation-card');
-  const heartsContainer = document.getElementById('hearts-container');
-  if (donationCard && heartsContainer) {
+  function initFloatingLogos(cardElement, containerElement) {
+    if (!cardElement || !containerElement) return;
     const numHearts = 45;
     const hearts = [];
     for (let i = 0; i < numHearts; i++) {
       const el = document.createElement('div');
       const size = Math.random() * 25 + 15; 
       el.innerHTML = '<img src="images/global/Logo_BEZS_emblema.png" style="width: 100%; height: 100%; object-fit: contain;">';
-      el.style.position = 'absolute';
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
-      el.style.opacity = Math.random() * 0.6 + 0.1; 
-      el.style.transformOrigin = 'center';
-      const startX = Math.random() * 100;
-      const startY = Math.random() * 100;
-      el.style.left = `${startX}%`;
-      el.style.top = `${startY}%`;
-      heartsContainer.appendChild(el);
+      el.style.position = 'absolute'; el.style.width = `${size}px`; el.style.height = `${size}px`;
+      el.style.opacity = Math.random() * 0.6 + 0.1; el.style.transformOrigin = 'center';
+      const startX = Math.random() * 100, startY = Math.random() * 100;
+      el.style.left = `${startX}%`; el.style.top = `${startY}%`;
+      containerElement.appendChild(el);
       hearts.push({
         el, baseX: startX, baseY: startY, currentOffsetX: 0, currentOffsetY: 0, targetOffsetX: 0, targetOffsetY: 0,
         speed: Math.random() * 0.1 + 0.05, floatSpeedX: Math.random() * 2 - 1, floatSpeedY: Math.random() * 2 - 1, seed: Math.random() * 1000
       });
     }
 
+    let mouseX = -1000, mouseY = -1000, cardRect = cardElement.getBoundingClientRect();
+    cardElement.addEventListener('mousemove', (e) => {
+      cardRect = cardElement.getBoundingClientRect();
+      mouseX = e.clientX - cardRect.left;
+      mouseY = e.clientY - cardRect.top;
+    });
+    cardElement.addEventListener('mouseleave', () => { mouseX = -1000; mouseY = -1000; });
+
+    function animateHearts() {
+      const repelRadius = 120, repelForce = 60, time = Date.now() * 0.001;
+      if(mouseX !== -1000 && cardRect.width === 0) cardRect = cardElement.getBoundingClientRect();
+      hearts.forEach(heart => {
+        const heartPxX = (heart.baseX / 100) * cardRect.width, heartPxY = (heart.baseY / 100) * cardRect.height;
+        const dx = mouseX - (heartPxX + heart.currentOffsetX), dy = mouseY - (heartPxY + heart.currentOffsetY);
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < repelRadius) {
+          const force = (repelRadius - distance) / repelRadius, angle = Math.atan2(dy, dx);
+          heart.targetOffsetX = -Math.cos(angle) * force * repelForce;
+          heart.targetOffsetY = -Math.sin(angle) * force * repelForce;
+        } else {
+          heart.targetOffsetX = 0; heart.targetOffsetY = 0;
+        }
+        heart.currentOffsetX += (heart.targetOffsetX - heart.currentOffsetX) * heart.speed;
+        heart.currentOffsetY += (heart.targetOffsetY - heart.currentOffsetY) * heart.speed;
+        const floatX = Math.sin(time * heart.floatSpeedX + heart.seed) * 10, floatY = Math.cos(time * heart.floatSpeedY + heart.seed) * 10;
+        heart.el.style.transform = `translate3d(${heart.currentOffsetX + floatX}px, ${heart.currentOffsetY + floatY}px, 0)`;
+      });
+      requestAnimationFrame(animateHearts);
+    }
+    setTimeout(() => { cardRect = cardElement.getBoundingClientRect(); animateHearts(); }, 100);
+  }
+
+  // --- Spectacular Donation Card Heart Particles ---
+  const donationCard = document.getElementById('donation-card');
+  const heartsContainer = document.getElementById('hearts-container');
+  if (donationCard && heartsContainer) {
+    initFloatingLogos(donationCard, heartsContainer);
+    
+    // Sparkler effect
     let mouseX = -1000, mouseY = -1000, cardRect = donationCard.getBoundingClientRect(), lastSparkleTime = 0;
     donationCard.addEventListener('mousemove', (e) => {
       cardRect = donationCard.getBoundingClientRect();
@@ -101,31 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
-
     donationCard.addEventListener('mouseleave', () => { mouseX = -1000; mouseY = -1000; });
-
-    function animateHearts() {
-      const repelRadius = 120, repelForce = 60, time = Date.now() * 0.001;
-      if(mouseX !== -1000 && cardRect.width === 0) cardRect = donationCard.getBoundingClientRect();
-      hearts.forEach(heart => {
-        const heartPxX = (heart.baseX / 100) * cardRect.width, heartPxY = (heart.baseY / 100) * cardRect.height;
-        const dx = mouseX - (heartPxX + heart.currentOffsetX), dy = mouseY - (heartPxY + heart.currentOffsetY);
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < repelRadius) {
-          const force = (repelRadius - distance) / repelRadius, angle = Math.atan2(dy, dx);
-          heart.targetOffsetX = -Math.cos(angle) * force * repelForce;
-          heart.targetOffsetY = -Math.sin(angle) * force * repelForce;
-        } else {
-          heart.targetOffsetX = 0; heart.targetOffsetY = 0;
-        }
-        heart.currentOffsetX += (heart.targetOffsetX - heart.currentOffsetX) * heart.speed;
-        heart.currentOffsetY += (heart.targetOffsetY - heart.currentOffsetY) * heart.speed;
-        const floatX = Math.sin(time * heart.floatSpeedX + heart.seed) * 10, floatY = Math.cos(time * heart.floatSpeedY + heart.seed) * 10;
-        heart.el.style.transform = `translate3d(${heart.currentOffsetX + floatX}px, ${heart.currentOffsetY + floatY}px, 0)`;
-      });
-      requestAnimationFrame(animateHearts);
-    }
-    setTimeout(() => { cardRect = donationCard.getBoundingClientRect(); animateHearts(); }, 100);
   }
 
   // --- Donation Logic ---
@@ -462,6 +470,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const effectsContainer = document.getElementById('bistro-effects-container');
   
   if (bistroCard && effectsContainer) {
+    initFloatingLogos(bistroCard, effectsContainer);
+
     function createMug() {
       const mug = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       mug.setAttribute('viewBox', '0 0 512 512');
