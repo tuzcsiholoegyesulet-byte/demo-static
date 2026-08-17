@@ -1061,12 +1061,18 @@
                if (catVis) targetZone = catVis;
             }
             
-            if (name === 'Tejszínhab') {
-                drop.className = 'extra-emoji extra-falling-top';
-            } else {
-                drop.className = 'extra-emoji extra-falling';
-            }
+            drop.className = 'extra-emoji extra-falling';
             drop.style.position = 'absolute';
+            
+            let endY = 60; // Default (e.g. coffee)
+            if (drinkCategory === 'blender') {
+                endY = 120; // Lower overall for shakes
+                if (name === 'Tejszínhab') endY = 80; // Top of the shake
+            } else {
+                if (name === 'Tejszínhab') endY = 20; // Top of the coffee
+            }
+            drop.style.setProperty('--end-y', endY + 'px');
+            
             let offset = 40;
             if (name === 'Tejszínhab') {
                 offset = 40; // True visual center accounting for emoji width (approx 10%)
@@ -1086,13 +1092,8 @@
             targetZone.appendChild(drop);
             
             setTimeout(() => {
-                if (name === 'Tejszínhab') {
-                    drop.classList.remove('extra-falling-top');
-                    drop.classList.add('extra-settled-top');
-                } else {
-                    drop.classList.remove('extra-falling');
-                    drop.classList.add('extra-settled');
-                }
+                drop.classList.remove('extra-falling');
+                drop.classList.add('extra-settled');
             }, 500);
           }
           updateDrinkPrice();
