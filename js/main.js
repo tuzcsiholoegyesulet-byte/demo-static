@@ -437,16 +437,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { btn.classList.remove('auto-peek'); }, 500 + reverseIndex * 100 + 100);
       });
 
-      // 3. Hullám (Fentről lefelé ismét, 1000-1500ms)
-      floatingBtns.forEach((btn, index) => {
-        setTimeout(() => { btn.classList.add('auto-peek'); }, 1000 + index * 100);
-        setTimeout(() => { btn.classList.remove('auto-peek'); }, 1000 + index * 100 + 100);
-      });
-
-      // A 3 hullám összesen 1500ms alatt fut le, így 1600ms után biztonságosan levehetjük a gyors transition-t.
+      // A 2 hullám összesen kb 1000ms alatt fut le, így 1100ms után biztonságosan levehetjük a gyors transition-t.
       setTimeout(() => {
         floatingBtns.forEach(btn => btn.classList.remove('wave-fast-transition'));
-      }, 1600);
+      }, 1100);
     }
     
     setTimeout(() => {
