@@ -3660,3 +3660,17 @@ input[type="checkbox"], input[type="radio"] {
   0% { transform: scale(0) rotate(0deg); opacity: 1; }
   100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(180deg); opacity: 0; }
 }
+
+/* Fast wave transition for auto-peek */
+.floating-housing-btn.auto-peek,
+.floating-fecske-btn.auto-peek,
+.floating-bistro-btn.auto-peek,
+.floating-projects-btn.auto-peek {
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+.floating-housing-btn.auto-peek span.text,
+.floating-fecske-btn.auto-peek span.text,
+.floating-bistro-btn.auto-peek span.text,
+.floating-projects-btn.auto-peek span.text {
+  transition: all 0.2s ease !important;
+}

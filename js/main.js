@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+
   // --- Cookie Banner Logic (CMP) ---
   const cookieBanner = document.getElementById('cookie-banner');
   const acceptAllBtn = document.getElementById('btn-accept-all');
@@ -6,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const marketingCookiesCb = document.getElementById('cb-marketing');
 
   if (!localStorage.getItem('cookieConsent')) {
-    cookieBanner.style.display = 'block';
+    if(cookieBanner) cookieBanner.style.display = 'block';
   } else {
     loadScriptsBasedOnConsent();
   }
@@ -15,27 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('cookieConsent', JSON.stringify({ functional: true, marketing: true }));
     cookieBanner.style.display = 'none';
     loadScriptsBasedOnConsent();
-  
-  // --- Scroll to Top Logic ---
-  const scrollToTopBtn = document.getElementById('scrollToTop');
-  if (scrollToTopBtn) {
-    document.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        scrollToTopBtn.classList.add('show');
-      } else {
-        scrollToTopBtn.classList.remove('show');
-      }
-    });
-    
-    scrollToTopBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-});
+  });
 
   savePreferencesBtn?.addEventListener('click', () => {
     localStorage.setItem('cookieConsent', JSON.stringify({ 
@@ -44,32 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }));
     cookieBanner.style.display = 'none';
     loadScriptsBasedOnConsent();
-  
-  // --- Scroll to Top Logic ---
-  const scrollToTopBtn = document.getElementById('scrollToTop');
-  if (scrollToTopBtn) {
-    document.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        scrollToTopBtn.classList.add('show');
-      } else {
-        scrollToTopBtn.classList.remove('show');
-      }
-    });
-    
-    scrollToTopBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-});
+  });
 
   function loadScriptsBasedOnConsent() {
     const consent = JSON.parse(localStorage.getItem('cookieConsent'));
     if (consent?.marketing) {
-      // Load marketing/analytics scripts here
       console.log('Marketing cookies enabled. Loading analytics...');
     }
   }
@@ -86,32 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       alert('Köszönjük! Sikeres feliratkozás a hírlevélre.');
       newsletterForm.reset();
-    
-  // --- Scroll to Top Logic ---
-  const scrollToTopBtn = document.getElementById('scrollToTop');
-  if (scrollToTopBtn) {
-    document.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        scrollToTopBtn.classList.add('show');
-      } else {
-        scrollToTopBtn.classList.remove('show');
-      }
     });
-    
-    scrollToTopBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-});
   }
 
-  
-  
-  
   // --- Spectacular Donation Card Heart Particles ---
   const donationCard = document.getElementById('donation-card');
   const heartsContainer = document.getElementById('hearts-container');
@@ -120,155 +57,81 @@ document.addEventListener('DOMContentLoaded', () => {
     const hearts = [];
     for (let i = 0; i < numHearts; i++) {
       const el = document.createElement('div');
-      
       const size = Math.random() * 25 + 15; 
-      
       el.innerHTML = '<img src="images/global/Logo_BEZS_emblema.png" style="width: 100%; height: 100%; object-fit: contain;">';
-      
       el.style.position = 'absolute';
       el.style.width = `${size}px`;
       el.style.height = `${size}px`;
-      
-      // A különböző opacity adja meg a "különböző árnyalatok" hatását
       el.style.opacity = Math.random() * 0.6 + 0.1; 
       el.style.transformOrigin = 'center';
-      
       const startX = Math.random() * 100;
       const startY = Math.random() * 100;
       el.style.left = `${startX}%`;
       el.style.top = `${startY}%`;
-
       heartsContainer.appendChild(el);
-      
       hearts.push({
-        el,
-        baseX: startX,
-        baseY: startY,
-        currentOffsetX: 0,
-        currentOffsetY: 0,
-        targetOffsetX: 0,
-        targetOffsetY: 0,
-        speed: Math.random() * 0.1 + 0.05,
-        floatSpeedX: Math.random() * 2 - 1,
-        floatSpeedY: Math.random() * 2 - 1,
-        seed: Math.random() * 1000
+        el, baseX: startX, baseY: startY, currentOffsetX: 0, currentOffsetY: 0, targetOffsetX: 0, targetOffsetY: 0,
+        speed: Math.random() * 0.1 + 0.05, floatSpeedX: Math.random() * 2 - 1, floatSpeedY: Math.random() * 2 - 1, seed: Math.random() * 1000
       });
     }
 
-    let mouseX = -1000;
-    let mouseY = -1000;
-    let cardRect = donationCard.getBoundingClientRect();
-
-    let lastSparkleTime = 0;
+    let mouseX = -1000, mouseY = -1000, cardRect = donationCard.getBoundingClientRect(), lastSparkleTime = 0;
     donationCard.addEventListener('mousemove', (e) => {
       cardRect = donationCard.getBoundingClientRect();
       mouseX = e.clientX - cardRect.left;
       mouseY = e.clientY - cardRect.top;
-      
-      // Sparkler effect (white hearts)
       const now = Date.now();
-      if (now - lastSparkleTime > 30) { // Limit creation rate
+      if (now - lastSparkleTime > 30) {
         lastSparkleTime = now;
-        
-        // Randomly skip to make it look more organic like a sparkler
         if (Math.random() > 0.4) {
           const spark = document.createElement('div');
-          // White heart SVG
           spark.innerHTML = '<svg viewBox="0 0 512 512" style="width: 100%; height: 100%; fill: #ffffff;"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>';
-          
-          const size = Math.random() * 15 + 10; // 10px to 25px
-          spark.style.position = 'absolute';
-          spark.style.width = `${size}px`;
-          spark.style.height = `${size}px`;
-          spark.style.pointerEvents = 'none'; // Don't block interactions
-          spark.style.zIndex = '0'; // Behind the form
-          
-          // Starting position at mouse with slight random offset
-          const startX = mouseX + (Math.random() * 20 - 10);
-          const startY = mouseY + (Math.random() * 20 - 10);
-          spark.style.left = `${startX}px`;
-          spark.style.top = `${startY}px`;
-          spark.style.opacity = '1';
-          
-          // Initial transform and transition for animation
+          const size = Math.random() * 15 + 10;
+          spark.style.position = 'absolute'; spark.style.width = `${size}px`; spark.style.height = `${size}px`; spark.style.pointerEvents = 'none'; spark.style.zIndex = '0';
+          const startX = mouseX + (Math.random() * 20 - 10), startY = mouseY + (Math.random() * 20 - 10);
+          spark.style.left = `${startX}px`; spark.style.top = `${startY}px`; spark.style.opacity = '1';
           spark.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 45 - 22}deg)`;
           spark.style.transition = 'all 0.8s cubic-bezier(0.1, 0.8, 0.3, 1)';
-          
           heartsContainer.appendChild(spark);
-          
-          // Force reflow
           spark.getBoundingClientRect();
-          
-          // End state
           spark.style.opacity = '0';
-          const endX = (Math.random() * 100 - 50); // move randomly left/right
-          const endY = -(Math.random() * 50 + 30); // always move upwards (like sparks or smoke)
+          const endX = (Math.random() * 100 - 50), endY = -(Math.random() * 50 + 30);
           spark.style.transform = `translate(calc(-50% + ${endX}px), calc(-50% + ${endY}px)) scale(0.3) rotate(${Math.random() * 90 - 45}deg)`;
-          
-          // Remove from DOM after animation
-          setTimeout(() => {
-            if(spark.parentNode) {
-              spark.parentNode.removeChild(spark);
-            }
-          }, 800);
+          setTimeout(() => { if(spark.parentNode) spark.parentNode.removeChild(spark); }, 800);
         }
       }
     });
 
-    donationCard.addEventListener('mouseleave', () => {
-      mouseX = -1000;
-      mouseY = -1000;
-    });
+    donationCard.addEventListener('mouseleave', () => { mouseX = -1000; mouseY = -1000; });
 
     function animateHearts() {
-      const repelRadius = 120;
-      const repelForce = 60;
-      const time = Date.now() * 0.001;
-      
-      // Update cardRect periodically in case of resize, though cheap enough to just rely on hover
+      const repelRadius = 120, repelForce = 60, time = Date.now() * 0.001;
       if(mouseX !== -1000 && cardRect.width === 0) cardRect = donationCard.getBoundingClientRect();
-
       hearts.forEach(heart => {
-        const heartPxX = (heart.baseX / 100) * cardRect.width;
-        const heartPxY = (heart.baseY / 100) * cardRect.height;
-        
-        const dx = mouseX - (heartPxX + heart.currentOffsetX);
-        const dy = mouseY - (heartPxY + heart.currentOffsetY);
+        const heartPxX = (heart.baseX / 100) * cardRect.width, heartPxY = (heart.baseY / 100) * cardRect.height;
+        const dx = mouseX - (heartPxX + heart.currentOffsetX), dy = mouseY - (heartPxY + heart.currentOffsetY);
         const distance = Math.sqrt(dx * dx + dy * dy);
-
         if (distance < repelRadius) {
-          const force = (repelRadius - distance) / repelRadius;
-          const angle = Math.atan2(dy, dx);
+          const force = (repelRadius - distance) / repelRadius, angle = Math.atan2(dy, dx);
           heart.targetOffsetX = -Math.cos(angle) * force * repelForce;
           heart.targetOffsetY = -Math.sin(angle) * force * repelForce;
         } else {
-          heart.targetOffsetX = 0;
-          heart.targetOffsetY = 0;
+          heart.targetOffsetX = 0; heart.targetOffsetY = 0;
         }
-
         heart.currentOffsetX += (heart.targetOffsetX - heart.currentOffsetX) * heart.speed;
         heart.currentOffsetY += (heart.targetOffsetY - heart.currentOffsetY) * heart.speed;
-
-        const floatX = Math.sin(time * heart.floatSpeedX + heart.seed) * 10;
-        const floatY = Math.cos(time * heart.floatSpeedY + heart.seed) * 10;
-
+        const floatX = Math.sin(time * heart.floatSpeedX + heart.seed) * 10, floatY = Math.cos(time * heart.floatSpeedY + heart.seed) * 10;
         heart.el.style.transform = `translate3d(${heart.currentOffsetX + floatX}px, ${heart.currentOffsetY + floatY}px, 0)`;
       });
-
       requestAnimationFrame(animateHearts);
     }
-    
-    setTimeout(() => {
-      cardRect = donationCard.getBoundingClientRect();
-      animateHearts();
-    }, 100);
+    setTimeout(() => { cardRect = donationCard.getBoundingClientRect(); animateHearts(); }, 100);
   }
 
   // --- Donation Logic ---
   const donationBtns = document.querySelectorAll('.donation-btn');
   const customAmountInput = document.getElementById('custom-amount');
   const donationForm = document.getElementById('donation-form');
-  
   let selectedAmount = null;
 
   donationBtns.forEach(btn => {
@@ -277,123 +140,38 @@ document.addEventListener('DOMContentLoaded', () => {
       donationBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       
-      // Balloon pop effect
       const balloon = document.createElement('div');
       balloon.innerHTML = '<svg viewBox="0 0 512 512" style="width: 100%; height: 100%; fill: #ffffff;"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>';
-      
-      balloon.style.position = 'absolute';
-      balloon.style.width = '60px';
-      balloon.style.height = '60px';
-      balloon.style.left = '50%';
-      balloon.style.top = '50%';
-      balloon.style.transform = 'translate(-50%, -50%) scale(0)';
-      balloon.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-      balloon.style.pointerEvents = 'none';
-      balloon.style.zIndex = '10';
-      
+      balloon.style.position = 'absolute'; balloon.style.width = '60px'; balloon.style.height = '60px';
+      balloon.style.left = '50%'; balloon.style.top = '50%'; balloon.style.transform = 'translate(-50%, -50%) scale(0)';
+      balloon.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; balloon.style.pointerEvents = 'none'; balloon.style.zIndex = '10';
       btn.appendChild(balloon);
-      
-      // Force reflow
       balloon.getBoundingClientRect();
-      
-      // Inflate
       balloon.style.transform = 'translate(-50%, -50%) scale(1.5)';
-      
-      // Pop!
       setTimeout(() => {
-        balloon.style.opacity = '0';
-        balloon.style.transform = 'translate(-50%, -50%) scale(2)';
-        balloon.style.transition = 'all 0.1s ease-out';
-        
-        // Spawn tiny confetti hearts
+        balloon.style.opacity = '0'; balloon.style.transform = 'translate(-50%, -50%) scale(2)'; balloon.style.transition = 'all 0.1s ease-out';
         for(let i=0; i<6; i++) {
           const confetti = document.createElement('div');
           confetti.innerHTML = '<svg viewBox="0 0 512 512" style="width: 100%; height: 100%; fill: #ffffff;"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>';
-          confetti.style.position = 'absolute';
-          confetti.style.width = '15px';
-          confetti.style.height = '15px';
-          confetti.style.left = '50%';
-          confetti.style.top = '50%';
-          confetti.style.pointerEvents = 'none';
-          
-          const angle = (Math.PI * 2 / 6) * i;
-          const velocity = 40;
-          const vx = Math.cos(angle) * velocity;
-          const vy = Math.sin(angle) * velocity;
-          
-          confetti.style.transform = `translate(-50%, -50%)`;
-          confetti.style.transition = 'all 0.4s ease-out';
+          confetti.style.position = 'absolute'; confetti.style.width = '15px'; confetti.style.height = '15px';
+          confetti.style.left = '50%'; confetti.style.top = '50%'; confetti.style.pointerEvents = 'none';
+          const angle = (Math.PI * 2 / 6) * i, velocity = 40, vx = Math.cos(angle) * velocity, vy = Math.sin(angle) * velocity;
+          confetti.style.transform = `translate(-50%, -50%)`; confetti.style.transition = 'all 0.4s ease-out';
           btn.appendChild(confetti);
-          
           confetti.getBoundingClientRect();
-          
-          confetti.style.transform = `translate(calc(-50% + ${vx}px), calc(-50% + ${vy}px)) scale(0)`;
-          confetti.style.opacity = '0';
-          
-          setTimeout(() => {
-            if(confetti.parentNode) confetti.parentNode.removeChild(confetti);
-          }, 400);
+          confetti.style.transform = `translate(calc(-50% + ${vx}px), calc(-50% + ${vy}px)) scale(0)`; confetti.style.opacity = '0';
+          setTimeout(() => { if(confetti.parentNode) confetti.parentNode.removeChild(confetti); }, 400);
         }
-        
       }, 350);
-      
-      setTimeout(() => {
-        if(balloon.parentNode) balloon.parentNode.removeChild(balloon);
-      }, 500);
+      setTimeout(() => { if(balloon.parentNode) balloon.parentNode.removeChild(balloon); }, 500);
 
-      
       if (btn.dataset.amount === 'custom') {
-        customAmountInput.style.display = 'block';
-        customAmountInput.required = true;
-        selectedAmount = 'custom';
+        customAmountInput.style.display = 'block'; customAmountInput.required = true; selectedAmount = 'custom';
       } else {
-        customAmountInput.style.display = 'none';
-        customAmountInput.required = false;
-        customAmountInput.value = '';
-        selectedAmount = btn.dataset.amount;
-      }
-    
-  // --- Scroll to Top Logic ---
-  const scrollToTopBtn = document.getElementById('scrollToTop');
-  if (scrollToTopBtn) {
-    document.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        scrollToTopBtn.classList.add('show');
-      } else {
-        scrollToTopBtn.classList.remove('show');
+        customAmountInput.style.display = 'none'; customAmountInput.required = false; customAmountInput.value = ''; selectedAmount = btn.dataset.amount;
       }
     });
-    
-    scrollToTopBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-});
-  
-  // --- Scroll to Top Logic ---
-  const scrollToTopBtn = document.getElementById('scrollToTop');
-  if (scrollToTopBtn) {
-    document.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        scrollToTopBtn.classList.add('show');
-      } else {
-        scrollToTopBtn.classList.remove('show');
-      }
-    });
-    
-    scrollToTopBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-});
+  });
 
   if (donationForm) {
     donationForm.addEventListener('submit', (e) => {
@@ -403,38 +181,15 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Kérjük, fogadja el az adatkezelési tájékoztatót a támogatáshoz.');
         return;
       }
-      
       let finalAmount = selectedAmount === 'custom' ? customAmountInput.value : selectedAmount;
       if (!finalAmount) {
         alert('Kérjük, válasszon vagy adjon meg egy támogatási összeget.');
         return;
       }
-
-            const freq = document.querySelector('input[name="donation_frequency"]:checked');
+      const freq = document.querySelector('input[name="donation_frequency"]:checked');
       const freqText = freq ? (freq.value === 'monthly' ? 'Havi rendszeres' : 'Egyszeri') : '';
       alert(`Átirányítás a Stripe Checkout oldalra... (Összeg: ${finalAmount} Ft - ${freqText})`);
-      // Integration with Stripe Checkout would occur here.
-    
-  // --- Scroll to Top Logic ---
-  const scrollToTopBtn = document.getElementById('scrollToTop');
-  if (scrollToTopBtn) {
-    document.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        scrollToTopBtn.classList.add('show');
-      } else {
-        scrollToTopBtn.classList.remove('show');
-      }
     });
-    
-    scrollToTopBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-});
   }
 
   // --- Header Scroll Logic ---
@@ -446,28 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         selectHeader.classList.remove('scrolled');
       }
-    
-  // --- Scroll to Top Logic ---
-  const scrollToTopBtn = document.getElementById('scrollToTop');
-  if (scrollToTopBtn) {
-    document.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        scrollToTopBtn.classList.add('show');
-      } else {
-        scrollToTopBtn.classList.remove('show');
-      }
     });
-    
-    scrollToTopBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-});
-    // Trigger on load
     if (window.scrollY > 50) {
       selectHeader.classList.add('scrolled');
     }
@@ -483,20 +217,13 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollToTopBtn.classList.remove('show');
       }
     });
-    
     scrollToTopBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
-});
 
-
-// --- Mobile Menu Toggle ---
-document.addEventListener('DOMContentLoaded', () => {
+  // --- Mobile Menu Toggle ---
   const menuToggle = document.getElementById('mobile-menu');
   const mainNav = document.querySelector('.main-nav');
   if(menuToggle && mainNav) {
@@ -505,151 +232,121 @@ document.addEventListener('DOMContentLoaded', () => {
       mainNav.classList.toggle('active');
     });
   }
-});
 
-// Project Modal Logic
-document.addEventListener('DOMContentLoaded', () => {
+  // --- Project Modal Logic ---
   const projectModal = document.getElementById('project-modal');
-  if (!projectModal) return;
+  if (projectModal) {
+    const openButtons = document.querySelectorAll('.open-project-modal');
+    const closeButton = projectModal.querySelector('.close-modal');
+    const modalTitle = document.getElementById('modal-project-title');
+    const amountButtons = projectModal.querySelectorAll('.donation-options .btn');
+    const customInput = document.getElementById('project-custom-amount');
 
-  const openButtons = document.querySelectorAll('.open-project-modal');
-  const closeButton = projectModal.querySelector('.close-modal');
-  const modalTitle = document.getElementById('modal-project-title');
-  const amountButtons = projectModal.querySelectorAll('.donation-options .btn');
-  const customInput = document.getElementById('project-custom-amount');
-
-  // Open modal
-  openButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const projectName = btn.getAttribute('data-project');
-      if (modalTitle && projectName) {
-        modalTitle.textContent = `${projectName} - Támogatás`;
-      }
-      projectModal.classList.add('active');
-    });
-  });
-
-  // Close modal
-  const closeModal = () => {
-    projectModal.classList.remove('active');
-  };
-
-  if (closeButton) {
-    closeButton.addEventListener('click', closeModal);
-  }
-
-  projectModal.addEventListener('click', (e) => {
-    if (e.target === projectModal) {
-      closeModal();
-    }
-  });
-
-  // Amount selection
-  amountButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      amountButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      if (customInput) customInput.value = ''; // clear custom input
-    });
-  });
-
-  if (customInput) {
-    customInput.addEventListener('input', () => {
-      amountButtons.forEach(b => b.classList.remove('active'));
-    });
-  }
-});
-
-// Project Details Modal Logic
-document.addEventListener('DOMContentLoaded', () => {
-  const detailsModal = document.getElementById('details-modal');
-  if (!detailsModal) return;
-
-  const openDetailsButtons = document.querySelectorAll('.open-details-modal');
-  const detailsCloseButton = detailsModal.querySelector('.close-modal');
-  const detailsTitle = document.getElementById('details-modal-title');
-  const detailsDesc = document.getElementById('details-modal-desc');
-  const detailsImg = document.getElementById('details-modal-img');
-  const toDonationBtn = document.getElementById('details-to-donation-btn');
-
-  // Hardcoded mock data for the 3 projects
-  const projectData = {
-    'kovacs-csalad': {
-      title: 'Kovács család lakhatása',
-      img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      desc: '<p>A Kovács család egy hirtelen jött betegség miatt elveszítette a családfenntartó munkáját. Emiatt tetemes lakbérhátralékot halmoztak fel, és a kilakoltatás szélére kerültek.</p><p>Ezzel a gyűjtéssel célunk, hogy kifizessük az elmaradást és biztosítsuk számukra a lakhatásukat a következő hat hónapra, amíg újra talpra tudnak állni.</p>'
-    },
-    'natalia': {
-      title: 'Natália középiskolai taníttatása',
-      img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      desc: '<p>Natália egy rendkívül tehetséges, állami gondoskodásból kikerült diáklány, aki most nyert felvételt az ország egyik legjobb gimnáziumába. Azonban a kollégiumi díjak, étkezés és tanszerek hatalmas terhet rónak rá.</p><p>A gyűjtésből egy teljes tanévnyi költségét szeretnénk fedezni, hogy csak a tanulásra koncentrálhasson.</p>'
-    },
-    'csopaki-tabor': {
-      title: 'Csopaki nyári tábor 2027',
-      img: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      desc: '<p>Idén nyáron 50 hátrányos helyzetű gyermeket szeretnénk elvinni a Balatonhoz egy egyhetes élménytáborba.</p><p>A legtöbbjük még sosem látta a Balatont. A támogatás fedezi a szállást, a teljes ellátást és a szabadidős programokat.</p>'
-    },
-    'iskolakezdes': {
-      title: 'Tanszercsomagok 50 rászoruló diáknak',
-      img: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      desc: '<p>Óriási sikerrel zárult az őszi kampányunk! Köszönhetően a támogatóknak, 50 állami gondozásból kikerült, de továbbtanuló fiatal számára tudtunk biztosítani teljes iskolakezdési tanszercsomagot.</p><p>Ezzel a csomaggal esélyt kaptak arra, hogy ne induljanak hátrányból az osztálytársaikkal szemben.</p>'
-    },
-    'kozossegi-ter': {
-      title: 'Közösségi tér felújítása',
-      img: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      desc: '<p>A pesterzsébeti ifjúsági találkozópontunk végre új életre kelt! A közösségi finanszírozásból befolyt összegből sikerült szigetelni a tetőt, kicserélni az ablakokat, és beszerezni a szükséges bútorokat.</p><p>Most már télen-nyáron biztonságos és meleg menedéket nyújt a fiataloknak.</p>'
-    }
-  };
-
-  let currentProjectTitle = '';
-
-  // Open Details Modal
-  openDetailsButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const projectId = btn.getAttribute('data-project-id');
-      const data = projectData[projectId];
-      
-      if (data) {
-        detailsTitle.textContent = data.title;
-        detailsImg.src = data.img;
-        detailsDesc.innerHTML = data.desc;
-        currentProjectTitle = data.title; // Store for the donation button
-        detailsModal.classList.add('active');
-      }
-    });
-  });
-
-  // Close Details Modal
-  const closeDetailsModal = () => {
-    detailsModal.classList.remove('active');
-  };
-
-  if (detailsCloseButton) {
-    detailsCloseButton.addEventListener('click', closeDetailsModal);
-  }
-
-  detailsModal.addEventListener('click', (e) => {
-    if (e.target === detailsModal) {
-      closeDetailsModal();
-    }
-  });
-
-  // Switch to Donation Modal
-  if (toDonationBtn) {
-    toDonationBtn.addEventListener('click', () => {
-      closeDetailsModal();
-      // Open the donation modal for the current project
-      const projectModal = document.getElementById('project-modal');
-      const modalProjectTitle = document.getElementById('modal-project-title');
-      if (projectModal && modalProjectTitle) {
-        modalProjectTitle.textContent = `${currentProjectTitle} - Támogatás`;
+    openButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const projectName = btn.getAttribute('data-project');
+        if (modalTitle && projectName) {
+          modalTitle.textContent = `${projectName} - Támogatás`;
+        }
         projectModal.classList.add('active');
-      }
+      });
     });
+
+    const closeModal = () => { projectModal.classList.remove('active'); };
+    if (closeButton) closeButton.addEventListener('click', closeModal);
+    projectModal.addEventListener('click', (e) => {
+      if (e.target === projectModal) closeModal();
+    });
+
+    amountButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        amountButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (customInput) customInput.value = '';
+      });
+    });
+
+    if (customInput) {
+      customInput.addEventListener('input', () => {
+        amountButtons.forEach(b => b.classList.remove('active'));
+      });
+    }
   }
-});
+
+  // --- Project Details Modal Logic ---
+  const detailsModal = document.getElementById('details-modal');
+  if (detailsModal) {
+    const openDetailsButtons = document.querySelectorAll('.open-details-modal');
+    const detailsCloseButton = detailsModal.querySelector('.close-modal');
+    const detailsTitle = document.getElementById('details-modal-title');
+    const detailsDesc = document.getElementById('details-modal-desc');
+    const detailsImg = document.getElementById('details-modal-img');
+    const toDonationBtn = document.getElementById('details-to-donation-btn');
+
+    const projectData = {
+      'kovacs-csalad': {
+        title: 'Kovács család lakhatása',
+        img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        desc: '<p>A Kovács család egy hirtelen jött betegség miatt elveszítette a családfenntartó munkáját. Emiatt tetemes lakbérhátralékot halmoztak fel, és a kilakoltatás szélére kerültek.</p><p>Ezzel a gyűjtéssel célunk, hogy kifizessük az elmaradást és biztosítsuk számukra a lakhatásukat a következő hat hónapra, amíg újra talpra tudnak állni.</p>'
+      },
+      'natalia': {
+        title: 'Natália középiskolai taníttatása',
+        img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        desc: '<p>Natália egy rendkívül tehetséges, állami gondoskodásból kikerült diáklány, aki most nyert felvételt az ország egyik legjobb gimnáziumába. Azonban a kollégiumi díjak, étkezés és tanszerek hatalmas terhet rónak rá.</p><p>A gyűjtésből egy teljes tanévnyi költségét szeretnénk fedezni, hogy csak a tanulásra koncentrálhasson.</p>'
+      },
+      'csopaki-tabor': {
+        title: 'Csopaki nyári tábor 2027',
+        img: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        desc: '<p>Idén nyáron 50 hátrányos helyzetű gyermeket szeretnénk elvinni a Balatonhoz egy egyhetes élménytáborba.</p><p>A legtöbbjük még sosem látta a Balatont. A támogatás fedezi a szállást, a teljes ellátást és a szabadidős programokat.</p>'
+      },
+      'iskolakezdes': {
+        title: 'Tanszercsomagok 50 rászoruló diáknak',
+        img: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        desc: '<p>Óriási sikerrel zárult az őszi kampányunk! Köszönhetően a támogatóknak, 50 állami gondozásból kikerült, de továbbtanuló fiatal számára tudtunk biztosítani teljes iskolakezdési tanszercsomagot.</p><p>Ezzel a csomaggal esélyt kaptak arra, hogy ne induljanak hátrányból az osztálytársaikkal szemben.</p>'
+      },
+      'kozossegi-ter': {
+        title: 'Közösségi tér felújítása',
+        img: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        desc: '<p>A pesterzsébeti ifjúsági találkozópontunk végre új életre kelt! A közösségi finanszírozásból befolyt összegből sikerült szigetelni a tetőt, kicserélni az ablakokat, és beszerezni a szükséges bútorokat.</p><p>Most már télen-nyáron biztonságos és meleg menedéket nyújt a fiataloknak.</p>'
+      }
+    };
+
+    let currentProjectTitle = '';
+
+    openDetailsButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const projectId = btn.getAttribute('data-project-id');
+        const data = projectData[projectId];
+        if (data) {
+          detailsTitle.textContent = data.title;
+          detailsImg.src = data.img;
+          detailsDesc.innerHTML = data.desc;
+          currentProjectTitle = data.title;
+          detailsModal.classList.add('active');
+        }
+      });
+    });
+
+    const closeDetailsModal = () => { detailsModal.classList.remove('active'); };
+    if (detailsCloseButton) detailsCloseButton.addEventListener('click', closeDetailsModal);
+    detailsModal.addEventListener('click', (e) => {
+      if (e.target === detailsModal) closeDetailsModal();
+    });
+
+    if (toDonationBtn) {
+      toDonationBtn.addEventListener('click', () => {
+        closeDetailsModal();
+        const projectModal = document.getElementById('project-modal');
+        const modalProjectTitle = document.getElementById('modal-project-title');
+        if (projectModal && modalProjectTitle) {
+          modalProjectTitle.textContent = `${currentProjectTitle} - Támogatás`;
+          projectModal.classList.add('active');
+        }
+      });
+    }
+  }
 
   // --- Lightbox Gallery Logic ---
   const scatteredGallery = document.getElementById('scattered-gallery');
@@ -661,12 +358,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevBtn = lightboxModal.querySelector('.lightbox-prev');
     const nextBtn = lightboxModal.querySelector('.lightbox-next');
     
-    // Extract all image URLs from the scatter-cards
     const cards = scatteredGallery.querySelectorAll('.scatter-card');
     const images = Array.from(cards).map(card => {
-      // get the background-image url
       const bg = card.style.backgroundImage;
-      return bg.replace(/(url\(|\)|'|")/gi, ''); // clean url('...')
+      return bg.replace(/(url\(|\)|'|")/gi, '');
     });
     
     let currentIndex = 0;
@@ -676,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentIndex = index;
       lightboxImg.src = images[currentIndex];
       lightboxModal.style.display = 'block';
-      document.body.style.overflow = 'hidden'; // prevent scrolling
+      document.body.style.overflow = 'hidden';
     }
 
     function closeLightbox() {
@@ -688,38 +383,21 @@ document.addEventListener('DOMContentLoaded', () => {
       currentIndex += step;
       if (currentIndex >= images.length) currentIndex = 0;
       if (currentIndex < 0) currentIndex = images.length - 1;
-      
-      // Animate transition
       lightboxImg.style.animation = 'none';
-      lightboxImg.offsetHeight; // trigger reflow
+      lightboxImg.offsetHeight;
       lightboxImg.style.animation = 'zoomIn 0.3s ease';
-      
       lightboxImg.src = images[currentIndex];
     }
 
-    // Event listeners
     scatteredGallery.addEventListener('click', () => openLightbox(0));
-    
     closeBtn.addEventListener('click', closeLightbox);
+    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); changeSlide(1); });
+    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); changeSlide(-1); });
     
-    nextBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      changeSlide(1);
-    });
-    
-    prevBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      changeSlide(-1);
-    });
-    
-    // Close on background click
     lightboxModal.addEventListener('click', (e) => {
-      if (e.target === lightboxModal) {
-        closeLightbox();
-      }
+      if (e.target === lightboxModal) closeLightbox();
     });
     
-    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
       if (lightboxModal.style.display === 'block') {
         if (e.key === 'Escape') closeLightbox();
@@ -729,75 +407,54 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-
   // --- Auto-Peek Floating Buttons ---
   const floatingBtns = [
-    document.querySelector('.floating-housing-btn'),
     document.querySelector('.floating-projects-btn'),
+    document.querySelector('.floating-housing-btn'),
     document.querySelector('.floating-fecske-btn'),
     document.querySelector('.floating-bistro-btn')
   ].filter(btn => btn !== null);
 
   if (floatingBtns.length > 0) {
-    let peekIndex = 0;
-    
-    function triggerNextPeek() {
-      // Remove auto-peek from all
-      floatingBtns.forEach(btn => btn.classList.remove('auto-peek'));
-      
-      // If user is hovering any of them, don't auto-peek right now to avoid confusion
+    function runWave() {
       const isHovering = floatingBtns.some(btn => btn.matches(':hover'));
-      
-      if (!isHovering) {
-        // Add auto-peek to current
-        floatingBtns[peekIndex].classList.add('auto-peek');
-        
-        // Remove it after 2.5 seconds
+      if (isHovering) return;
+
+      floatingBtns.forEach((btn, index) => {
         setTimeout(() => {
-          floatingBtns[peekIndex].classList.remove('auto-peek');
-          peekIndex = (peekIndex + 1) % floatingBtns.length;
-        }, 2500);
-      } else {
-        peekIndex = (peekIndex + 1) % floatingBtns.length;
-      }
+          btn.classList.add('auto-peek');
+          setTimeout(() => {
+            btn.classList.remove('auto-peek');
+          }, 200);
+        }, index * 200);
+      });
     }
     
-    // Start peeking every 8 seconds
     setTimeout(() => {
-      setInterval(triggerNextPeek, 8000);
-      triggerNextPeek(); // First peek
-    }, 5000); // Initial delay before first peek
+      setInterval(runWave, 10000);
+      runWave();
+    }, 3000);
   }
 
-// --- Bistro Interactive Effects ---
-document.addEventListener('DOMContentLoaded', () => {
+  // --- Bistro Interactive Effects ---
   const bistroCard = document.getElementById('bistro-card');
   const effectsContainer = document.getElementById('bistro-effects-container');
   
   if (bistroCard && effectsContainer) {
-    // 1. Floating Mugs (similar to hearts)
     function createMug() {
       const mug = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       mug.setAttribute('viewBox', '0 0 512 512');
       mug.classList.add('floating-mug');
-      // Coffee mug SVG path
       mug.innerHTML = '<path d="M400 32H48C21.5 32 0 53.5 0 80v272c0 70.7 57.3 128 128 128h144c70.7 0 128-57.3 128-128v-32h16c61.9 0 112-50.1 112-112V144c0-61.9-50.1-112-112-112h-16zm16 176h-16v-96h16c26.5 0 48 21.5 48 48s-21.5 48-48 48z"/>';
-      
-      const size = Math.random() * 20 + 20; // 20px to 40px
+      const size = Math.random() * 20 + 20;
       mug.style.width = `${size}px`;
       mug.style.height = `${size}px`;
-      
-      // Random position from bottom
       const left = Math.random() * 100;
       mug.style.left = `${left}%`;
       mug.style.bottom = '-50px';
-      
-      // Random animation duration between 6s and 12s
       const duration = Math.random() * 6 + 6;
       mug.style.animationDuration = `${duration}s`;
-      
       effectsContainer.appendChild(mug);
-      
       setTimeout(() => {
         if (effectsContainer.contains(mug)) {
           effectsContainer.removeChild(mug);
@@ -805,41 +462,26 @@ document.addEventListener('DOMContentLoaded', () => {
       }, duration * 1000);
     }
     
-    // Spawn a mug every 1.5 seconds
     setInterval(createMug, 1500);
     
-    // 2. Star Sparkler on mousemove
     bistroCard.addEventListener('mousemove', (e) => {
-      // Throttle slightly
       if (Math.random() > 0.4) return;
-      
       const rect = bistroCard.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
       const star = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       star.setAttribute('viewBox', '0 0 576 512');
       star.classList.add('bistro-star');
-      // Star SVG path
       star.innerHTML = '<path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>';
-      
-      const size = Math.random() * 10 + 8; // 8px to 18px
+      const size = Math.random() * 10 + 8;
       star.style.width = `${size}px`;
       star.style.height = `${size}px`;
-      star.style.fill = '#ffd040'; // gold star
-      
-      // Center on mouse exactly
+      star.style.fill = '#ffd040';
       star.style.left = `${x - size/2}px`;
       star.style.top = `${y - size/2}px`;
-      
-      // Random throw direction
-      const tx = (Math.random() - 0.5) * 80;
-      const ty = (Math.random() - 0.5) * 80 + 30; // Tend to fall down a bit
-      star.style.setProperty('--tx', `${tx}px`);
-      star.style.setProperty('--ty', `${ty}px`);
-      
+      star.style.setProperty('--tx', `${(Math.random() - 0.5) * 80}px`);
+      star.style.setProperty('--ty', `${(Math.random() - 0.5) * 80 + 30}px`);
       effectsContainer.appendChild(star);
-      
       setTimeout(() => {
         if (effectsContainer.contains(star)) {
           effectsContainer.removeChild(star);
@@ -847,4 +489,5 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 800);
     });
   }
+
 });
