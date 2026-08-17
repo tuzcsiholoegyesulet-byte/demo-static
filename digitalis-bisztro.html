@@ -1066,17 +1066,17 @@
                 drop.className = 'extra-emoji extra-falling';
             }
             drop.style.position = 'absolute';
-            let offset = 48;
+            let offset = 40;
             if (name === 'Tejszínhab') {
-                offset = 48; // Always center the whipped cream
+                offset = 40; // True visual center accounting for emoji width (approx 10%)
             } else {
                 const cnt = drinkExtras.length;
-                if (cnt === 1) offset = 48;
-                else if (cnt === 2) offset = 40;
-                else if (cnt === 3) offset = 56;
-                else if (cnt === 4) offset = 32;
-                else if (cnt === 5) offset = 64;
-                else offset = 48 + (Math.random() * 32 - 16);
+                if (cnt === 1) offset = 40;      // Center
+                else if (cnt === 2) offset = 30; // Left
+                else if (cnt === 3) offset = 50; // Right
+                else if (cnt === 4) offset = 20; // Far left
+                else if (cnt === 5) offset = 60; // Far right
+                else offset = 40 + (Math.random() * 40 - 20);
             }
             
             drop.style.left = offset + '%';
