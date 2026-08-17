@@ -3708,7 +3708,7 @@ input[type="checkbox"], input[type="radio"] {
 @media (min-width: 1024px) {
   .cafe-tray {
     flex: 1;
-    margin-top: 0;
+    margin-top: 5.2rem; /* Fülek alatti vonal magasságához igazítva */
     margin-left: 0;
     margin-right: 0;
     position: sticky;
