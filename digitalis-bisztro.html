@@ -1060,7 +1060,11 @@
                if (catVis) targetZone = catVis;
             }
             
-            drop.className = 'extra-emoji extra-falling';
+            if (name === 'Tejszínhab') {
+                drop.className = 'extra-emoji extra-falling-top';
+            } else {
+                drop.className = 'extra-emoji extra-falling';
+            }
             drop.style.position = 'absolute';
             let offset = 50;
             const cnt = drinkExtras.length;
@@ -1077,8 +1081,13 @@
             targetZone.appendChild(drop);
             
             setTimeout(() => {
-                drop.classList.remove('extra-falling');
-                drop.classList.add('extra-settled');
+                if (name === 'Tejszínhab') {
+                    drop.classList.remove('extra-falling-top');
+                    drop.classList.add('extra-settled-top');
+                } else {
+                    drop.classList.remove('extra-falling');
+                    drop.classList.add('extra-settled');
+                }
             }, 500);
           }
           updateDrinkPrice();
