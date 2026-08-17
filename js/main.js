@@ -423,33 +423,30 @@ document.addEventListener('DOMContentLoaded', () => {
       // Alkalmazzuk a gyors transition-t minden gombra a hullám idejére (nyitás és csukás is gyors lesz)
       floatingBtns.forEach(btn => btn.classList.add('wave-fast-transition'));
 
-      // Első hullám
+      // 1. Hullám (Fentről lefelé, 0-500ms)
       floatingBtns.forEach((btn, index) => {
-        setTimeout(() => {
-          btn.classList.add('auto-peek');
-        }, index * 100);
-        
-        setTimeout(() => {
-          btn.classList.remove('auto-peek');
-        }, index * 100 + 100);
+        setTimeout(() => { btn.classList.add('auto-peek'); }, index * 100);
+        setTimeout(() => { btn.classList.remove('auto-peek'); }, index * 100 + 100);
       });
 
-      // Második hullám (500ms csúsztatással az első után)
+      // 2. Hullám (Lentről felfelé, 500-1000ms)
       floatingBtns.forEach((btn, index) => {
-        setTimeout(() => {
-          btn.classList.add('auto-peek');
-        }, 500 + index * 100);
-        
-        setTimeout(() => {
-          btn.classList.remove('auto-peek');
-        }, 500 + index * 100 + 100);
+        const reverseIndex = floatingBtns.length - 1 - index;
+        // Itt index a gomb eredeti sorszáma, reverseIndex pedig a fordított sorszám
+        setTimeout(() => { btn.classList.add('auto-peek'); }, 500 + reverseIndex * 100);
+        setTimeout(() => { btn.classList.remove('auto-peek'); }, 500 + reverseIndex * 100 + 100);
       });
 
-      // A hullámok végén levesszük a gyors transition class-t (visszaáll a normál hover 0.4s-re)
-      // Két hullám összesen kb 900ms alatt fut le, így 1000ms után biztosan biztonságos levenni.
+      // 3. Hullám (Fentről lefelé ismét, 1000-1500ms)
+      floatingBtns.forEach((btn, index) => {
+        setTimeout(() => { btn.classList.add('auto-peek'); }, 1000 + index * 100);
+        setTimeout(() => { btn.classList.remove('auto-peek'); }, 1000 + index * 100 + 100);
+      });
+
+      // A 3 hullám összesen 1500ms alatt fut le, így 1600ms után biztonságosan levehetjük a gyors transition-t.
       setTimeout(() => {
         floatingBtns.forEach(btn => btn.classList.remove('wave-fast-transition'));
-      }, 1000);
+      }, 1600);
     }
     
     setTimeout(() => {
