@@ -420,14 +420,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const isHovering = floatingBtns.some(btn => btn.matches(':hover'));
       if (isHovering) return;
 
+      // Alkalmazzuk a gyors transition-t minden gombra a hullám idejére (nyitás és csukás is gyors lesz)
+      floatingBtns.forEach(btn => btn.classList.add('wave-fast-transition'));
+
       floatingBtns.forEach((btn, index) => {
+        // Nyitás időzítése (pontosan azonos baseline-hoz viszonyítva)
         setTimeout(() => {
           btn.classList.add('auto-peek');
-          setTimeout(() => {
-            btn.classList.remove('auto-peek');
-          }, 200);
         }, index * 200);
+        
+        // Csukás időzítése (pontosan 200ms múlva azután, hogy nyílni kezdett)
+        setTimeout(() => {
+          btn.classList.remove('auto-peek');
+        }, index * 200 + 200);
       });
+
+      // A hullám végén levesszük a gyors transition class-t (visszaáll a normál hover 0.4s-re)
+      setTimeout(() => {
+        floatingBtns.forEach(btn => btn.classList.remove('wave-fast-transition'));
+      }, floatingBtns.length * 200 + 200);
     }
     
     setTimeout(() => {
