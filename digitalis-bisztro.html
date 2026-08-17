@@ -632,6 +632,16 @@
              selfName = ownNameInput.value.trim();
           }
           
+          // Determine valid tabs
+          const validTabs = [];
+          if (shareMode === 'share') validTabs.push('common');
+          if (shareMode === 'none' || shareMode === 'share') validTabs.push('self');
+          if (shareMode !== 'none') targetEmails.forEach(t => validTabs.push(t.id));
+          
+          if (!validTabs.includes(activeTab)) {
+             activeTab = validTabs.length > 0 ? validTabs[0] : null;
+          }
+
           // Render Tabs
           tabsContainer.innerHTML = '';
           const createTab = (id, label) => {
@@ -643,27 +653,16 @@
             if(!trays[id]) trays[id] = [];
           };
           
-          createTab('common', 'Közös kör');
-          if (shareMode === 'none' || shareMode === 'share') {
-             createTab('self', selfName);
-          }
-          if (shareMode !== 'none') {
-             targetEmails.forEach(t => {
-               createTab(t.id, t.name || t.email.split('@')[0]);
-             });
-          }
-          
-          // Ensure activeTab is valid
-          if (!trays[activeTab] || (activeTab === 'self' && shareMode === 'gift')) {
-             activeTab = 'common';
-          }
+          if (validTabs.includes('common')) createTab('common', 'Közös kör');
+          if (validTabs.includes('self')) createTab('self', selfName);
+          targetEmails.forEach(t => {
+             if (validTabs.includes(t.id)) createTab(t.id, t.name || t.email.split('@')[0]);
+          });
           
           // Render Tray Items (Grouped by Name)
           trayItems.innerHTML = '';
           
-          const activeTrayIds = ['common'];
-          if (shareMode !== 'none') targetEmails.forEach(t => activeTrayIds.push(t.id));
-          if (shareMode === 'none' || shareMode === 'share') activeTrayIds.push('self');
+          const activeTrayIds = validTabs;
           
           activeTrayIds.forEach(trayId => {
              const trayData = trays[trayId] || [];
