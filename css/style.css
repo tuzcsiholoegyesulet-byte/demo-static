@@ -3597,7 +3597,7 @@ input[type="checkbox"], input[type="radio"] {
   border-radius: 24px;
   padding: 3rem 2rem;
   box-shadow: 0 15px 35px rgba(62, 39, 35, 0.4), 0 5px 15px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
+  overflow: clip;
   border: 2px solid rgba(243, 156, 18, 0.4);
   transition: transform 0.3s ease;
   z-index: 1;
