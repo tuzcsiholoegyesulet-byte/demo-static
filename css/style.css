@@ -2801,13 +2801,13 @@ body.bistro-theme .floating-bistro-btn {
 }
 .app-grid.in-app .app-card {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  width: 250px;
-  height: 50px;
-  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+  width: 160px;
+  min-height: 160px;
+  padding: 1rem;
   text-align: center;
   flex: none;
   background: #f4ece4;
@@ -2824,13 +2824,14 @@ body.bistro-theme .floating-bistro-btn {
   border-color: #f39c12;
 }
 .app-grid.in-app .app-icon {
-  font-size: 1rem;
-  margin-bottom: 0;
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
 }
 .app-grid.in-app .app-title {
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.2;
 }
 .app-grid.in-app .app-desc, 
 .app-grid.in-app .app-btn {
