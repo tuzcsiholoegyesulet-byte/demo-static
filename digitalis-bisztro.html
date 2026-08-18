@@ -905,11 +905,10 @@
         const btnPrepareDrink = document.getElementById('btn-prepare-drink');
         const extraDropZone = document.getElementById('extra-drop-zone');
 
-        // Helper to hide all apps
         function hideAllApps() {
           if (barApp) barApp.classList.add('hidden');
           if (typeof cakeCounterApp !== 'undefined' && cakeCounterApp) cakeCounterApp.classList.add('hidden');
-          // Add others here if they exist
+          if (typeof toastApp !== 'undefined' && toastApp) toastApp.classList.add('hidden');
           document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
         }
 
@@ -1261,14 +1260,16 @@
         let toastIcon = '🥂';
 
         window.openToastApp = function() {
-          appGrid.classList.add('hidden');
+          hideAllApps();
+          appGrid.classList.add('in-app');
           toastApp.classList.remove('hidden');
+          document.querySelectorAll('.app-card')[3].classList.add('active');
           resetToastApp();
         };
 
         window.closeToastApp = function() {
-          toastApp.classList.add('hidden');
-          appGrid.classList.remove('hidden');
+          hideAllApps();
+          appGrid.classList.remove('in-app');
         };
 
         window.selectToastDrink = function(name, price, icon, btnEl) {
