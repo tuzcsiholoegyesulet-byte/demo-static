@@ -536,12 +536,12 @@
               <div class="app-title">Sütis pult</div>
               <div class="app-desc">Válogass finom süteményeink közül.</div>
             </a>
-            <a href="#" class="app-card" onclick="openBirthdayCake(); return false;">
+            <a href="szulinapi-torta.html" class="app-card">
               <div class="app-icon">🎂</div>
               <div class="app-title">Szülinapi Torta</div>
               <div class="app-desc">Állíts össze egy ünnepi tortát.</div>
             </a>
-            <a href="#" class="app-card" onclick="openToastApp(); return false;">
+            <a href="nevnapi-koccintas.html" class="app-card">
               <div class="app-icon">🥂</div>
               <div class="app-title">Névnapi koccintás</div>
               <div class="app-desc">Koccints velünk egy jeles napon!</div>
@@ -873,7 +873,6 @@
           appGrid.classList.add('in-app');
           if(cakeCounterApp) cakeCounterApp.classList.remove('hidden');
           document.querySelectorAll('.app-card')[1].classList.add('active');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.closeCakeCounter = function() {
@@ -923,7 +922,6 @@
           appGrid.classList.add('in-app');
           barApp.classList.remove('hidden');
           document.querySelectorAll('.app-card')[0].classList.add('active');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
           resetBarApp();
         };
 
