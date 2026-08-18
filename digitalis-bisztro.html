@@ -880,12 +880,7 @@
         };
         
         // Stubs for other apps
-        window.openBirthdayCake = function() {
-          hideAllApps();
-          appGrid.classList.add('in-app');
-          document.querySelectorAll('.app-card')[2].classList.add('active');
-          alert("Ez a modul hamarosan érkezik!");
-        }
+
         window.openToastApp = function() {
           hideAllApps();
           appGrid.classList.add('in-app');
@@ -909,6 +904,7 @@
           if (barApp) barApp.classList.add('hidden');
           if (typeof cakeCounterApp !== 'undefined' && cakeCounterApp) cakeCounterApp.classList.add('hidden');
           if (typeof toastApp !== 'undefined' && toastApp) toastApp.classList.add('hidden');
+          if (typeof birthdayCakeApp !== 'undefined' && birthdayCakeApp) birthdayCakeApp.classList.add('hidden');
           document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
         }
 
@@ -1185,14 +1181,16 @@
         let bCakePrice = 1000;
 
         window.openBirthdayCake = function() {
-          appGrid.classList.add('hidden');
+          hideAllApps();
+          appGrid.classList.add('in-app');
           birthdayCakeApp.classList.remove('hidden');
+          document.querySelectorAll('.app-card')[2].classList.add('active');
           resetBirthdayCake();
         };
 
         window.closeBirthdayCake = function() {
-          birthdayCakeApp.classList.add('hidden');
-          appGrid.classList.remove('hidden');
+          hideAllApps();
+          appGrid.classList.remove('in-app');
         };
 
         window.selectCakeFlavor = function(name, price, color, btnEl) {
