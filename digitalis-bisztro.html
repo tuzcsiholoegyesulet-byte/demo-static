@@ -382,9 +382,10 @@
             </div>
           </div>
           <!-- Sütis Pult App -->
-          <div id="cake-counter-app" class="cake-counter-app hidden">
-            <button class="btn-back" onclick="closeCakeCounter()">&#8592; Vissza a Főmenübe</button>
-            <div class="builder-section-title">Válassz a vitrinből! 🍰</div>
+          <div id="cake-counter-app" class="hidden" style="display: flex; flex-direction: column;">
+            <button class="btn-back" onclick="closeCakeCounter()" style="margin-bottom: 1rem; align-self: flex-start;">&#8592; Vissza a Főmenübe</button>
+            <div class="cake-counter-app" style="margin: 0; width: 100%; box-sizing: border-box;">
+              <div class="builder-section-title">Válassz a vitrinből! 🍰</div>
             <p style="color: #5d4037; font-size: 0.95rem;">Kattints egy süteményre, és az máris a tálcádra kerül!</p>
             <div class="cake-grid">
 
@@ -444,15 +445,16 @@
                 <div class="cake-price">300 Ft</div>
               </button>
             </div>
+            </div>
           </div>
 
           
           <!-- Szülinapi Torta App -->
-          <div id="birthday-cake-app" class="birthday-cake-app hidden">
-            <button class="btn-back" onclick="closeBirthdayCake()" style="margin-bottom: 1rem;">&#8592; Vissza a Főmenübe</button>
-            <div class="builder-panel">
-              
-              <div class="builder-section-title">1. Torta íze (Színe)</div>
+          <div id="birthday-cake-app" class="hidden" style="display: flex; flex-direction: column;">
+            <button class="btn-back" onclick="closeBirthdayCake()" style="margin-bottom: 1rem; align-self: flex-start;">&#8592; Vissza a Főmenübe</button>
+            <div class="birthday-cake-app" style="margin: 0; width: 100%; box-sizing: border-box;">
+              <div class="builder-panel">
+                <div class="builder-section-title">1. Torta íze (Színe)</div>
               <div class="btn-group" id="cake-flavor-options">
                 <button class="btn-select active" onclick="selectCakeFlavor('Csokoládé', 1000, '#e67e22', this)">Csokoládé <small>1000 Ft</small></button>
                 <button class="btn-select" onclick="selectCakeFlavor('Eper', 1000, '#e84393', this)">Eper <small>1000 Ft</small></button>
@@ -488,15 +490,16 @@
                 </div>
               </div>
             </div>
+            </div>
           </div>
 
           
           <!-- Toast App -->
-          <div id="toast-app" class="toast-app hidden">
-            <button class="btn-back" onclick="closeToastApp()" style="margin-bottom: 1rem;">&#8592; Vissza a Főmenübe</button>
-            <div class="builder-panel">
-              
-              <div class="builder-section-title">1. Mivel koccintotok?</div>
+          <div id="toast-app" class="hidden" style="display: flex; flex-direction: column;">
+            <button class="btn-back" onclick="closeToastApp()" style="margin-bottom: 1rem; align-self: flex-start;">&#8592; Vissza a Főmenübe</button>
+            <div class="toast-app" style="margin: 0; width: 100%; box-sizing: border-box;">
+              <div class="builder-panel">
+                <div class="builder-section-title">1. Mivel koccintotok?</div>
               <div class="btn-group" id="toast-drink-options">
                 <button class="btn-select active" onclick="selectToastDrink('Pezsgő', 500, '🥂', this)">Pezsgő <small>500 Ft</small></button>
                 <button class="btn-select" onclick="selectToastDrink('Vörösbor', 500, '🍷', this)">Vörösbor <small>500 Ft</small></button>
@@ -522,6 +525,7 @@
                 <div class="glass right" id="glass-right">🥂</div>
                 <div class="confetti-container" id="confetti-container"></div>
               </div>
+            </div>
             </div>
           </div>
 
