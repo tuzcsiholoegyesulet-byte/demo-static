@@ -100,7 +100,10 @@
         <div id="bistro-card" class="bistro-card-spectacular">
           <div id="bistro-effects-container"></div>
           <div style="position: relative; z-index: 1;">
-            <h2>Kinek szeretnéd a rendelést?</h2>
+            <div style="display: flex; gap: 3rem; flex-wrap: wrap;">
+              <!-- Left Form -->
+              <div style="flex: 1; min-width: 300px;">
+                <h2>Kinek szeretnéd a rendelést?</h2>
             
             <div style="margin-bottom: 2rem;">
               <label for="own-email" style="display:block; font-weight:700; margin-bottom:0.5rem; color:#f4ece4;">Saját email címed (ide küldjük a visszaigazolást): <span style="color:red">*</span></label>
@@ -141,6 +144,18 @@
               </div>
               <div id="tray-notice" class="tray-notice" style="color:red; font-size:0.9rem;">Kérjük, adj meg legalább 1 e-mail címet!</div>
               <div id="target-emails-list" class="email-tags"></div>
+            </div>
+              </div>
+              
+              <!-- Right Slideshow -->
+              <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center;">
+                <div class="bistro-slideshow" onclick="openLightbox()">
+                   <img src="images/digitalis-bisztro/bistro-slide-1.png" class="slide active" alt="Digitális Bisztró Életkép 1">
+                   <img src="images/digitalis-bisztro/bistro-slide-2.png" class="slide" alt="Digitális Bisztró Életkép 2">
+                   <img src="images/digitalis-bisztro/bistro-slide-3.png" class="slide" alt="Digitális Bisztró Életkép 3">
+                </div>
+                <div style="text-align: center; font-size: 0.9rem; color: #a67c52; margin-top: 0.5rem; font-style: italic;">Kattints a képre a nagyításhoz!</div>
+              </div>
             </div>
           </div>
           <div class="cafe-layout">
@@ -1324,7 +1339,41 @@
           btnCheers.disabled = false;
         }
 
-      });
+      }
+
+      // Slideshow Auto-play
+      let currentSlide = 0;
+      const slides = document.querySelectorAll('.bistro-slideshow .slide');
+      if (slides.length > 0) {
+        setInterval(() => {
+          slides[currentSlide].classList.remove('active');
+          currentSlide = (currentSlide + 1) % slides.length;
+          slides[currentSlide].classList.add('active');
+        }, 4000);
+      }
+
+      // Lightbox Logic
+      let lightboxIndex = 0;
+      function openLightbox() {
+        document.getElementById('bistro-lightbox').classList.add('active');
+        lightboxIndex = currentSlide;
+        updateLightbox();
+      }
+      function closeLightbox() {
+        document.getElementById('bistro-lightbox').classList.remove('active');
+      }
+      function changeLightbox(step) {
+        // Stop event propagation to prevent modal closing if clicked on arrows
+        if (event) event.stopPropagation();
+        lightboxIndex = (lightboxIndex + step + slides.length) % slides.length;
+        updateLightbox();
+      }
+      function updateLightbox() {
+        const lightboxImg = document.getElementById('lightbox-img');
+        if (lightboxImg && slides.length > 0) {
+            lightboxImg.src = slides[lightboxIndex].src;
+        }
+      }
     </script>
   
     <section class="section section-dark">
@@ -1432,6 +1481,16 @@
     <span class="text">Digitális Bisztró</span>
     <svg viewBox="0 0 512 512" class="bistro-icon"><path d="M400 192V144c0-26.5-21.5-48-48-48H64c-26.5 0-48 21.5-48 48v224c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48v-48h28c46.4 0 84-37.6 84-84s-37.6-84-84-84h-28zm-28 176H64V144h288v224zm28-48h-28v-80h28c22.1 0 40 17.9 40 40s-17.9 40-40 40zM35.6 480C14 473.1 0 453.6 0 432c0-8.8 7.2-16 16-16h384c8.8 0 16 7.2 16 16 0 21.6-14 41.1-35.6 48-20.9 6.7-43.2 10-66.4 10H102c-23.2 0-45.5-3.3-66.4-10z"/></svg>
   </a>
+
+  <!-- Lightbox Modal -->
+  <div id="bistro-lightbox" class="lightbox-modal" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">×</button>
+    <button class="lightbox-nav lightbox-prev" onclick="changeLightbox(-1)">&#10094;</button>
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <img id="lightbox-img" src="" alt="Bistro Image">
+    </div>
+    <button class="lightbox-nav lightbox-next" onclick="changeLightbox(1)">&#10095;</button>
+  </div>
 
   <!-- Scroll to Top Button -->
   <a href="#" class="scroll-to-top" id="scrollToTop" aria-label="Ugrás az oldal tetejére">
