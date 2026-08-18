@@ -536,12 +536,12 @@
               <div class="app-title">Sütis pult</div>
               <div class="app-desc">Válogass finom süteményeink közül.</div>
             </a>
-            <a href="szulinapi-torta.html" class="app-card">
+            <a href="#" class="app-card" onclick="openBirthdayCake(); return false;">
               <div class="app-icon">🎂</div>
               <div class="app-title">Szülinapi Torta</div>
               <div class="app-desc">Állíts össze egy ünnepi tortát.</div>
             </a>
-            <a href="nevnapi-koccintas.html" class="app-card">
+            <a href="#" class="app-card" onclick="openToastApp(); return false;">
               <div class="app-icon">🥂</div>
               <div class="app-title">Névnapi koccintás</div>
               <div class="app-desc">Koccints velünk egy jeles napon!</div>
@@ -869,7 +869,6 @@
         
         window.openCakeCounter = function() {
           hideAllApps();
-          appGrid.classList.remove('hidden');
           appGrid.classList.add('in-app');
           if(cakeCounterApp) cakeCounterApp.classList.remove('hidden');
           document.querySelectorAll('.app-card')[1].classList.add('active');
@@ -883,10 +882,8 @@
         // Stubs for other apps
         window.openBirthdayCake = function() {
           hideAllApps();
-          appGrid.classList.remove('hidden');
           appGrid.classList.add('in-app');
           document.querySelectorAll('.app-card')[2].classList.add('active');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
           alert("Ez a modul hamarosan érkezik!");
         }
         window.openToastApp = function() {
@@ -912,13 +909,12 @@
         function hideAllApps() {
           if (barApp) barApp.classList.add('hidden');
           if (typeof cakeCounterApp !== 'undefined' && cakeCounterApp) cakeCounterApp.classList.add('hidden');
-          if (typeof toastApp !== 'undefined' && toastApp) toastApp.classList.add('hidden');
+          // Add others here if they exist
           document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
         }
 
         window.openBarApp = function() {
           hideAllApps();
-          appGrid.classList.remove('hidden');
           appGrid.classList.add('in-app');
           barApp.classList.remove('hidden');
           document.querySelectorAll('.app-card')[0].classList.add('active');
@@ -1265,18 +1261,14 @@
         let toastIcon = '🥂';
 
         window.openToastApp = function() {
-          hideAllApps();
-          appGrid.classList.remove('hidden');
-          appGrid.classList.add('in-app');
-          if(toastApp) toastApp.classList.remove('hidden');
-          document.querySelectorAll('.app-card')[3].classList.add('active');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          appGrid.classList.add('hidden');
+          toastApp.classList.remove('hidden');
           resetToastApp();
         };
 
         window.closeToastApp = function() {
-          hideAllApps();
-          appGrid.classList.remove('in-app');
+          toastApp.classList.add('hidden');
+          appGrid.classList.remove('hidden');
         };
 
         window.selectToastDrink = function(name, price, icon, btnEl) {
