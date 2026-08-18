@@ -2810,16 +2810,18 @@ body.bistro-theme .floating-bistro-btn {
   padding: 0.5rem 1rem;
   text-align: center;
   flex: none;
-  background: white;
-  border: 2px solid #bdc3c7;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  background: #f4ece4;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(62, 39, 35, 0.08);
 }
 .app-grid.in-app .app-card.active {
   display: none !important;
 }
 .app-grid.in-app .app-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(62, 39, 35, 0.15);
+  border-color: #f39c12;
 }
 .app-grid.in-app .app-icon {
   font-size: 1rem;
