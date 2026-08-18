@@ -1335,8 +1335,6 @@
           btnCheers.disabled = false;
         }
 
-      }
-
       // Slideshow Auto-play
       let currentSlide = 0;
       const slides = document.querySelectorAll('.bistro-slideshow .slide');
@@ -1349,27 +1347,29 @@
       }
 
       // Lightbox Logic
-      let lightboxIndex = 0;
-      function openLightbox() {
+      window.lightboxIndex = 0;
+      window.openLightbox = function() {
         document.getElementById('bistro-lightbox').classList.add('active');
-        lightboxIndex = currentSlide;
-        updateLightbox();
+        window.lightboxIndex = currentSlide;
+        window.updateLightbox();
       }
-      function closeLightbox() {
+      window.closeLightbox = function() {
         document.getElementById('bistro-lightbox').classList.remove('active');
       }
-      function changeLightbox(step) {
+      window.changeLightbox = function(step) {
         // Stop event propagation to prevent modal closing if clicked on arrows
         if (event) event.stopPropagation();
-        lightboxIndex = (lightboxIndex + step + slides.length) % slides.length;
-        updateLightbox();
+        window.lightboxIndex = (window.lightboxIndex + step + slides.length) % slides.length;
+        window.updateLightbox();
       }
-      function updateLightbox() {
+      window.updateLightbox = function() {
         const lightboxImg = document.getElementById('lightbox-img');
         if (lightboxImg && slides.length > 0) {
-            lightboxImg.src = slides[lightboxIndex].src;
+            lightboxImg.src = slides[window.lightboxIndex].src;
         }
       }
+
+      });
     </script>
   
     <section class="section section-dark">
