@@ -3930,11 +3930,22 @@ input[type="checkbox"], input[type="radio"] {
   color: var(--color-dark-blue);
 }
 
-/* --- White Banner Variant --- */
-.tax-banner.tax-banner-white {
-  background-color: var(--color-white);
+/* --- Gradient Banner Variant (Homepage) --- */
+.tax-banner.tax-banner-gradient {
+  background: 
+    radial-gradient(ellipse at 15% 50%, rgba(206, 52, 63, 0.8) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 50%, rgba(19, 137, 136, 0.8) 0%, transparent 60%),
+    var(--color-dark-blue);
+  background-size: cover;
 }
 
-.tax-banner.tax-banner-white .container {
-  color: var(--color-dark-blue);
+.tax-banner.tax-banner-gradient .container {
+  color: var(--color-white);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+.tax-banner.tax-banner-gradient strong,
+.tax-banner.tax-banner-gradient .tax-link {
+  color: var(--color-white);
+  text-decoration-color: var(--color-white);
 }
