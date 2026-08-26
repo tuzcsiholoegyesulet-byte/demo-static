@@ -612,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, scrollObserverOptions);
 
   // Auto-apply animation classes to grid children
-  const gridsToAnimate = document.querySelectorAll('.news-grid, .card-grid, .info-cards-grid, .contact-grid, .donation-grid, .team-grid, .product-grid, .cake-grid, .values-grid, .impact-grid');
+  const gridsToAnimate = document.querySelectorAll('.news-grid, .card-grid, .info-cards-grid, .contact-grid, .team-grid, .product-grid, .cake-grid, .values-grid, .impact-grid');
   gridsToAnimate.forEach(grid => {
     const children = Array.from(grid.children);
     children.forEach((child, index) => {
