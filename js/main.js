@@ -595,4 +595,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // --- Scroll Animations ---
+  const scrollObserverOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.15
+  };
+
+  const scrollObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, scrollObserverOptions);
+
+  // Auto-apply animation classes to grid children
+  const gridsToAnimate = document.querySelectorAll('.news-grid, .card-grid');
+  gridsToAnimate.forEach(grid => {
+    const children = Array.from(grid.children);
+    children.forEach((child, index) => {
+      child.classList.add('scroll-animate');
+      if (index % 3 === 0) {
+        child.classList.add('slide-left');
+      } else if (index % 3 === 2) {
+        child.classList.add('slide-right');
+      } else {
+        child.classList.add('slide-up');
+      }
+      child.style.transitionDelay = `${(index % 3) * 0.15}s`;
+      scrollObserver.observe(child);
+    });
+  });
+
 });
