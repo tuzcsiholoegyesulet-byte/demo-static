@@ -3929,3 +3929,12 @@ input[type="checkbox"], input[type="radio"] {
 .tax-banner.tax-banner-translucent .tax-link {
   color: var(--color-dark-blue);
 }
+
+/* --- White Banner Variant --- */
+.tax-banner.tax-banner-white {
+  background-color: var(--color-white);
+}
+
+.tax-banner.tax-banner-white .container {
+  color: var(--color-dark-blue);
+}
