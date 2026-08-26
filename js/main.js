@@ -570,4 +570,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // --- Interactive Cosmic Banner Logic ---
+  const cosmicBanner = document.querySelector('.tax-banner-gradient');
+  if (cosmicBanner) {
+    cosmicBanner.addEventListener('mousemove', (e) => {
+      const rect = cosmicBanner.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      cosmicBanner.style.setProperty('--mouse-x', `${x}%`);
+      cosmicBanner.style.setProperty('--mouse-y', `${y}%`);
+    });
+  }
+
 });

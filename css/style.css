@@ -3932,7 +3932,10 @@ input[type="checkbox"], input[type="radio"] {
 
 /* --- Cosmic Nebula Gradient Banner Variant (Homepage) --- */
 .tax-banner.tax-banner-gradient {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
   background: 
+    radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.2) 0%, rgba(19, 137, 136, 0.9) 20%, transparent 50%), /* Interactive Spot */
     radial-gradient(circle at 15% 30%, rgba(206, 52, 63, 0.6) 0%, transparent 60%),       /* Brand Red */
     radial-gradient(circle at 85% 70%, rgba(19, 137, 136, 0.6) 0%, transparent 60%),      /* Brand Teal */
     radial-gradient(circle at 50% 50%, rgba(206, 52, 63, 0.3) 0%, transparent 70%),       /* Soft Red */
