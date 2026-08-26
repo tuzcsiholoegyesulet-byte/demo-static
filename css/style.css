@@ -3824,11 +3824,28 @@ input[type="checkbox"], input[type="radio"] {
 .tax-banner {
   width: 100%;
   padding: 12px 20px;
-  background-color: var(--color-dark-blue);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
   position: relative;
   z-index: 20;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  background: 
+    radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.2) 0%, rgba(19, 137, 136, 0.9) 20%, transparent 50%), /* Interactive Spot */
+    radial-gradient(circle at 15% 30%, rgba(206, 52, 63, 0.6) 0%, transparent 60%),       /* Brand Red */
+    radial-gradient(circle at 85% 70%, rgba(19, 137, 136, 0.6) 0%, transparent 60%),      /* Brand Teal */
+    radial-gradient(circle at 50% 50%, rgba(206, 52, 63, 0.3) 0%, transparent 70%),       /* Soft Red */
+    radial-gradient(circle at 80% 20%, rgba(20, 60, 110, 0.7) 0%, transparent 60%),       /* Lighter Blue */
+    radial-gradient(circle at 20% 80%, rgba(150, 30, 40, 0.6) 0%, transparent 60%),       /* Darker Red */
+    var(--color-dark-blue); /* Base Brand Dark Blue */
+  background-size: 200% 200%;
+  animation: cosmicClouds 15s ease infinite alternate;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+@keyframes cosmicClouds {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 100%; }
 }
 
 .tax-banner .container {
@@ -3840,16 +3857,18 @@ input[type="checkbox"], input[type="radio"] {
   font-size: 1.05rem;
   color: var(--color-white);
   font-weight: 500;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 .tax-banner strong {
-  color: var(--color-teal);
+  color: var(--color-white);
   letter-spacing: 1px;
 }
 
 .tax-banner .tax-link {
-  color: var(--color-teal);
+  color: var(--color-white);
   text-decoration: underline;
+  text-decoration-color: var(--color-white);
   text-underline-offset: 3px;
   font-weight: 700;
   transition: opacity 0.3s ease;
@@ -3918,48 +3937,4 @@ input[type="checkbox"], input[type="radio"] {
   text-align: center;
 }
 
-/* --- Translucent Banner Variant --- */
-.tax-banner.tax-banner-translucent {
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
 
-.tax-banner.tax-banner-translucent strong,
-.tax-banner.tax-banner-translucent .tax-link {
-  color: var(--color-dark-blue);
-}
-
-/* --- Cosmic Nebula Gradient Banner Variant (Homepage) --- */
-.tax-banner.tax-banner-gradient {
-  --mouse-x: 50%;
-  --mouse-y: 50%;
-  background: 
-    radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.2) 0%, rgba(19, 137, 136, 0.9) 20%, transparent 50%), /* Interactive Spot */
-    radial-gradient(circle at 15% 30%, rgba(206, 52, 63, 0.6) 0%, transparent 60%),       /* Brand Red */
-    radial-gradient(circle at 85% 70%, rgba(19, 137, 136, 0.6) 0%, transparent 60%),      /* Brand Teal */
-    radial-gradient(circle at 50% 50%, rgba(206, 52, 63, 0.3) 0%, transparent 70%),       /* Soft Red */
-    radial-gradient(circle at 80% 20%, rgba(20, 60, 110, 0.7) 0%, transparent 60%),       /* Lighter Blue */
-    radial-gradient(circle at 20% 80%, rgba(150, 30, 40, 0.6) 0%, transparent 60%),       /* Darker Red */
-    var(--color-dark-blue); /* Base Brand Dark Blue */
-  background-size: 200% 200%;
-  animation: cosmicClouds 15s ease infinite alternate;
-  border-bottom: none;
-}
-
-@keyframes cosmicClouds {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 100%; }
-  100% { background-position: 0% 100%; }
-}
-
-.tax-banner.tax-banner-gradient .container {
-  color: var(--color-white);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-}
-
-.tax-banner.tax-banner-gradient strong,
-.tax-banner.tax-banner-gradient .tax-link {
-  color: var(--color-white);
-  text-decoration-color: var(--color-white);
-}
