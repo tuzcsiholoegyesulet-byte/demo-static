@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         child.classList.add('slide-up');
       }
-      child.style.transitionDelay = `${(index % 3) * 0.15}s`;
+      child.style.transitionDelay = `${(index % 3) * 0.3}s`;
       scrollObserver.observe(child);
     });
   });
