@@ -573,6 +573,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Interactive Cosmic Banner Logic ---
   const cosmicBanners = document.querySelectorAll('.tax-banner');
   cosmicBanners.forEach(banner => {
+    
+    // Add floating logos
+    for (let i = 0; i < 3; i++) {
+      const logo = document.createElement('img');
+      logo.src = 'images/global/Logo_BEZS_emblema.png';
+      logo.className = 'tax-banner-floating-logo';
+      logo.style.left = `${Math.random() * 80 + 10}%`; // Keep them mostly inside
+      logo.style.top = `${Math.random() * 80 - 20}%`; 
+      logo.style.animationDuration = `${8 + Math.random() * 10}s`;
+      logo.style.animationDelay = `-${Math.random() * 5}s`;
+      banner.appendChild(logo);
+    }
+
     banner.addEventListener('mousemove', (e) => {
       const rect = banner.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 100;
