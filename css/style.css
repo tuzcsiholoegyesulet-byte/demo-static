@@ -3824,7 +3824,7 @@ input[type="checkbox"], input[type="radio"] {
 .tax-banner {
   width: 100%;
   padding: 12px 20px;
-  background-color: var(--color-white);
+  background-color: var(--color-dark-blue);
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
   position: relative;
   z-index: 20;
@@ -3838,7 +3838,7 @@ input[type="checkbox"], input[type="radio"] {
   flex-wrap: wrap;
   gap: 10px;
   font-size: 1.05rem;
-  color: var(--color-dark-blue);
+  color: var(--color-white);
   font-weight: 500;
 }
 
