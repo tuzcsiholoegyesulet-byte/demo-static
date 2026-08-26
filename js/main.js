@@ -629,4 +629,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Auto-apply animation to team member rows (image left, info right)
+  const teamRows = document.querySelectorAll('.team-member-row');
+  teamRows.forEach(row => {
+    const leftPart = row.querySelector('.team-member-left');
+    const rightPart = row.querySelector('.team-info');
+    
+    if (leftPart) {
+      leftPart.classList.add('scroll-animate', 'slide-left');
+      scrollObserver.observe(leftPart);
+    }
+    
+    if (rightPart) {
+      rightPart.classList.add('scroll-animate', 'slide-right');
+      rightPart.style.transitionDelay = '0.3s';
+      scrollObserver.observe(rightPart);
+    }
+  });
+
 });
