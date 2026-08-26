@@ -3933,12 +3933,12 @@ input[type="checkbox"], input[type="radio"] {
 /* --- Cosmic Nebula Gradient Banner Variant (Homepage) --- */
 .tax-banner.tax-banner-gradient {
   background: 
-    radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.7) 0%, transparent 60%),
-    radial-gradient(circle at 80% 80%, rgba(255, 20, 147, 0.6) 0%, transparent 60%),
-    radial-gradient(circle at 40% 70%, rgba(19, 137, 136, 0.7) 0%, transparent 60%),
-    radial-gradient(circle at 90% 10%, rgba(206, 52, 63, 0.6) 0%, transparent 60%),
-    radial-gradient(circle at 50% 30%, rgba(0, 191, 255, 0.5) 0%, transparent 60%),
-    #050b14; /* Deep space dark blue */
+    radial-gradient(circle at 15% 30%, rgba(206, 52, 63, 0.6) 0%, transparent 60%),       /* Brand Red */
+    radial-gradient(circle at 85% 70%, rgba(19, 137, 136, 0.6) 0%, transparent 60%),      /* Brand Teal */
+    radial-gradient(circle at 50% 50%, rgba(206, 52, 63, 0.3) 0%, transparent 70%),       /* Soft Red */
+    radial-gradient(circle at 80% 20%, rgba(20, 60, 110, 0.7) 0%, transparent 60%),       /* Lighter Blue */
+    radial-gradient(circle at 20% 80%, rgba(150, 30, 40, 0.6) 0%, transparent 60%),       /* Darker Red */
+    var(--color-dark-blue); /* Base Brand Dark Blue */
   background-size: 200% 200%;
   animation: cosmicClouds 15s ease infinite alternate;
   border-bottom: none;
