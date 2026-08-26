@@ -3930,13 +3930,24 @@ input[type="checkbox"], input[type="radio"] {
   color: var(--color-dark-blue);
 }
 
-/* --- Gradient Banner Variant (Homepage) --- */
+/* --- Cosmic Nebula Gradient Banner Variant (Homepage) --- */
 .tax-banner.tax-banner-gradient {
   background: 
-    radial-gradient(ellipse at 15% 50%, rgba(206, 52, 63, 0.8) 0%, transparent 60%),
-    radial-gradient(ellipse at 85% 50%, rgba(19, 137, 136, 0.8) 0%, transparent 60%),
-    var(--color-dark-blue);
-  background-size: cover;
+    radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.7) 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(255, 20, 147, 0.6) 0%, transparent 60%),
+    radial-gradient(circle at 40% 70%, rgba(19, 137, 136, 0.7) 0%, transparent 60%),
+    radial-gradient(circle at 90% 10%, rgba(206, 52, 63, 0.6) 0%, transparent 60%),
+    radial-gradient(circle at 50% 30%, rgba(0, 191, 255, 0.5) 0%, transparent 60%),
+    #050b14; /* Deep space dark blue */
+  background-size: 200% 200%;
+  animation: cosmicClouds 15s ease infinite alternate;
+  border-bottom: none;
+}
+
+@keyframes cosmicClouds {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 100%; }
 }
 
 .tax-banner.tax-banner-gradient .container {
