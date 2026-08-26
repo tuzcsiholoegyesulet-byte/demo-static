@@ -4014,3 +4014,14 @@ input[type="checkbox"], input[type="radio"] {
   position: relative;
   z-index: 10;
 }
+
+/* Contact Person Cards Mobile Responsive */
+@media (max-width: 768px) {
+  .contact-person-grid .card {
+    flex-direction: column !important;
+  }
+  .contact-person-grid .card > div:first-child {
+    width: 100% !important;
+    height: 250px !important;
+  }
+}
