@@ -3819,3 +3819,103 @@ input[type="checkbox"], input[type="radio"] {
   .lightbox-next { right: 10px; }
   .lightbox-close { top: -45px; right: 10px; }
 }
+
+/* --- Tax 1% Banner --- */
+.tax-banner {
+  width: 100%;
+  padding: 12px 20px;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  position: relative;
+  z-index: 20;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.tax-banner .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 1.05rem;
+  color: var(--color-dark-blue);
+  font-weight: 500;
+}
+
+.tax-banner strong {
+  color: var(--color-red);
+  letter-spacing: 1px;
+}
+
+.tax-banner .tax-link {
+  color: var(--color-red);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 700;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.tax-banner .tax-link:hover {
+  opacity: 0.8;
+}
+
+/* --- Tax 1% Modal --- */
+.tax-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.6);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  padding: 20px;
+}
+
+.tax-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tax-modal-content {
+  background-color: var(--color-white);
+  border-radius: 16px;
+  padding: 2rem 2rem 2.5rem 2rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.tax-modal-overlay.active .tax-modal-content {
+  transform: translateY(0);
+}
+
+.tax-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-dark-blue);
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.tax-modal-close:hover {
+  opacity: 1;
+}
+
+.tax-modal-body {
+  text-align: center;
+}

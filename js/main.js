@@ -521,4 +521,53 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- Global Tax 1% Modal Logic ---
+  window.openTaxModal = function(e) {
+    if (e) e.preventDefault();
+    let overlay = document.getElementById('tax-modal-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'tax-modal-overlay';
+      overlay.className = 'tax-modal-overlay';
+      overlay.innerHTML = `
+        <div class="tax-modal-content">
+          <button class="tax-modal-close" onclick="closeTaxModal()">&times;</button>
+          <div class="tax-modal-body">
+            <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--color-red);">1%</div>
+            <h3 style="color: var(--color-dark-blue); margin-bottom: 1rem;">Adó 1% felajánlása</h3>
+            <p style="color: var(--color-dark-blue); margin-bottom: 1.5rem; line-height: 1.6;">Adód 1%-ának felajánlásával közvetlenül hozzájárulhatsz a nehéz sorsú családok támogatásához és programjaink fenntartásához. Számodra ez nem kerül semmibe, nekünk viszont hatalmas segítség!</p>
+            <div style="background-color: #f4ece4; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--color-red); text-align: center;">
+              <strong>Adószámunk:</strong><br>
+              <span style="font-size: 1.25rem; font-weight: bold; color: var(--color-dark-blue); letter-spacing: 1px;">19241841-1-15</span>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      // Close on clicking outside
+      overlay.addEventListener('click', (ev) => {
+        if (ev.target === overlay) {
+          closeTaxModal();
+        }
+      });
+    }
+
+    // Force reflow and add active class for transition
+    setTimeout(() => {
+      overlay.classList.add('active');
+    }, 10);
+  };
+
+  window.closeTaxModal = function() {
+    const overlay = document.getElementById('tax-modal-overlay');
+    if (overlay) {
+      overlay.classList.remove('active');
+      // Optional: remove from DOM after transition
+      setTimeout(() => {
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      }, 300);
+    }
+  };
+
 });
