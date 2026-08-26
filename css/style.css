@@ -3845,12 +3845,12 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .tax-banner strong {
-  color: var(--color-red);
+  color: var(--color-teal);
   letter-spacing: 1px;
 }
 
 .tax-banner .tax-link {
-  color: var(--color-red);
+  color: var(--color-teal);
   text-decoration: underline;
   text-underline-offset: 3px;
   font-weight: 700;
