@@ -3979,3 +3979,24 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 
+
+/* --- Orphan Centering Rule for all Card Grids --- */
+/* The user requested that if a row has fewer cards, they should be centered. */
+.news-grid, .card-grid, .info-cards-grid, .contact-grid, .donation-options, .team-grid, .product-grid, .cake-grid, .values-grid, .impact-grid, .archive-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+}
+
+.news-grid > *, .card-grid > *, .info-cards-grid > *, .contact-grid > *, .donation-options > *, .team-grid > *, .product-grid > *, .cake-grid > *, .values-grid > *, .impact-grid > *, .archive-grid > * {
+  flex: 1 1 300px !important;
+  max-width: 380px !important;
+}
+
+/* Exception for contact-grid elements that should take up more space (e.g. form) */
+.contact-grid > .glass-card {
+  max-width: 500px !important;
+}
+.contact-grid > .contact-info {
+  max-width: 500px !important;
+}
