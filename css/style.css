@@ -3917,3 +3917,15 @@ input[type="checkbox"], input[type="radio"] {
 .tax-modal-body {
   text-align: center;
 }
+
+/* --- Translucent Banner Variant --- */
+.tax-banner.tax-banner-translucent {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.tax-banner.tax-banner-translucent strong,
+.tax-banner.tax-banner-translucent .tax-link {
+  color: var(--color-dark-blue);
+}
