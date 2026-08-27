@@ -2062,45 +2062,44 @@ body.bistro-theme .floating-bistro-btn {
   margin-top: 1.5rem;
 }
 .cake-item {
-  background: #fdf6e3;
-  border: 2px solid #f39c12;
+  background: #fff;
+  border: 1px solid #f0e4d4;
   border-radius: 12px;
-  padding: 1rem 0.5rem;
+  padding: 0;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 150px;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(62, 39, 35, 0.05);
 }
 .cake-item:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 8px 15px rgba(243, 156, 18, 0.2);
-  background: #fff;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(62, 39, 35, 0.15);
 }
 .cake-item:active {
   transform: translateY(0);
 }
 .cake-icon {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 0.8rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 120px;
+  margin-bottom: 0;
+  display: block;
+  overflow: hidden;
 }
 .cake-icon img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s;
+  border-radius: 0;
+  box-shadow: none;
+  transition: transform 0.4s ease;
 }
 .cake-item:hover .cake-icon img {
-  transform: scale(1.1) rotate(3deg);
+  transform: scale(1.1);
 }
 .tray-item-icon img {
   width: 36px;
@@ -2113,16 +2112,16 @@ body.bistro-theme .floating-bistro-btn {
   font-weight: 700;
   color: #3e2723;
   font-size: 0.95rem;
-  margin-bottom: 0.4rem;
-  line-height: 1.1;
+  margin: 0.8rem 0.5rem 0.3rem 0.5rem;
+  line-height: 1.2;
 }
 .cake-price {
   color: #d35400;
   font-weight: bold;
-  font-size: 0.85rem;
-  background: rgba(243, 156, 18, 0.2);
-  padding: 0.2rem 0.6rem;
-  border-radius: 20px;
+  font-size: 0.9rem;
+  background: transparent;
+  padding: 0 0.5rem 0.8rem 0.5rem;
+  margin: 0;
 }
 
 
