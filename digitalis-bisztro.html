@@ -487,11 +487,10 @@
                 <button class="btn-select" onclick="selectCakeFlavor('Áfonya', 1200, '#9b59b6', this)">Áfonya <small>1200 Ft</small></button>
               </div>
 
-              <div id="cake-name-suggestions" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;"></div>
-
               <div class="input-group">
-                <label class="input-label" for="cake-name-input">2. Ünnepelt neve (A zászlóra)</label>
-                <input type="text" id="cake-name-input" class="text-input" placeholder="pl. Peti" oninput="updateCakeFlag()">
+                <div class="builder-section-title">2. Ünnepelt neve (A zászlóra)</div>
+                <div id="cake-name-suggestions" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;"></div>
+                <input type="hidden" id="cake-name-input" value="">
               </div>
 
               <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; text-align: right;">
@@ -505,7 +504,7 @@
               <div class="cake-visual-container" id="cake-visual" style="--cake-filter: none;">
                 <img src="images/bisztro/birthday_cake_base.png" class="cake-base-img" id="cake-base-img" alt="Szülinapi Torta">
                 <div class="cake-flag-stick">
-                  <div class="cake-flag-banner" id="cake-flag-banner">Név</div>
+                  <div class="cake-flag-banner" id="cake-flag-banner" lang="hu">Név</div>
                 </div>
                 <div class="cake-candle">
                   <div class="cake-flame" id="cake-flame"></div>
@@ -1239,6 +1238,8 @@
             btn.style.fontSize = '0.9rem';
             btn.textContent = name;
             btn.onclick = () => {
+              Array.from(suggestionsContainer.children).forEach(c => c.classList.remove('active'));
+              btn.classList.add('active');
               cakeNameInput.value = name;
               updateCakeFlag();
             };
@@ -1263,8 +1264,19 @@
         };
 
         window.updateCakeFlag = function() {
-          const name = cakeNameInput.value.trim();
-          cakeFlagBanner.textContent = name ? name : "Név";
+          let name = cakeNameInput.value.trim();
+          if (!name) name = "Név";
+          
+          // Ha 9 karakternél hosszabb egy szó, teszünk bele egy opcionális elválasztójelet (soft hyphen)
+          const processedName = name.split(' ').map(word => {
+            if (word.length > 9) {
+              // Beszúrunk egy láthatatlan kötőjelet a 6. karakter után
+              return word.slice(0, 6) + '&shy;' + word.slice(6);
+            }
+            return word;
+          }).join(' ');
+
+          cakeFlagBanner.innerHTML = processedName;
         };
 
         window.lightCandleAndAddToTray = function() {

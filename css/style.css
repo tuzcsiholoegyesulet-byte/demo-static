@@ -2157,14 +2157,22 @@ body.bistro-theme .floating-bistro-btn {
 }
 .cake-overlay-text {
   position: absolute;
-  bottom: 20px;
-  width: 100%;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff8e7; /* Elegáns marcipán/cukor szín */
+  color: #5c3a21; /* Csokoládé színű betűk */
+  padding: 8px 25px;
+  border-radius: 15px;
+  border: 2px solid #e5c494; /* Finom arany/karamell szegély */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.8);
+  font-weight: 800;
+  font-size: 1.3rem;
+  font-family: 'Georgia', serif;
   text-align: center;
-  color: #fff;
-  font-weight: bold;
-  font-size: 1.5rem;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
   pointer-events: none;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 
@@ -2176,7 +2184,7 @@ body.bistro-theme .floating-bistro-btn {
   left: 75%;
   width: 4px;
   height: 60px;
-  background: #dcdde1;
+  background: #5c3a21; /* Barna szín a zászló szárának */
   transform: translateX(-50%) rotate(5deg);
   border-radius: 2px;
   z-index: 6;
@@ -2191,14 +2199,17 @@ body.bistro-theme .floating-bistro-btn {
   font-weight: bold;
   font-size: 1rem;
   border-radius: 0 5px 5px 0;
-  white-space: nowrap;
+  max-width: 120px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  line-height: 1.2;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
   clip-path: polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%);
   min-width: 50px;
 }
 .cake-candle {
   position: absolute;
-  top: 10px;
+  top: 25px;
   left: 50%;
   transform: translateX(-50%);
   width: 12px;
