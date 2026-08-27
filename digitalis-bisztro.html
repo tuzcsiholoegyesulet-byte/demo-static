@@ -487,6 +487,8 @@
                 <button class="btn-select" onclick="selectCakeFlavor('Áfonya', 1200, '#9b59b6', this)">Áfonya <small>1200 Ft</small></button>
               </div>
 
+              <div id="cake-name-suggestions" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;"></div>
+
               <div class="input-group">
                 <label class="input-label" for="cake-name-input">2. Ünnepelt neve (A zászlóra)</label>
                 <input type="text" id="cake-name-input" class="text-input" placeholder="pl. Peti" oninput="updateCakeFlag()">
@@ -1211,6 +1213,37 @@
           birthdayCakeApp.classList.remove('hidden');
           document.querySelectorAll('.app-card')[2].classList.add('active');
           resetBirthdayCake();
+          populateCakeNameSuggestions();
+        };
+
+        window.populateCakeNameSuggestions = function() {
+          const suggestionsContainer = document.getElementById('cake-name-suggestions');
+          suggestionsContainer.innerHTML = '';
+          
+          let names = [];
+          
+          const ownName = document.getElementById('own-name').value.trim();
+          if (ownName) names.push(ownName);
+          
+          targetEmails.forEach(t => {
+            if (t.name) names.push(t.name);
+          });
+          
+          // Remove duplicates
+          names = [...new Set(names)];
+          
+          names.forEach(name => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-select';
+            btn.style.padding = '0.4rem 0.8rem';
+            btn.style.fontSize = '0.9rem';
+            btn.textContent = name;
+            btn.onclick = () => {
+              cakeNameInput.value = name;
+              updateCakeFlag();
+            };
+            suggestionsContainer.appendChild(btn);
+          });
         };
 
         window.closeBirthdayCake = function() {
