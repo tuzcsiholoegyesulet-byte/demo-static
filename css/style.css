@@ -3831,15 +3831,8 @@ input[type="checkbox"], input[type="radio"] {
   --mouse-x: 50%;
   --mouse-y: 50%;
   background: 
-    radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.2) 0%, rgba(19, 137, 136, 0.9) 20%, transparent 50%), /* Interactive Spot */
-    radial-gradient(circle at 15% 30%, rgba(206, 52, 63, 0.6) 0%, transparent 60%),       /* Brand Red */
-    radial-gradient(circle at 85% 70%, rgba(19, 137, 136, 0.6) 0%, transparent 60%),      /* Brand Teal */
-    radial-gradient(circle at 50% 50%, rgba(206, 52, 63, 0.3) 0%, transparent 70%),       /* Soft Red */
-    radial-gradient(circle at 80% 20%, rgba(20, 60, 110, 0.7) 0%, transparent 60%),       /* Lighter Blue */
-    radial-gradient(circle at 20% 80%, rgba(150, 30, 40, 0.6) 0%, transparent 60%),       /* Darker Red */
-    var(--color-dark-blue); /* Base Brand Dark Blue */
-  background-size: 200% 200%;
-  animation: cosmicClouds 15s ease infinite alternate;
+    radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.15) 0%, transparent 40%),
+    linear-gradient(90deg, rgba(206, 52, 63, 0.9) 0%, rgba(19, 137, 136, 0.9) 100%);
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
