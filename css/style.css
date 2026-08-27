@@ -3828,8 +3828,15 @@ input[type="checkbox"], input[type="radio"] {
   position: relative;
   z-index: 20;
   
-  background: linear-gradient(to right, #ce343f 0%, #138988 100%);
+  background: linear-gradient(90deg, #ce343f, #138988, #ce343f, #138988);
+  background-size: 300% 100%;
+  animation: bannerFlow 8s linear infinite;
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+@keyframes bannerFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 
 @keyframes cosmicClouds {
