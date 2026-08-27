@@ -585,14 +585,6 @@ document.addEventListener('DOMContentLoaded', () => {
       logo.style.animationDelay = `-${Math.random() * 5}s`;
       banner.appendChild(logo);
     }
-
-    banner.addEventListener('mousemove', (e) => {
-      const rect = banner.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      banner.style.setProperty('--mouse-x', `${x}%`);
-      banner.style.setProperty('--mouse-y', `${y}%`);
-    });
   });
 
   // --- Scroll Animations ---
