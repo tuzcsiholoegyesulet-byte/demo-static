@@ -4132,6 +4132,9 @@ input[type="checkbox"], input[type="radio"] {
   border-radius: 50%;
   transition: background-color 0.3s ease;
 }
+.search-nav-item a::after {
+  display: none !important;
+}
 .search-nav-item a:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
