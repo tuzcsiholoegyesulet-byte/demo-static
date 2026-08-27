@@ -579,8 +579,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const logo = document.createElement('img');
       logo.src = 'images/global/Logo_BEZS_emblema.png';
       logo.className = 'tax-banner-floating-logo';
-      logo.style.left = `${Math.random() * 80 + 10}%`; // Keep them mostly inside
-      logo.style.top = `${Math.random() * 100 - 10}%`; 
+      // Distribute evenly across 10 segments horizontally, with slight randomness
+      logo.style.left = `${(i * 10) + (Math.random() * 8)}%`; 
+      // Distribute vertically with more scatter
+      logo.style.top = `${Math.random() * 120 - 10}%`; 
       logo.style.animationDuration = `${8 + Math.random() * 10}s`;
       logo.style.animationDelay = `-${Math.random() * 5}s`;
       banner.appendChild(logo);
