@@ -2084,8 +2084,30 @@ body.bistro-theme .floating-bistro-btn {
   transform: translateY(0);
 }
 .cake-icon {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cake-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s;
+}
+.cake-item:hover .cake-icon img {
+  transform: scale(1.1) rotate(3deg);
+}
+.tray-item-icon img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  vertical-align: middle;
 }
 .cake-name {
   font-weight: 700;
