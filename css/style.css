@@ -4168,11 +4168,15 @@ input[type="checkbox"], input[type="radio"] {
   overflow: hidden;
 }
 .search-nav-item:hover .search-nav-btn.gemini-btn {
-  width: 40px;
+  width: 44px;
   opacity: 1;
   padding: 10px !important;
   pointer-events: auto;
   margin-left: 4px;
+}
+.search-nav-btn.gemini-btn svg {
+  width: 24px;
+  height: 24px;
 }
 .search-nav-btn.gemini-btn:hover svg {
   fill: #A259FF;
