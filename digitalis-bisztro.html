@@ -478,40 +478,60 @@
           <div id="birthday-cake-app" class="hidden" style="display: flex; flex-direction: column;">
             <button class="btn-back" onclick="closeBirthdayCake()" style="margin-bottom: 1rem; align-self: flex-start;">&#8592; Vissza a Főmenübe</button>
             <div class="birthday-cake-app" style="margin: 0; width: 100%; box-sizing: border-box;">
-              <div class="builder-panel">
-                <div class="builder-section-title">1. Torta íze (Színe)</div>
-              <div class="btn-group" id="cake-flavor-options">
-                <button class="btn-select active" onclick="selectCakeFlavor('Csokoládé', 1000, '#e67e22', this)">Csokoládé <small>1000 Ft</small></button>
-                <button class="btn-select" onclick="selectCakeFlavor('Eper', 1000, '#e84393', this)">Eper <small>1000 Ft</small></button>
-                <button class="btn-select" onclick="selectCakeFlavor('Vanília', 1000, '#f1c40f', this)">Vanília <small>1000 Ft</small></button>
-                <button class="btn-select" onclick="selectCakeFlavor('Áfonya', 1200, '#9b59b6', this)">Áfonya <small>1200 Ft</small></button>
-              </div>
-
-              <div class="input-group">
-                <div class="builder-section-title">2. Ünnepelt neve (A zászlóra)</div>
-                <div id="cake-name-suggestions" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;"></div>
-                <input type="hidden" id="cake-name-input" value="">
-              </div>
-
-              <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; text-align: right;">
-                Ár: <span id="current-cake-price">1000</span> Ft
-              </div>
               
-              <button class="btn-brew" id="btn-light-candle" onclick="lightCandleAndAddToTray()">Gyertyagyújtás & Tálcára! 🕯️</button>
-            </div>
-
-            <div class="machine-panel">
-              <div class="cake-visual-container" id="cake-visual" style="--cake-filter: none;">
-                <img src="images/bisztro/birthday_cake_base.png" class="cake-base-img" id="cake-base-img" alt="Szülinapi Torta">
-                <div class="cake-flag-stick">
-                  <div class="cake-flag-banner" id="cake-flag-banner" lang="hu">Név</div>
+              <!-- Névválasztó (Top) -->
+              <div class="builder-panel" style="margin-bottom: 0.5rem; padding: 1rem;">
+                <div class="input-group" style="margin-bottom: 0;">
+                  <div style="font-weight: bold; margin-bottom: 0.5rem; color: #5d4037;">Ünnepelt neve (A zászlóra):</div>
+                  <div id="cake-name-suggestions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;"></div>
+                  <input type="hidden" id="cake-name-input" value="">
                 </div>
-                <div class="cake-candle">
-                  <div class="cake-flame" id="cake-flame"></div>
-                </div>
-                <div class="cake-overlay-text">Boldog<br>születésnapot!</div>
               </div>
-            </div>
+
+              <!-- Tortakép (Middle) -->
+              <div class="machine-panel" style="margin-bottom: 0.5rem;">
+                <div class="cake-visual-panel">
+                  <div class="cake-visual-container" id="cake-visual">
+                    <img src="images/bisztro/birthday_cake_base.png" class="cake-base-img" id="cake-base-img" alt="Szülinapi Torta">
+                    <div class="cake-flag-stick">
+                      <div class="cake-flag-banner" id="cake-flag-banner" lang="hu">Név</div>
+                    </div>
+                    <div class="cake-candle">
+                      <div class="cake-flame" id="cake-flame"></div>
+                    </div>
+                  </div>
+                  <div class="toast-greeting-text" id="cake-greeting-text">Boldog születésnapot!</div>
+                </div>
+                
+                <!-- Ízválasztó (Közvetlenül a kép alatt) -->
+                <div class="btn-group" id="cake-flavor-options" style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; margin-top: 1rem; gap: 0.5rem;">
+                  <button class="btn-select btn-flavor active" onclick="selectCakeFlavor('Csokoládé', 1000, 'birthday_cake_base.png', this)">
+                    <div class="flavor-img"><img src="images/bisztro/birthday_cake_base.png" alt="Csokoládé"></div>
+                    <div class="flavor-info">Csokoládé <small>1000 Ft</small></div>
+                  </button>
+                  <button class="btn-select btn-flavor" onclick="selectCakeFlavor('Eper', 1000, 'birthday_cake_strawberry.png', this)">
+                    <div class="flavor-img"><img src="images/bisztro/birthday_cake_strawberry.png" alt="Eper"></div>
+                    <div class="flavor-info">Eper <small>1000 Ft</small></div>
+                  </button>
+                  <button class="btn-select btn-flavor" onclick="selectCakeFlavor('Vanília', 1000, 'birthday_cake_vanilla.png', this)">
+                    <div class="flavor-img"><img src="images/bisztro/birthday_cake_vanilla.png" alt="Vanília"></div>
+                    <div class="flavor-info">Vanília <small>1000 Ft</small></div>
+                  </button>
+                  <button class="btn-select btn-flavor" onclick="selectCakeFlavor('Áfonya', 1200, 'birthday_cake_blueberry.png', this)">
+                    <div class="flavor-img"><img src="images/bisztro/birthday_cake_blueberry.png" alt="Áfonya"></div>
+                    <div class="flavor-info">Áfonya <small>1200 Ft</small></div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Rendelés (Bottom) -->
+              <div class="builder-panel" style="padding: 1rem;">
+                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; text-align: right;">
+                  Ár: <span id="current-cake-price">1000</span> Ft
+                </div>
+                
+                <button class="btn-brew" id="btn-light-candle" onclick="lightCandleAndAddToTray()">Gyertyagyújtás & Tálcára! 🕯️</button>
+              </div>
             </div>
           </div>
 
@@ -519,56 +539,86 @@
           <!-- Toast App -->
           <div id="toast-app" class="hidden" style="display: flex; flex-direction: column;">
             <button class="btn-back" onclick="closeToastApp()" style="margin-bottom: 1rem; align-self: flex-start;">&#8592; Vissza a Főmenübe</button>
-            <div class="toast-app" style="margin: 0; width: 100%; box-sizing: border-box;">
-              <div class="builder-panel">
-                <div class="builder-section-title">1. Mivel koccintotok?</div>
-              <div class="btn-group" id="toast-drink-options">
-                <button class="btn-select active" onclick="selectToastDrink('Pezsgő', 500, '🥂', this)">Pezsgő <small>500 Ft</small></button>
-                <button class="btn-select" onclick="selectToastDrink('Vörösbor', 500, '🍷', this)">Vörösbor <small>500 Ft</small></button>
-                <button class="btn-select" onclick="selectToastDrink('Csapolt Sör', 500, '🍺', this)">Sör <small>500 Ft</small></button>
-                <button class="btn-select" onclick="selectToastDrink('Színes Koktél', 800, '🍸', this)">Koktél <small>800 Ft</small></button>
-              </div>
-
-              <div class="input-group">
-                <label class="input-label" for="toast-name-input">2. Névnapos neve</label>
-                <input type="text" id="toast-name-input" class="text-input" placeholder="pl. Peti">
-              </div>
-
-              <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; text-align: right;">
-                Ár: <span id="current-toast-price">500</span> Ft
-              </div>
+            <div class="birthday-cake-app" style="margin: 0; width: 100%; box-sizing: border-box;">
               
-              <button class="btn-brew" id="btn-cheers" onclick="cheersAndAddToTray()">Koccintás & Tálcára! 🥂</button>
-            </div>
-
-            <div class="machine-panel">
-              <div class="toast-visual-container" id="toast-visual">
-                <div class="glass left" id="glass-left">🥂</div>
-                <div class="glass right" id="glass-right">🥂</div>
-                <div class="confetti-container" id="confetti-container"></div>
+              <!-- Névválasztó (Top) -->
+              <div class="builder-panel" style="margin-bottom: 0.5rem; padding: 1rem;">
+                <div class="input-group" style="margin-bottom: 0;">
+                  <div style="font-weight: bold; margin-bottom: 0.5rem; color: #5d4037;">Névnapos neve:</div>
+                  <div id="toast-name-suggestions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;"></div>
+                  <input type="hidden" id="toast-name-input" value="" onchange="updateToastGreeting()">
+                </div>
               </div>
-            </div>
+
+              <!-- Visual panel (Middle) -->
+              <div class="machine-panel" style="margin-bottom: 0.5rem;">
+                <div class="cake-visual-panel">
+                  <div class="toast-visual-container" id="toast-visual">
+                    <img src="images/bisztro/toast_champagne.png" alt="Toast" class="toast-base-img" id="toast-base-image">
+                    <div class="confetti-container" id="confetti-container"></div>
+                  </div>
+                  <div class="toast-greeting-text" id="toast-greeting-text">Boldog névnapot!</div>
+                </div>
+
+                <!-- Italválasztó (Közvetlenül a kép alatt) -->
+                <div class="btn-group" id="toast-drink-options" style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; margin-top: 1rem; gap: 0.5rem;">
+                  <button class="btn-select btn-flavor active" onclick="selectToastDrink('Pezsgő', 500, 'toast_champagne.png', this)">
+                    <div class="flavor-img"><img src="images/bisztro/toast_champagne.png" alt="Pezsgő"></div>
+                    <div class="flavor-info">Pezsgő <small>500 Ft</small></div>
+                  </button>
+                  <button class="btn-select btn-flavor" onclick="selectToastDrink('Vörösbor', 500, 'toast_wine.png', this)">
+                    <div class="flavor-img"><img src="images/bisztro/toast_wine.png" alt="Vörösbor"></div>
+                    <div class="flavor-info">Vörösbor <small>500 Ft</small></div>
+                  </button>
+                  <button class="btn-select btn-flavor" onclick="selectToastDrink('Sör', 500, 'toast_beer.png', this)">
+                    <div class="flavor-img"><img src="images/bisztro/toast_beer.png" alt="Sör"></div>
+                    <div class="flavor-info">Sör <small>500 Ft</small></div>
+                  </button>
+                  <button class="btn-select btn-flavor" onclick="selectToastDrink('Koktél', 800, 'toast_cocktail.png', this)">
+                    <div class="flavor-img"><img src="images/bisztro/toast_cocktail.png" alt="Koktél"></div>
+                    <div class="flavor-info">Koktél <small>800 Ft</small></div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Rendelés (Bottom) -->
+              <div class="builder-panel" style="padding: 1rem;">
+                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; text-align: right;">
+                  Ár: <span id="current-toast-price">500</span> Ft
+                </div>
+                
+                <button class="btn-brew" id="btn-cheers" onclick="cheersAndAddToTray()">Koccintás & Tálcára! 🥂</button>
+              </div>
+
             </div>
           </div>
 
+          <!-- Animation Modal -->
+          <div id="cake-animation-modal" class="hidden" style="position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+             <div id="cake-animation-content" style="transform: scale(1.1); max-width: 90vw; pointer-events: none;">
+             </div>
+             <div style="color: white; font-size: 1.8rem; margin-top: 2rem; font-family: 'Georgia', serif; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: bold; animation: pulse 1.5s infinite;">Kívánj valamit! 🎂</div>
+             <button onclick="closeCakeAnimation()" style="margin-top: 2rem; background: transparent; color: rgba(255,255,255,0.7); border: none; font-size: 1.2rem; cursor: pointer; text-decoration: underline;">X Bezárás</button>
+          </div>
+
             <div class="app-grid" id="app-grid">
-            <a href="#" class="app-card" onclick="openBarApp(); return false;">
-              <div class="app-icon">🍹</div>
+            <a href="#" class="app-card glass-card-interactive" onclick="openBarApp(); return false;">
+              <div class="app-icon-img"><img src="images/bisztro/menu_bar.webp" alt="Bárpult"></div>
               <div class="app-title">Bárpult</div>
               <div class="app-desc">Kérj egy kávét, turmixot vagy hűsítő limonádét!</div>
             </a>
-            <a href="#" class="app-card" onclick="openCakeCounter(); return false;">
-              <div class="app-icon">🍰</div>
+            <a href="#" class="app-card glass-card-interactive" onclick="openCakeCounter(); return false;">
+              <div class="app-icon-img"><img src="images/bisztro/menu_cake.webp" alt="Sütis pult"></div>
               <div class="app-title">Sütis pult</div>
               <div class="app-desc">Válogass finom süteményeink közül.</div>
             </a>
-            <a href="#" class="app-card" onclick="openBirthdayCake(); return false;">
-              <div class="app-icon">🎂</div>
+            <a href="#" class="app-card glass-card-interactive" onclick="openBirthdayCake(); return false;">
+              <div class="app-icon-img"><img src="images/bisztro/menu_birthday.webp" alt="Szülinapi Torta"></div>
               <div class="app-title">Szülinapi Torta</div>
               <div class="app-desc">Állíts össze egy ünnepi tortát.</div>
             </a>
-            <a href="#" class="app-card" onclick="openToastApp(); return false;">
-              <div class="app-icon">🥂</div>
+            <a href="#" class="app-card glass-card-interactive" onclick="openToastApp(); return false;">
+              <div class="app-icon-img"><img src="images/bisztro/menu_toast.webp" alt="Névnapi koccintás"></div>
               <div class="app-title">Névnapi koccintás</div>
               <div class="app-desc">Koccints velünk egy jeles napon!</div>
             </a>
@@ -932,6 +982,18 @@
           if (typeof toastApp !== 'undefined' && toastApp) toastApp.classList.add('hidden');
           if (typeof birthdayCakeApp !== 'undefined' && birthdayCakeApp) birthdayCakeApp.classList.add('hidden');
           document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
+          
+          // Scroll to the top of the menu area for comfortable usage
+          const menuArea = document.querySelector('.menu-area');
+          if (menuArea) {
+            const headerOffset = 100; // Account for sticky header if any
+            const elementPosition = menuArea.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({
+               top: offsetPosition,
+               behavior: 'smooth'
+            });
+          }
         }
 
         window.openBarApp = function() {
@@ -1196,6 +1258,7 @@
 
         // --- Birthday Cake Logic ---
         const birthdayCakeApp = document.getElementById('birthday-cake-app');
+        const cakeGreetingText = document.getElementById('cake-greeting-text');
         const cakeFlagBanner = document.getElementById('cake-flag-banner');
         const cakeNameInput = document.getElementById('cake-name-input');
         const currentCakePriceEl = document.getElementById('current-cake-price');
@@ -1252,7 +1315,7 @@
           appGrid.classList.remove('in-app');
         };
 
-        window.selectCakeFlavor = function(name, price, color, btnEl) {
+        window.selectCakeFlavor = function(name, price, imageFile, btnEl) {
           cakeFlavor = name;
           bCakePrice = price;
           
@@ -1260,17 +1323,21 @@
           btnEl.classList.add('active');
           
           currentCakePriceEl.textContent = price;
-          cakeVisual.style.setProperty('--cake-color', color);
+          document.getElementById('cake-base-img').src = `images/bisztro/${imageFile}`;
         };
 
         window.updateCakeFlag = function() {
-          let name = cakeNameInput.value.trim();
-          if (!name) name = "Név";
+          const name = cakeNameInput.value.trim();
           
-          // Ha 9 karakternél hosszabb egy szó, teszünk bele egy opcionális elválasztójelet (soft hyphen)
-          const processedName = name.split(' ').map(word => {
+          if (name) {
+            cakeGreetingText.textContent = `Boldog születésnapot ${name}!`;
+          } else {
+            cakeGreetingText.textContent = "Boldog születésnapot!";
+          }
+          
+          let bannerName = name || "Név";
+          const processedName = bannerName.split(' ').map(word => {
             if (word.length > 9) {
-              // Beszúrunk egy láthatatlan kötőjelet a 6. karakter után
               return word.slice(0, 6) + '&shy;' + word.slice(6);
             }
             return word;
@@ -1279,30 +1346,57 @@
           cakeFlagBanner.innerHTML = processedName;
         };
 
+        let pendingCakeName = '';
+
         window.lightCandleAndAddToTray = function() {
           const name = cakeNameInput.value.trim();
           if (!name) {
-            alert('Kérlek, add meg az ünnepelt nevét a zászlóhoz!');
+            alert('Kérlek, add meg az ünnepelt nevét!');
             cakeNameInput.focus();
             return;
           }
           
           btnLightCandle.disabled = true;
-          cakeFlame.classList.add('lit');
+          pendingCakeName = name;
           
-          setTimeout(() => {
-            const fullName = `Szülinapi Torta (${cakeFlavor}, Zászló: ${name})`;
-            if(!trays[activeTab]) trays[activeTab]=[];
-            trays[activeTab].push({
-              name: fullName,
-              price: bCakePrice,
-              icon: '🎂'
-            });
-            updateTray();
-            
-            alert('A gyertya meggyulladt, a torta pedig felkerült a tálcára! 🎂');
-            resetBirthdayCake();
-          }, 1500); // Wait 1.5s for candle animation
+          // Show animation modal
+          const modal = document.getElementById('cake-animation-modal');
+          const modalContent = document.getElementById('cake-animation-content');
+          const originalVisualPanel = document.querySelector('.birthday-cake-app .cake-visual-panel');
+          
+          // Clone the visual panel into the modal
+          modalContent.innerHTML = '';
+          const clonedPanel = originalVisualPanel.cloneNode(true);
+          modalContent.appendChild(clonedPanel);
+          
+          modal.classList.remove('hidden');
+          
+          // Light the cloned candle
+          const clonedFlame = clonedPanel.querySelector('#cake-flame');
+          if (clonedFlame) {
+             setTimeout(() => {
+                clonedFlame.classList.add('lit');
+             }, 300);
+          }
+        };
+
+        window.closeCakeAnimation = function() {
+          const modal = document.getElementById('cake-animation-modal');
+          const modalContent = document.getElementById('cake-animation-content');
+          
+          modal.classList.add('hidden');
+          modalContent.innerHTML = '';
+          
+          const fullName = `Szülinapi Torta (${cakeFlavor}) - ${pendingCakeName}`;
+          if(!trays[activeTab]) trays[activeTab]=[];
+          trays[activeTab].push({
+            name: fullName,
+            price: bCakePrice,
+            icon: '🎂'
+          });
+          updateTray();
+          
+          resetBirthdayCake();
         };
 
         function resetBirthdayCake() {
@@ -1315,80 +1409,123 @@
       
         // --- Toast App Logic ---
         const toastApp = document.getElementById('toast-app');
-        const glassLeft = document.getElementById('glass-left');
-        const glassRight = document.getElementById('glass-right');
         const toastVisual = document.getElementById('toast-visual');
+        const toastBaseImage = document.getElementById('toast-base-image');
         const toastNameInput = document.getElementById('toast-name-input');
+        const toastGreetingText = document.getElementById('toast-greeting-text');
         const currentToastPriceEl = document.getElementById('current-toast-price');
         const btnCheers = document.getElementById('btn-cheers');
         const confettiContainer = document.getElementById('confetti-container');
 
         let toastDrink = 'Pezsgő';
         let toastPrice = 500;
-        let toastIcon = '🥂';
+        let toastImageFile = 'toast_champagne.png';
 
         window.openToastApp = function() {
           hideAllApps();
           appGrid.classList.add('in-app');
           toastApp.classList.remove('hidden');
           document.querySelectorAll('.app-card')[3].classList.add('active');
+          populateToastNameSuggestions();
           resetToastApp();
         };
 
-        window.closeToastApp = function() {
-          hideAllApps();
-          appGrid.classList.remove('in-app');
+        function populateToastNameSuggestions() {
+          const suggestionsContainer = document.getElementById('toast-name-suggestions');
+          if (!suggestionsContainer) return;
+          suggestionsContainer.innerHTML = '';
+          
+          let names = [];
+          const ownName = document.getElementById('own-name').value.trim();
+          if (ownName) names.push(ownName);
+          targetEmails.forEach(t => {
+            if (t.name && t.name.trim() !== '') {
+              names.push(t.name.trim());
+            }
+          });
+          names = [...new Set(names)];
+          if (names.length === 0) {
+            suggestionsContainer.innerHTML = '<span style="color:#7f8c8d; font-size:0.9rem;">Nincsenek megadott nevek. Állíts be neveket felül!</span>';
+            return;
+          }
+          
+          names.forEach(name => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-select';
+            btn.style.padding = '0.4rem 0.8rem';
+            btn.style.fontSize = '0.9rem';
+            btn.textContent = name;
+            btn.onclick = () => {
+              Array.from(suggestionsContainer.children).forEach(c => c.classList.remove('active'));
+              btn.classList.add('active');
+              toastNameInput.value = name;
+              updateToastGreeting();
+            };
+            suggestionsContainer.appendChild(btn);
+          });
+        }
+
+        window.updateToastGreeting = function() {
+          const name = toastNameInput.value.trim();
+          if (name) {
+            toastGreetingText.textContent = `Boldog névnapot ${name}!`;
+          } else {
+            toastGreetingText.textContent = "Boldog névnapot!";
+          }
         };
 
-        window.selectToastDrink = function(name, price, icon, btnEl) {
-          toastDrink = name;
+        window.closeToastApp = function() {
+          toastApp.classList.add('hidden');
+          appGrid.classList.remove('in-app');
+          document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
+        };
+
+        window.selectToastDrink = function(drink, price, imageFile, btn) {
+          const btns = document.getElementById('toast-drink-options').querySelectorAll('.btn-select');
+          btns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          toastDrink = drink;
           toastPrice = price;
-          toastIcon = icon;
-          
-          document.querySelectorAll('#toast-drink-options .btn-select').forEach(b => b.classList.remove('active'));
-          btnEl.classList.add('active');
+          toastImageFile = imageFile;
           
           currentToastPriceEl.textContent = price;
-          
-          // Fix for champagne emoji which is already two glasses, just show one if possible, or use standard emojis
-          let displayIcon = icon;
-          if (icon === '🥂') displayIcon = '🍾'; // use bottle for left, or just 🥂 for both
-          
-          // Let's just use the selected icon for both
-          glassLeft.textContent = icon;
-          glassRight.textContent = icon;
+          toastBaseImage.src = `images/bisztro/${imageFile}`;
         };
 
         window.cheersAndAddToTray = function() {
           const name = toastNameInput.value.trim();
           if (!name) {
-            alert('Kérlek, add meg a névnapos nevét!');
-            toastNameInput.focus();
+            alert('Kérlek, válassz egy nevet a névnaposnak!');
             return;
           }
-          
-          btnCheers.disabled = true;
-          toastVisual.classList.add('cheers');
-          
-          // Generate Confetti
+
+          // Confetti animation
           confettiContainer.innerHTML = '';
-          const colors = ['#e74c3c', '#3498db', '#f1c40f', '#2ecc71', '#9b59b6'];
-          for(let i=0; i<30; i++) {
+          for(let i = 0; i < 30; i++) {
             const conf = document.createElement('div');
             conf.className = 'confetti';
             conf.style.left = Math.random() * 100 + '%';
-            conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            conf.style.animation = `confetti-fall ${1 + Math.random()}s ease-in forwards`;
+            conf.style.animationDelay = Math.random() * 0.5 + 's';
+            conf.style.backgroundColor = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'][Math.floor(Math.random()*5)];
             confettiContainer.appendChild(conf);
           }
           
+          btnCheers.disabled = true;
+          btnCheers.textContent = "Koccintás! 🥂";
+          
           setTimeout(() => {
             const fullName = `Koccintás (${toastDrink}, ${name} részére)`;
+            let icon = '🥂';
+            if (toastDrink === 'Vörösbor') icon = '🍷';
+            if (toastDrink === 'Sör') icon = '🍺';
+            if (toastDrink === 'Koktél') icon = '🍸';
+
             if(!trays[activeTab]) trays[activeTab]=[];
             trays[activeTab].push({
               name: fullName,
               price: toastPrice,
-              icon: toastIcon
+              icon: icon
             });
             updateTray();
             
