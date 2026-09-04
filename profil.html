@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Profilom - Tűzcsiholó Egyesület felhasználói fiók.">
+  <title>Profilom | Tűzcsiholó Egyesület</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .profile-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(24,54,80,0.05) 0%, rgba(206,43,55,0.05) 100%);
+      padding: 120px 20px 60px;
+    }
+    .profile-container {
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 600px;
+      padding: 40px;
+      text-align: center;
+    }
+    .profile-icon {
+      width: 100px;
+      height: 100px;
+      background-color: var(--color-teal);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 3rem;
+    }
+    .btn-logout {
+      margin-top: 30px;
+      padding: 12px 24px;
+      border: 2px solid var(--color-red);
+      color: var(--color-red);
+      background: transparent;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-logout:hover {
+      background: var(--color-red);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  
+  <header style="background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; top: 0; width: 100%; z-index: 100; padding: 15px 5%;">
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
+      <a href="index.html" class="logo">
+        <img src="images/global/Logo_BEZS_emblema.png" alt="Tűzcsiholó Egyesület" style="height: 50px;">
+      </a>
+      <a href="index.html" style="color: var(--color-gray); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+        Vissza a főoldalra
+      </a>
+    </div>
+  </header>
+
+  <main class="profile-page">
+    <div class="profile-container">
+      <div class="profile-icon">👤</div>
+      <h1 style="color: var(--color-dark-blue); margin-bottom: 10px;">Üdvözlünk a profilodban!</h1>
+      <p style="color: var(--color-gray); margin-bottom: 30px;">Sikeresen bejelentkeztél. Ez az oldal hamarosan bővülni fog a Monday.com CRM adatokkal!</p>
+      
+      <button class="btn-logout" onclick="window.handleLogout()">Kijelentkezés</button>
+    </div>
+  </main>
+
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>
