@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Tűzcsiholó Egyesület - Fecske Adománybolt">
   <title>Tűzcsiholó Egyesület | Fecske Adománybolt</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2">
   
 </head>
 <body class="fecske-theme">
@@ -128,7 +128,15 @@
               <div style="flex: 1; min-width: 300px;">
                 <h2>Kinek szeretnéd a rendelést?</h2>
             
-            <div style="margin-bottom: 2rem;">
+            <div id="bistro-auth-prompt" style="max-width: 500px; margin-bottom: 2rem; background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); text-align: center;">
+              <p style="margin-top:0; color:#f4ece4; margin-bottom:1rem; font-weight:bold;">Gyorsabb rendeléshez jelentkezz be!</p>
+              <button type="button" class="btn btn-cta" onclick="event.preventDefault(); window.openAuthModal && window.openAuthModal()" style="display:inline-block; margin-bottom:1rem; background-color:#d35400; border:none; padding:14px 32px; font-size:1.1rem; font-weight:bold; color:white; border-radius:8px; cursor:pointer;">Bejelentkezés / Regisztráció</button>
+              <div>
+                <span style="color:#f4ece4; font-size:0.9rem; opacity:0.8;">Vagy folytasd vendégként alább 👇</span>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;" id="bistro-guest-form">
               <label for="own-email" style="display:block; font-weight:700; margin-bottom:0.5rem; color:#f4ece4;">Saját email címed (ide küldjük a visszaigazolást): <span style="color:red">*</span></label>
               <div style="display: flex; gap: 1rem; align-items: center; max-width: 500px;">
                 <div style="flex:2;">

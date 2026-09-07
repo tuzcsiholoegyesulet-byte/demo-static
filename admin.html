@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tűzcsiholó Egyesület | Admin Panel</title>
+  <link rel="stylesheet" href="css/style.css?v=3">
+  <style>
+    /* Admin speciális stílusok */
+    body.admin-dashboard {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f4f7f6;
+      margin: 0;
+      padding-top: 80px;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    .admin-sidebar {
+      width: 280px;
+      background-color: var(--color-dark-blue);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+      box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+    }
+    
+    .admin-logo {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .admin-logo img {
+      max-width: 150px;
+      filter: brightness(0) invert(1);
+    }
+    
+    .admin-nav {
+      flex: 1;
+      padding: 1.5rem 0;
+    }
+    
+    .admin-nav-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: all 0.2s;
+      gap: 15px;
+      font-weight: 500;
+    }
+    
+    .admin-nav-item:hover, .admin-nav-item.active {
+      color: white;
+      background-color: rgba(255,255,255,0.1);
+      border-left: 4px solid var(--color-red);
+    }
+    
+    .admin-nav-item svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+    
+    .admin-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    
+    .admin-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      box-sizing: border-box;
+      background: white;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      z-index: 1000;
+    }
+    
+    .admin-title {
+      margin: 0;
+      color: var(--color-dark-blue);
+      font-size: 1.5rem;
+    }
+    
+    .admin-user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .admin-logout {
+      background: none;
+      border: 1px solid var(--color-red);
+      color: var(--color-red);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    
+    .admin-logout:hover {
+      background: var(--color-red);
+      color: white;
+    }
+    
+    .admin-content {
+      padding: 2rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+    
+    /* Statisztika kártyák */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      border-left: 5px solid var(--color-teal);
+    }
+    
+    .stat-card.red { border-left-color: var(--color-red); }
+    .stat-card.beige { border-left-color: #d4af37; }
+    
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.05);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .stat-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--color-dark-blue);
+    }
+    
+    .stat-info h3 {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--color-gray);
+      text-transform: uppercase;
+    }
+    
+    .stat-info p {
+      margin: 5px 0 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--color-dark-blue);
+    }
+    
+    /* Kezelő modulok */
+    .module-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .module-card h2 {
+      margin-top: 0;
+      color: var(--color-dark-blue);
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    #loadingScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--color-dark-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: white;
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+<body class="admin-dashboard">
+
+  <div id="loadingScreen">
+    Jogosultság ellenőrzése...
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <img src="images/global/Logo_BEZS_emblema.png" alt="Tűzcsiholó">
+      <div style="margin-top: 10px; font-weight: 700; letter-spacing: 1px;">ADMIN PANEL</div>
+    </div>
+    
+    <nav class="admin-nav">
+      <a href="#" class="admin-nav-item active">
+        <svg viewBox="0 0 512 512"><path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l127.9-128z"/></svg>
+        Vezérlőpult
+      </a>
+      <a href="#" class="admin-nav-item">
+        <svg viewBox="0 0 448 512"><path d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
+        Tartalomkezelő
+      </a>
+      <a href="#" class="admin-nav-item">
+        <svg viewBox="0 0 640 512"><path d="M144 160c0-61.9 50.1-112 112-112h64c61.9 0 112 50.1 112 112v88c0 13.3-10.7 24-24 24H168c-13.3 0-24-10.7-24-24v-88zM64 160c0-106 86-192 192-192h64c106 0 192 86 192 192v88c0 48.6-39.4 88-88 88H152c-48.6 0-88-39.4-88-88v-88zm416 288v32c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32v-32h320zM128 448h384v-24c0-13.3-10.7-24-24-24H152c-13.3 0-24 10.7-24 24v24z"/></svg>
+        Felhasználók
+      </a>
+      <a href="index.html" class="admin-nav-item" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1);">
+        <svg viewBox="0 0 576 512"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c.2 35.5-28.5 64.3-64 64.3H128.1c-35.3 0-64-28.7-64-64V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c12.2-11.4 31.2-11.4 43.4 0l256 223.5c6.5 7.4 10 15.4 10 24z"/></svg>
+        Vissza az oldalra
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="admin-header">
+      <h1 class="admin-title">Vezérlőpult</h1>
+      <div class="admin-user-info">
+        <span style="font-weight: 500; color: var(--color-gray);" id="adminName">Adminisztrátor</span>
+        <button class="admin-logout" id="btnAdminLogout">Kijelentkezés</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      
+      <!-- Statisztika kártyák -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg viewBox="0 0 640 512"><path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"/></svg>
+          </div>
+          <div class="stat-info">
+            <h3>Regisztrált Felhasználók</h3>
+            <p>128</p>
+          </div>
+        </div>
+        
+        <div class="stat-card red">
+          <div class="stat-icon">
+            <svg viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+          </div>
+          <div class="stat-info">
+            <h3>Aktív Projekt</h3>
+            <p>3</p>
+          </div>
+        </div>
+
+        <div class="stat-card beige">
+          <div class="stat-icon">
+            <svg viewBox="0 0 512 512"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
+          </div>
+          <div class="stat-info">
+            <h3>Adományozók</h3>
+            <p>45</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gyors elérés / modulok -->
+      <div class="module-card">
+        <h2>Legutóbbi regisztrációk</h2>
+        <div style="background: #f9f9f9; padding: 2rem; text-align: center; border-radius: 8px; color: var(--color-gray);">
+          Az adatbázis összekapcsolása után itt fognak megjelenni a legújabb felhasználók.
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

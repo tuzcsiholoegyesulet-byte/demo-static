@@ -4195,8 +4195,12 @@ input[type="checkbox"], input[type="radio"] {
 .search-nav-item {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   position: relative;
+  width: 150px !important;
+  min-width: 150px !important;
+  max-width: 150px !important;
+  flex-shrink: 0 !important;
 }
 .search-nav-group {
   display: flex;
@@ -4216,7 +4220,7 @@ input[type="checkbox"], input[type="radio"] {
   justify-content: center;
   padding: 10px !important;
   border-radius: 50%;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, width 0.3s ease, padding 0.3s ease;
   cursor: pointer;
 }
 .search-nav-btn::after {
@@ -4231,6 +4235,13 @@ input[type="checkbox"], input[type="radio"] {
   height: 20px;
   fill: var(--color-white);
   transition: fill 0.3s ease;
+}
+.search-nav-btn.logged-in {
+  padding: 0 !important;
+}
+.search-nav-btn.logged-in svg {
+  width: 40px;
+  height: 40px;
 }
 .search-nav-btn.gemini-btn {
   width: 0;
@@ -4254,6 +4265,61 @@ input[type="checkbox"], input[type="radio"] {
 .search-nav-btn.gemini-btn:hover svg {
   fill: #A259FF;
 }
+
+/* --- Profile Dropdown Menu in Nav --- */
+.has-profile-dropdown {
+  position: relative;
+}
+.profile-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 20px;
+  margin-top: 15px;
+  min-width: 200px;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+  pointer-events: none;
+  background-color: var(--color-white);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+  transition: all 0.3s ease;
+  z-index: 100;
+  list-style: none;
+}
+.profile-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px; /* Bridge gap */
+}
+.login-nav-btn:hover ~ .profile-dropdown-menu,
+.profile-dropdown-menu:hover {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+.profile-dropdown-menu li {
+  width: 100%;
+}
+.profile-dropdown-menu a {
+  display: block;
+  padding: 10px 20px;
+  color: var(--color-dark-blue);
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+  text-align: left;
+}
+.profile-dropdown-menu a:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--color-teal);
+}
+
 .search-nav-btn.login-nav-btn:hover svg {
   fill: var(--color-teal);
 }
@@ -4628,4 +4694,38 @@ input[type="checkbox"], input[type="radio"] {
   .auth-forms-container {
     padding: 25px 20px 30px;
   }
+}
+
+/* Disable hover effects for floating buttons on the profile page */
+body.profile-page .floating-housing-btn:hover,
+body.profile-page .floating-housing-btn.auto-peek {
+  max-width: 65px !important;
+  background-color: var(--color-dark-blue) !important;
+}
+body.profile-page .floating-fecske-btn:hover,
+body.profile-page .floating-fecske-btn.auto-peek {
+  max-width: 65px !important;
+  background-color: var(--color-teal) !important;
+}
+body.profile-page .floating-bistro-btn:hover,
+body.profile-page .floating-bistro-btn.auto-peek {
+  max-width: 65px !important;
+  background-color: #f39c12 !important;
+}
+body.profile-page .floating-projects-btn:hover,
+body.profile-page .floating-projects-btn.auto-peek {
+  max-width: 65px !important;
+  background-color: var(--color-red) !important;
+}
+
+body.profile-page .floating-housing-btn:hover span.text,
+body.profile-page .floating-housing-btn.auto-peek span.text,
+body.profile-page .floating-fecske-btn:hover span.text,
+body.profile-page .floating-fecske-btn.auto-peek span.text,
+body.profile-page .floating-bistro-btn:hover span.text,
+body.profile-page .floating-bistro-btn.auto-peek span.text,
+body.profile-page .floating-projects-btn:hover span.text,
+body.profile-page .floating-projects-btn.auto-peek span.text {
+  opacity: 0 !important;
+  visibility: hidden !important;
 }

@@ -1,5 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC0WEx-zQaYEZqDYdHnx32bjiXYhGhJ2iY",
@@ -11,7 +13,72 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+
+// Képtömörítő és átméretező funkció a böngészőben (kliens oldalon)
+window.compressImage = (file, maxWidth = 1920, quality = 0.8) => {
+    return new Promise((resolve, reject) => {
+        // Ha nem kép (pl. PDF), akkor eredetiben hagyjuk
+        if (!file.type.startsWith('image/') || file.type === 'image/gif') {
+            resolve(file);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = event => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                // Átméretezés, ha túl széles
+                if (width > maxWidth) {
+                    height = Math.round((height * maxWidth) / width);
+                    width = maxWidth;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Konvertálás gyors és takarékos WebP formátumba
+                canvas.toBlob(blob => {
+                    if (blob) {
+                        const newFileName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+                        const newFile = new File([blob], newFileName, {
+                            type: 'image/webp',
+                            lastModified: Date.now()
+                        });
+                        resolve(newFile);
+                    } else {
+                        resolve(file); // Fallback hiba esetén
+                    }
+                }, 'image/webp', quality);
+            };
+            img.onerror = error => resolve(file); // Hibás kép esetén feltöltjük eredetiben
+        };
+        reader.onerror = error => reject(error);
+    });
+};
+
+// Globális fájlfeltöltő függvény a CMS-hez (Optimalizálással)
+window.uploadFileToStorage = async (file, pathPrefix = 'uploads/') => {
+    if (!file) return null;
+    
+    // Optimalizáljuk a fájlt (ha kép, akkor kicsinyíti és WebP-be rakja)
+    const processedFile = await window.compressImage(file);
+    
+    const fileName = Date.now() + '_' + processedFile.name;
+    const storageRef = ref(storage, pathPrefix + fileName);
+    await uploadBytes(storageRef, processedFile);
+    return await getDownloadURL(storageRef);
+};
 
 // 1. Dinamikus Auth Modal (Felugró ablak) HTML injektálása
 const authModalHTML = `
@@ -187,9 +254,16 @@ window.handleLogin = async (e) => {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     try {
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
         authModal.close();
-        window.location.reload();
+        
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists() && userDoc.data().role === 'admin') {
+            window.location.href = 'admin.html';
+        } else {
+            window.location.reload();
+        }
     } catch (error) {
         console.error(error);
         let errorMsg = 'Helytelen e-mail cím vagy jelszó.';
@@ -205,7 +279,16 @@ window.handleRegister = async (e) => {
     const password = document.getElementById('regPassword').value;
     const firstname = document.getElementById('regFirstname').value;
     try {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        await setDoc(doc(db, "users", user.uid), {
+            email: user.email,
+            firstname: firstname,
+            role: 'user',
+            createdAt: new Date().toISOString()
+        });
+        
         alert('Sikeres regisztráció! Üdvözlünk, ' + firstname + '!');
         authModal.close();
         window.location.reload();
@@ -221,13 +304,44 @@ window.handleRegister = async (e) => {
 window.handleGoogleAuth = async (e) => {
     if(e) e.preventDefault();
     const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+        prompt: 'select_account'
+    });
     try {
-        await signInWithPopup(auth, provider);
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        
+        let isAdmin = false;
+        try {
+            const userDocRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userDocRef);
+            
+            if (!userDoc.exists()) {
+                await setDoc(userDocRef, {
+                    email: user.email,
+                    firstname: user.displayName || '',
+                    role: 'user',
+                    createdAt: new Date().toISOString()
+                });
+            } else {
+                isAdmin = userDoc.data().role === 'admin';
+            }
+        } catch (dbError) {
+            console.warn("Firestore nem érhető el vagy jogosultság hiányzik:", dbError);
+        }
+        
         authModal.close();
-        window.location.reload();
+        if (isAdmin) {
+            window.location.href = 'admin.html';
+        } else {
+            window.location.reload();
+        }
     } catch (error) {
-        console.error(error);
-        alert('Hiba a Google bejelentkezés során.');
+        console.error("Google Auth error:", error);
+        // Csak akkor dobunk hibaüzenetet, ha nem a felhasználó zárta be az ablakot
+        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+            alert('Hiba a Google bejelentkezés során: ' + error.message);
+        }
     }
 };
 
@@ -235,7 +349,12 @@ window.handleLogout = async (e) => {
     if(e) e.preventDefault();
     try {
         await signOut(auth);
-        window.location.reload();
+        const path = window.location.pathname;
+        if (path.includes('profil.html') || path.includes('admin.html')) {
+            window.location.href = 'index.html';
+        } else {
+            window.location.reload();
+        }
     } catch(error) {
         console.error(error);
     }
@@ -268,24 +387,71 @@ onAuthStateChanged(auth, (user) => {
     loginBtns.forEach(btn => {
         if (user) {
             // Bejelentkezve
-            btn.innerHTML = `<svg viewBox="0 0 448 512"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/></svg>`;
+            btn.classList.add('logged-in');
+            btn.innerHTML = `<svg viewBox="0 0 512 512"><path d="M399 384.2C376.9 345.8 335.4 320 288 320l-64 0c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"/></svg>`;
             btn.setAttribute('aria-label', 'Profilom');
             btn.href = 'profil.html';
             btn.onclick = null; // Töröljük a modal nyitást, ha eddig az volt
             
-            // Kijelentkezés gomb hozzáadása, ha még nincs
-            if (!btn.nextElementSibling || !btn.nextElementSibling.classList.contains('logout-nav-btn')) {
-                const logoutBtn = document.createElement('a');
-                logoutBtn.href = '#';
-                logoutBtn.className = 'search-nav-btn logout-nav-btn';
-                logoutBtn.setAttribute('aria-label', 'Kijelentkezés');
-                logoutBtn.title = 'Kijelentkezés';
-                logoutBtn.innerHTML = `<svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>`;
-                logoutBtn.onclick = window.handleLogout;
-                btn.parentNode.insertBefore(logoutBtn, btn.nextSibling);
+            // Készítsük el a lenyíló menüt, ha még nincs
+            if (!btn.parentNode.querySelector('.profile-dropdown-menu')) {
+                // Hozzáadjuk a szülőhöz a szükséges stílus osztályt a hover kezeléshez
+                btn.parentNode.classList.add('has-profile-dropdown');
+                
+                const dropdown = document.createElement('ul');
+                dropdown.className = 'dropdown-menu profile-dropdown-menu';
+                
+                // Alapértelmezett HTML
+                dropdown.innerHTML = `
+                    <li><a href="profil.html#profil">Profil</a></li>
+                    <li><a href="profil.html#onkentes">Önkéntes munka</a></li>
+                    <li><a href="profil.html#tamogatas">Támogatás</a></li>
+                    <li id="admin-menu-item" style="display:none;"><a href="admin.html" style="color: var(--color-teal); font-weight: bold;">Admin Panel</a></li>
+                    <li><hr style="margin: 0.5rem 0; border-color: rgba(0,0,0,0.1);"></li>
+                    <li><a href="#" class="logout-action" style="color: var(--color-red);">Kijelentkezés</a></li>
+                `;
+                
+                // Profil adatok frissítő függvénye
+                const updateProfilePage = (name) => {
+                    const welcomeText = document.getElementById('profileWelcomeText');
+                    if (welcomeText) welcomeText.textContent = `Üdvözlünk, ${name}!`;
+                    const displayName = document.getElementById('profileDisplayName');
+                    if (displayName) displayName.textContent = name;
+                    const emailEl = document.getElementById('profileEmail');
+                    if (emailEl) emailEl.textContent = user.email;
+                };
+
+                // Kijelentkezés esemény hozzárendelése
+                const logoutLink = dropdown.querySelector('.logout-action');
+                logoutLink.onclick = window.handleLogout;
+                
+                // Jogosultság ellenőrzése és Admin gomb megjelenítése
+                getDoc(doc(db, "users", user.uid)).then(userDoc => {
+                    let displayString = user.displayName || user.email.split('@')[0];
+                    if (userDoc.exists()) {
+                        const data = userDoc.data();
+                        if (data.role === 'admin') {
+                            const adminItem = dropdown.querySelector('#admin-menu-item');
+                            if (adminItem) adminItem.style.display = 'block';
+                        }
+                        if (data.firstname) displayString = data.firstname;
+                    }
+                    updateProfilePage(displayString);
+                }).catch(err => {
+                    console.error("Error fetching user role:", err);
+                    updateProfilePage(user.displayName || user.email.split('@')[0]);
+                });
+                
+                // Beillesztés a gomb mellé
+                btn.parentNode.insertBefore(dropdown, btn.nextSibling);
             }
+            
+            // Ha a régi különálló kijelentkezés gomb megvan, töröljük
+            const oldLogoutBtn = btn.parentNode.querySelector('.logout-nav-btn');
+            if (oldLogoutBtn) oldLogoutBtn.remove();
         } else {
             // Nincs bejelentkezve -> Modal megnyitása kattintásra
+            btn.classList.remove('logged-in');
             btn.innerHTML = `<svg viewBox="0 0 448 512"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/></svg>`;
             btn.setAttribute('aria-label', 'Bejelentkezés');
             btn.href = '#';
@@ -294,10 +460,32 @@ onAuthStateChanged(auth, (user) => {
                 window.openAuthModal();
             };
             
-            // Ha van kijelentkezés gomb, töröljük
+            // Tisztítás, ha korábban be volt jelentkezve
+            btn.parentNode.classList.remove('has-profile-dropdown');
+            const dropdown = btn.parentNode.querySelector('.profile-dropdown-menu');
+            if (dropdown) dropdown.remove();
+            
+            // Ha van régi kijelentkezés gomb, töröljük
             if (btn.nextElementSibling && btn.nextElementSibling.classList.contains('logout-nav-btn')) {
                 btn.nextElementSibling.remove();
             }
         }
     });
+
+    // Bistro specific logic
+    const bistroPrompt = document.getElementById('bistro-auth-prompt');
+    const bistroEmail = document.getElementById('own-email');
+    const bistroName = document.getElementById('own-name');
+    if (user) {
+        if (bistroPrompt) bistroPrompt.style.display = 'none';
+        if (bistroEmail && !bistroEmail.value) {
+            bistroEmail.value = user.email;
+            if (typeof updateTray === 'function') updateTray();
+        }
+        if (bistroName && user.displayName && !bistroName.value) {
+            bistroName.value = user.displayName;
+        }
+    } else {
+        if (bistroPrompt) bistroPrompt.style.display = 'block';
+    }
 });
