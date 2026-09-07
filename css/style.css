@@ -4195,12 +4195,8 @@ input[type="checkbox"], input[type="radio"] {
 .search-nav-item {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   position: relative;
-  width: 150px !important;
-  min-width: 150px !important;
-  max-width: 150px !important;
-  flex-shrink: 0 !important;
 }
 .search-nav-group {
   display: flex;
