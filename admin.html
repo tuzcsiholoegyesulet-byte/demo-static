@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tűzcsiholó Egyesület | Admin Panel</title>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
   <link rel="stylesheet" href="css/style.css?v=3">
   <style>
     /* Admin speciális stílusok (Javított, robusztus elrendezés) */
@@ -326,7 +329,7 @@
     }
     .accordion-item.open > .accordion-body {
       padding: 1.5rem;
-      max-height: 3000px; /* nagy érték a tartalomnak */
+      max-height: 20000px; /* nagy érték a tartalomnak */
     }
     
     /* Sub-accordion (Almenük stílusa) */
@@ -420,6 +423,39 @@
     }
     input:checked + .slider { background-color: var(--color-teal); }
     input:checked + .slider:before { transform: translateX(24px); }
+  </style>
+
+  <style>
+    /* Admin Modal Styles */
+    .admin-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    .admin-modal.show { display: flex; }
+    .admin-modal-content {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .admin-modal-close {
+      position: absolute;
+      top: 15px; right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      background: none; border: none;
+      color: #333;
+    }
+    .admin-modal-close:hover { color: var(--color-red); }
   </style>
 </head>
 <body class="admin-dashboard">
@@ -545,18 +581,31 @@
                       <input type="text" id="newsTitle" class="admin-form-control" required>
                     </div>
                     <div class="admin-form-group">
+                      <label for="newsYoutubeLink">Youtube videó link</label>
+                      <input type="text" id="newsYoutubeLink" class="admin-form-control">
+                    </div>
+                    <div class="admin-form-group">
                       <label for="newsExcerpt">Rövid bevezető (Excerpt)</label>
                       <textarea id="newsExcerpt" class="admin-form-control" style="min-height: 80px;" required></textarea>
                     </div>
                     <div class="admin-form-group">
-                      <label for="newsContent">Tartalom</label>
-                      <textarea id="newsContent" class="admin-form-control" required></textarea>
+                      <label for="newsContentEditor">Tartalom</label>
+                      <!-- Quill Editor Container -->
+                      <div id="newsContentEditor" style="height: 300px; background: white;"></div>
+                    </div>
+                    <div class="admin-form-group">
+                      <label>Albumokhoz csatolás</label>
+                      <div id="newsAlbumCheckboxes" style="max-height: 150px; overflow-y: auto; background: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></div>
                     </div>
                     <div class="admin-form-group">
                       <label>Borítókép</label>
                       <div class="file-upload-wrapper">
                         <input type="file" id="newsImage" accept="image/*" class="admin-form-control" style="padding: 0.4rem;">
                       </div>
+                    </div>
+                    <div class="admin-form-group">
+                      <label for="newsDate">Publikálás dátuma (opcionális, üresen hagyva a mai napot menti)</label>
+                      <input type="date" id="newsDate" class="admin-form-control">
                     </div>
                     <div class="admin-form-group" style="display: flex; align-items: center; gap: 15px;">
                       <label style="margin: 0;">Publikus (Közzétéve)</label>
@@ -567,6 +616,21 @@
                     </div>
                     <button type="submit" class="admin-btn">Mentés és Feltöltés</button>
                   </form>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Feltöltött hírek listája -->
+            <div class="accordion-item sub-accordion">
+              <div class="accordion-header">
+                <span>Feltöltött hírek listája</span>
+                <svg viewBox="0 0 320 512"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
+              </div>
+              <div class="accordion-body">
+                <div class="module-card" style="box-shadow: none; border: none; margin: 0; padding-top: 0;">
+                  <div class="admin-news-list" id="admin-news-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- A hírek listáját a JS fogja ide betölteni -->
+                  </div>
                 </div>
               </div>
             </div>
@@ -584,26 +648,236 @@
             
             <div class="accordion-item sub-accordion">
               <div class="accordion-header">
-                <span>Munkatárs hozzáadása (Csapatunk)</span>
+                <span>1_Csapattagok</span>
                 <svg viewBox="0 0 320 512"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
               </div>
               <div class="accordion-body">
                 <div class="module-card" style="box-shadow: none; border: none; margin: 0; padding-top: 0;">
-                  <form id="form-team">
-                    <div class="admin-form-group">
-                      <label for="teamName">Név</label>
-                      <input type="text" id="teamName" class="admin-form-control" required>
-                    </div>
-                    <div class="admin-form-group">
-                      <label for="teamRole">Pozíció / Titulus</label>
-                      <input type="text" id="teamRole" class="admin-form-control" required>
-                    </div>
-                    <div class="admin-form-group">
-                      <label>Fénykép</label>
-                      <input type="file" id="teamImage" accept="image/*" class="admin-form-control" style="padding: 0.4rem;" required>
-                    </div>
-                    <button type="submit" class="admin-btn">Munkatárs Mentése</button>
-                  </form>
+                  <form class="form-team" data-category="csapattag">
+  <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+    <!-- Left side: Image -->
+    <div style="flex: 0 0 200px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="width: 200px; height: 250px; background: #eee; border: 2px dashed #ccc; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+         <img src="" class="preview-img" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+         <span class="preview-text" style="color: #888; text-align: center; padding: 10px;">Fénykép előnézet<br><small>(kattints a feltöltéshez)</small></span>
+         <input type="file" name="teamImage" accept="image/*" class="admin-form-control img-input" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0; cursor: pointer;" required>
+      </div>
+    </div>
+    
+    <!-- Right side: Data -->
+    <div style="flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 10px;">
+      <div class="admin-form-group" style="margin-bottom: 0;">
+        <label style="margin-bottom: 4px;">Név</label>
+        <input type="text" name="teamName" class="admin-form-control" required>
+      </div>
+      <div class="admin-form-group" style="margin-bottom: 0;">
+        <label style="margin-bottom: 4px;">Becenév</label>
+        <input type="text" name="teamNickname" class="admin-form-control" required>
+      </div>
+      <div class="admin-form-group" style="margin-bottom: 0;">
+        <label style="margin-bottom: 4px;">Pozíció / Titulus</label>
+        <input type="text" name="teamRole" class="admin-form-control">
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <div class="admin-form-group" style="flex: 1; margin-bottom: 0;">
+          <label style="margin-bottom: 4px;">Telefonszám</label>
+          <input type="text" name="teamPhone" class="admin-form-control" placeholder="+36 30 ...">
+        </div>
+        <div class="admin-form-group" style="flex: 1; margin-bottom: 0;">
+          <label style="margin-bottom: 4px;">Emailcím</label>
+          <input type="email" name="teamEmail" class="admin-form-control">
+        </div>
+      </div>
+      <div class="admin-form-group" style="margin-bottom: 0;">
+        <label style="margin-bottom: 4px;">Sorrend</label>
+        <select name="teamOrder" class="admin-form-control">
+          <option value="1">1.</option>
+<option value="2">2.</option>
+<option value="3">3.</option>
+<option value="4">4.</option>
+<option value="5">5.</option>
+<option value="6">6.</option>
+<option value="7">7.</option>
+<option value="8">8.</option>
+<option value="9">9.</option>
+<option value="10">10.</option>
+<option value="11">11.</option>
+<option value="12">12.</option>
+<option value="13">13.</option>
+<option value="14">14.</option>
+<option value="15">15.</option>
+<option value="16">16.</option>
+<option value="17">17.</option>
+<option value="18">18.</option>
+<option value="19">19.</option>
+<option value="20">20.</option>
+<option value="21">21.</option>
+<option value="22">22.</option>
+<option value="23">23.</option>
+<option value="24">24.</option>
+<option value="25">25.</option>
+<option value="26">26.</option>
+<option value="27">27.</option>
+<option value="28">28.</option>
+<option value="29">29.</option>
+<option value="30">30.</option>
+<option value="31">31.</option>
+<option value="32">32.</option>
+<option value="33">33.</option>
+<option value="34">34.</option>
+<option value="35">35.</option>
+<option value="36">36.</option>
+<option value="37">37.</option>
+<option value="38">38.</option>
+<option value="39">39.</option>
+<option value="40">40.</option>
+<option value="41">41.</option>
+<option value="42">42.</option>
+<option value="43">43.</option>
+<option value="44">44.</option>
+<option value="45">45.</option>
+<option value="46">46.</option>
+<option value="47">47.</option>
+<option value="48">48.</option>
+<option value="49">49.</option>
+<option value="50">50.</option>
+
+        </select>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bottom: Description -->
+  <div class="admin-form-group">
+    <label style="margin-bottom: 4px;">Leírás</label>
+    <textarea name="teamDescription" class="admin-form-control" rows="4"></textarea>
+  </div>
+  
+  <button type="submit" class="admin-btn">Csapattag Mentése</button>
+</form>
+  <hr style="margin: 2rem 0; border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
+  <h3 style="margin-bottom: 1rem; color: var(--color-dark-blue);">Feltöltött tagok listája</h3>
+  <div class="admin-team-list" id="admin-list-csapattag" style="display: flex; flex-direction: column; gap: 15px;">
+    <!-- JS tölti be -->
+  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item sub-accordion">
+              <div class="accordion-header">
+                <span>2_További tagjaink</span>
+                <svg viewBox="0 0 320 512"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
+              </div>
+              <div class="accordion-body">
+                <div class="module-card" style="box-shadow: none; border: none; margin: 0; padding-top: 0;">
+                  <form class="form-team" data-category="tovabbi_tag">
+  <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+    <!-- Left side: Image -->
+    <div style="flex: 0 0 200px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="width: 200px; height: 250px; background: #eee; border: 2px dashed #ccc; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+         <img src="" class="preview-img" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+         <span class="preview-text" style="color: #888; text-align: center; padding: 10px;">Fénykép előnézet<br><small>(kattints a feltöltéshez)</small></span>
+         <input type="file" name="teamImage" accept="image/*" class="admin-form-control img-input" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0; cursor: pointer;" required>
+      </div>
+    </div>
+    
+    <!-- Right side: Data -->
+    <div style="flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 10px;">
+      <div class="admin-form-group" style="margin-bottom: 0;">
+        <label style="margin-bottom: 4px;">Név</label>
+        <input type="text" name="teamName" class="admin-form-control" required>
+      </div>
+      <div class="admin-form-group" style="margin-bottom: 0;">
+        <label style="margin-bottom: 4px;">Becenév</label>
+        <input type="text" name="teamNickname" class="admin-form-control" required>
+      </div>
+      <div class="admin-form-group" style="margin-bottom: 0;">
+        <label style="margin-bottom: 4px;">Pozíció / Titulus</label>
+        <input type="text" name="teamRole" class="admin-form-control">
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <div class="admin-form-group" style="flex: 1; margin-bottom: 0;">
+          <label style="margin-bottom: 4px;">Telefonszám</label>
+          <input type="text" name="teamPhone" class="admin-form-control" placeholder="+36 30 ...">
+        </div>
+        <div class="admin-form-group" style="flex: 1; margin-bottom: 0;">
+          <label style="margin-bottom: 4px;">Emailcím</label>
+          <input type="email" name="teamEmail" class="admin-form-control">
+        </div>
+      </div>
+      <div class="admin-form-group" style="margin-bottom: 0;">
+        <label style="margin-bottom: 4px;">Sorrend</label>
+        <select name="teamOrder" class="admin-form-control">
+          <option value="1">1.</option>
+<option value="2">2.</option>
+<option value="3">3.</option>
+<option value="4">4.</option>
+<option value="5">5.</option>
+<option value="6">6.</option>
+<option value="7">7.</option>
+<option value="8">8.</option>
+<option value="9">9.</option>
+<option value="10">10.</option>
+<option value="11">11.</option>
+<option value="12">12.</option>
+<option value="13">13.</option>
+<option value="14">14.</option>
+<option value="15">15.</option>
+<option value="16">16.</option>
+<option value="17">17.</option>
+<option value="18">18.</option>
+<option value="19">19.</option>
+<option value="20">20.</option>
+<option value="21">21.</option>
+<option value="22">22.</option>
+<option value="23">23.</option>
+<option value="24">24.</option>
+<option value="25">25.</option>
+<option value="26">26.</option>
+<option value="27">27.</option>
+<option value="28">28.</option>
+<option value="29">29.</option>
+<option value="30">30.</option>
+<option value="31">31.</option>
+<option value="32">32.</option>
+<option value="33">33.</option>
+<option value="34">34.</option>
+<option value="35">35.</option>
+<option value="36">36.</option>
+<option value="37">37.</option>
+<option value="38">38.</option>
+<option value="39">39.</option>
+<option value="40">40.</option>
+<option value="41">41.</option>
+<option value="42">42.</option>
+<option value="43">43.</option>
+<option value="44">44.</option>
+<option value="45">45.</option>
+<option value="46">46.</option>
+<option value="47">47.</option>
+<option value="48">48.</option>
+<option value="49">49.</option>
+<option value="50">50.</option>
+
+        </select>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bottom: Description -->
+  <div class="admin-form-group">
+    <label style="margin-bottom: 4px;">Leírás</label>
+    <textarea name="teamDescription" class="admin-form-control" rows="4"></textarea>
+  </div>
+  
+  <button type="submit" class="admin-btn">További tag Mentése</button>
+</form>
+  <hr style="margin: 2rem 0; border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
+  <h3 style="margin-bottom: 1rem; color: var(--color-dark-blue);">Feltöltött tagok listája</h3>
+  <div class="admin-team-list" id="admin-list-tovabbi_tag" style="display: flex; flex-direction: column; gap: 15px;">
+    <!-- JS tölti be -->
+  </div>
                 </div>
               </div>
             </div>
@@ -616,60 +890,112 @@
               <div class="accordion-body">
                 <div class="module-card" style="box-shadow: none; border: none; margin: 0; padding-top: 0;">
                   <form id="form-sponsors">
-                    <div class="admin-form-group">
-                      <label for="sponsorName">Támogató neve</label>
-                      <input type="text" id="sponsorName" class="admin-form-control" required>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+                      <!-- Left side: Image Upload -->
+                      <div style="flex: 0 0 200px; display: flex; flex-direction: column; gap: 10px;">
+                        <div style="width: 200px; height: 120px; background: #eee; border: 2px dashed #ccc; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+                           <img id="sponsorPreviewImg" src="" style="width: 100%; height: 100%; object-fit: contain; display: none;">
+                           <input type="file" id="sponsorLogo" accept="image/*" class="admin-form-control img-input" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0; cursor: pointer;" required>
+                           <span id="sponsorPreviewText" style="color:#666; pointer-events:none; font-size: 0.9rem; text-align: center;">Kattints a logó feltöltéséhez</span>
+                        </div>
+                      </div>
+                      
+                      <!-- Right side: Name -->
+                      <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="admin-form-group" style="margin-bottom: 0;">
+                          <label for="sponsorName">Támogató neve (azonosításhoz)</label>
+                          <input type="text" id="sponsorName" class="admin-form-control" required>
+                        </div>
+                        <div style="text-align: left; margin-top: 15px;">
+                          <button type="submit" class="admin-btn">Támogató Hozzáadása</button>
+                        </div>
+                      </div>
                     </div>
-                    <div class="admin-form-group">
-                      <label>Logó</label>
-                      <input type="file" id="sponsorLogo" accept="image/*" class="admin-form-control" style="padding: 0.4rem;" required>
-                    </div>
-                    <button type="submit" class="admin-btn">Támogató Mentése</button>
                   </form>
+                  <hr style="margin: 2rem 0; border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
+                  <h3 style="margin-bottom: 1rem; color: var(--color-dark-blue);">Feltöltött Támogatók</h3>
+                  <div class="admin-sponsors-list" id="admin-sponsors-list" style="display: flex; flex-wrap: wrap; gap: 15px;">
+                    <!-- JS tölti be -->
+                  </div>
                 </div>
               </div>
             </div>
             
             <div class="accordion-item sub-accordion">
               <div class="accordion-header">
-                <span>Galéria kép feltöltése (Galéria)</span>
+                <span>Átláthatóság</span>
                 <svg viewBox="0 0 320 512"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
               </div>
               <div class="accordion-body">
                 <div class="module-card" style="box-shadow: none; border: none; margin: 0; padding-top: 0;">
-                  <form id="form-gallery">
-                    <div class="admin-form-group">
-                      <label>Fénykép kiválasztása</label>
-                      <input type="file" id="galleryImage" accept="image/*" class="admin-form-control" style="padding: 0.4rem;" required>
+                  <!-- Mappa létrehozása -->
+                  <form id="form-transparency-folder" style="margin-bottom: 20px; padding: 15px; background: #f0f7f9; border-radius: 8px;">
+                    <h4 style="margin-top:0; color:var(--color-dark-blue); font-size:1rem; margin-bottom:10px;">1. Új Mappa Létrehozása</h4>
+                    <div style="display: flex; gap: 10px;">
+                      <input type="text" id="transparencyFolderName" class="admin-form-control" placeholder="Mappa neve (pl. 2026 Dokumentumok)" required style="margin-bottom:0;">
+                      <button type="submit" class="admin-btn" style="white-space: nowrap;">Létrehozás</button>
                     </div>
-                    <button type="submit" class="admin-btn">Kép Feltöltése</button>
                   </form>
+                  
+                  <!-- Dokumentum feltöltése a mappába -->
+                  <form id="form-transparency" style="padding: 15px; background: #fdfdfd; border: 1px solid #eee; border-radius: 8px;">
+                    <h4 style="margin-top:0; color:var(--color-dark-blue); font-size:1rem; margin-bottom:15px;">2. Dokumentum feltöltése meglévő mappába</h4>
+                    <div class="admin-form-group">
+                      <label for="transparencyFolderSelect">Cél Mappa kiválasztása</label>
+                      <select id="transparencyFolderSelect" class="admin-form-control" required>
+                        <option value="">-- Válassz mappát --</option>
+                        <!-- JS tölti fel -->
+                      </select>
+                    </div>
+                    <div class="admin-form-group">
+                      <label for="transparencyName">Dokumentum neve</label>
+                      <input type="text" id="transparencyName" class="admin-form-control" placeholder="pl. 2026. évi beszámoló" required>
+                    </div>
+                    <div class="admin-form-group">
+                      <label>Dokumentum Fájl (PDF)</label>
+                      <input type="file" id="transparencyFile" accept="application/pdf" class="admin-form-control" style="padding: 0.4rem;" required>
+                    </div>
+                    <button type="submit" class="admin-btn">Dokumentum Mentése</button>
+                  </form>
+                  <hr style="margin: 2rem 0; border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
+                  <h3 style="margin-bottom: 1rem; color: var(--color-dark-blue);">Feltöltött Dokumentumok</h3>
+                  <div id="admin-transparency-list">
+                    <!-- JS tölti be -->
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="accordion-item sub-accordion">
               <div class="accordion-header">
-                <span>Pénzügyi Beszámoló feltöltése (Átláthatóság)</span>
+                <span>Galéria</span>
                 <svg viewBox="0 0 320 512"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
               </div>
               <div class="accordion-body">
                 <div class="module-card" style="box-shadow: none; border: none; margin: 0; padding-top: 0;">
-                  <form id="form-transparency">
+                  <form id="form-album">
                     <div class="admin-form-group">
-                      <label for="transparencyYear">Évszám</label>
-                      <input type="number" id="transparencyYear" class="admin-form-control" min="2000" max="2100" required>
+                      <label for="albumName">Album Neve</label>
+                      <input type="text" id="albumName" class="admin-form-control" required>
                     </div>
                     <div class="admin-form-group">
-                      <label for="transparencyName">Dokumentum neve</label>
-                      <input type="text" id="transparencyName" class="admin-form-control" placeholder="pl. 2023. évi beszámoló" required>
+                      <label for="albumDate">Album Dátuma (opcionális)</label>
+                      <input type="date" id="albumDate" class="admin-form-control">
                     </div>
                     <div class="admin-form-group">
-                      <label>Dokumentum Fájl (PDF)</label>
-                      <input type="file" id="transparencyFile" accept="application/pdf" class="admin-form-control" style="padding: 0.4rem;" required>
+                      <label>Képek Feltöltése</label>
+                      <input type="file" id="albumImages" accept="image/*" class="admin-form-control" style="padding: 0.4rem;" multiple required>
                     </div>
-                    <button type="submit" class="admin-btn">Beszámoló Mentése</button>
+                    <button type="submit" class="admin-btn">Album Létrehozása</button>
                   </form>
+                  <hr style="margin: 2rem 0; border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin-bottom: 0; color: var(--color-dark-blue);">Feltöltött Albumok</h3>
+                    <button type="button" id="btnGenerateTestAlbums" class="admin-btn" style="background-color: var(--color-orange); padding: 0.5rem 1rem; font-size: 0.9rem;">+ 2 Teszt Album Generálása</button>
+                  </div>
+                  <div id="admin-albums-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- JS tölti be -->
+                  </div>
                 </div>
               </div>
             </div>
@@ -698,8 +1024,17 @@
                       <label for="mediaDate">Megjelenés dátuma</label>
                       <input type="date" id="mediaDate" class="admin-form-control" required>
                     </div>
+                    <div class="admin-form-group">
+                      <label for="mediaImage">Kép (Opcionális borítókép)</label>
+                      <input type="file" id="mediaImage" class="admin-form-control" accept="image/*">
+                    </div>
                     <button type="submit" class="admin-btn">Média Mentése</button>
                   </form>
+                </div>
+                
+                <h4 style="margin-top:30px; margin-bottom:10px; color:var(--color-dark-blue);">Feltöltött Média Megjelenések</h4>
+                <div id="admin-media-list">
+                    <!-- JS tölti ki -->
                 </div>
               </div>
             </div>
@@ -853,6 +1188,204 @@
     </div>
   </main>
 
-  <script type="module" src="js/admin.js"></script>
+  <script type="module" src="js/admin.js?v=2"></script>
+
+  <!-- Hír Szerkesztés Modal -->
+  <div id="editNewsModal" class="admin-modal">
+    <div class="admin-modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+      <span class="admin-modal-close" id="closeEditNewsModal">&times;</span>
+      <h3 style="margin-bottom: 20px;">Hír szerkesztése</h3>
+      <form id="form-edit-news">
+        <input type="hidden" id="editNewsId">
+        <input type="hidden" id="editNewsOldImageUrl">
+        
+        <div class="admin-form-group">
+          <label for="editNewsTitle">Cím</label>
+          <input type="text" id="editNewsTitle" class="admin-form-control" required>
+        </div>
+        <div class="admin-form-group">
+          <label for="editNewsYoutubeLink">Youtube videó link</label>
+          <input type="text" id="editNewsYoutubeLink" class="admin-form-control">
+        </div>
+        <div class="admin-form-group">
+          <label for="editNewsExcerpt">Rövid bevezető (Excerpt)</label>
+          <textarea id="editNewsExcerpt" class="admin-form-control" style="min-height: 80px;" required></textarea>
+        </div>
+        <div class="admin-form-group">
+          <label for="editNewsContentEditor">Tartalom</label>
+          <!-- Quill Editor Container for Edit -->
+          <div id="editNewsContentEditor" style="height: 300px; background: white;"></div>
+        </div>
+        <div class="admin-form-group">
+          <label>Albumokhoz csatolás</label>
+          <div id="editNewsAlbumCheckboxes" style="max-height: 150px; overflow-y: auto; background: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></div>
+        </div>
+        <div class="admin-form-group">
+          <label>Új Borítókép (hagyd üresen, ha nem cseréled)</label>
+          <div class="file-upload-wrapper">
+            <input type="file" id="editNewsImage" accept="image/*" class="admin-form-control" style="padding: 0.4rem;">
+          </div>
+          <img id="editNewsPreview" src="" style="width: 150px; height: auto; margin-top: 10px; display: none; border-radius: 8px;">
+        </div>
+        <div class="admin-form-group">
+          <label for="editNewsDate">Publikálás dátuma</label>
+          <input type="date" id="editNewsDate" class="admin-form-control" required>
+        </div>
+        <div class="admin-form-group" style="display: flex; align-items: center; gap: 15px;">
+          <label style="margin: 0;">Publikus (Közzétéve)</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="editNewsPublished">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <button type="submit" class="admin-btn">Módosítások Mentése</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Csapattag Szerkesztés Modal -->
+  <div id="editTeamModal" class="admin-modal">
+    <div class="admin-modal-content" style="max-width: 600px;">
+      <button class="admin-modal-close" id="closeEditTeamModal">&times;</button>
+      <h3 style="margin-bottom: 20px;">Csapattag szerkesztése</h3>
+      <form id="form-edit-team">
+        <input type="hidden" id="editTeamId">
+        <input type="hidden" id="editTeamOldImageUrl">
+        <input type="hidden" id="editTeamCategory">
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+          <div style="flex: 0 0 150px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="width: 150px; height: 180px; background: #eee; border: 2px dashed #ccc; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+               <img id="editTeamPreviewImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
+               <input type="file" id="editTeamImage" accept="image/*" class="admin-form-control img-input" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0; cursor: pointer;">
+            </div>
+            <small style="text-align: center; color: #666;">Kattints az új kép feltöltéséhez</small>
+          </div>
+          
+          <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 10px;">
+            <div class="admin-form-group" style="margin-bottom: 0;">
+              <label style="margin-bottom: 4px;">Név</label>
+              <input type="text" id="editTeamName" class="admin-form-control" required>
+            </div>
+            <div class="admin-form-group" style="margin-bottom: 0;">
+              <label style="margin-bottom: 4px;">Becenév</label>
+              <input type="text" id="editTeamNickname" class="admin-form-control" required>
+            </div>
+            <div class="admin-form-group" style="margin-bottom: 0;">
+              <label style="margin-bottom: 4px;">Pozíció / Titulus</label>
+              <input type="text" id="editTeamRole" class="admin-form-control">
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <div class="admin-form-group" style="flex: 1; margin-bottom: 0;">
+            <label style="margin-bottom: 4px;">Telefonszám</label>
+            <input type="text" id="editTeamPhone" class="admin-form-control">
+          </div>
+          <div class="admin-form-group" style="flex: 1; margin-bottom: 0;">
+            <label style="margin-bottom: 4px;">Emailcím</label>
+            <input type="email" id="editTeamEmail" class="admin-form-control">
+          </div>
+          <div class="admin-form-group" style="flex: 0 0 100px; margin-bottom: 0;">
+            <label style="margin-bottom: 4px;">Sorrend</label>
+            <select id="editTeamOrder" class="admin-form-control">
+<option value="1">1.</option>
+<option value="2">2.</option>
+<option value="3">3.</option>
+<option value="4">4.</option>
+<option value="5">5.</option>
+<option value="6">6.</option>
+<option value="7">7.</option>
+<option value="8">8.</option>
+<option value="9">9.</option>
+<option value="10">10.</option>
+<option value="11">11.</option>
+<option value="12">12.</option>
+<option value="13">13.</option>
+<option value="14">14.</option>
+<option value="15">15.</option>
+<option value="16">16.</option>
+<option value="17">17.</option>
+<option value="18">18.</option>
+<option value="19">19.</option>
+<option value="20">20.</option>
+<option value="21">21.</option>
+<option value="22">22.</option>
+<option value="23">23.</option>
+<option value="24">24.</option>
+<option value="25">25.</option>
+<option value="26">26.</option>
+<option value="27">27.</option>
+<option value="28">28.</option>
+<option value="29">29.</option>
+<option value="30">30.</option>
+<option value="31">31.</option>
+<option value="32">32.</option>
+<option value="33">33.</option>
+<option value="34">34.</option>
+<option value="35">35.</option>
+<option value="36">36.</option>
+<option value="37">37.</option>
+<option value="38">38.</option>
+<option value="39">39.</option>
+<option value="40">40.</option>
+<option value="41">41.</option>
+<option value="42">42.</option>
+<option value="43">43.</option>
+<option value="44">44.</option>
+<option value="45">45.</option>
+<option value="46">46.</option>
+<option value="47">47.</option>
+<option value="48">48.</option>
+<option value="49">49.</option>
+<option value="50">50.</option>
+
+            </select>
+          </div>
+        </div>
+        
+        <div class="admin-form-group">
+          <label style="margin-bottom: 4px;">Leírás</label>
+          <textarea id="editTeamDescription" class="admin-form-control" rows="4"></textarea>
+        </div>
+        
+        <button type="submit" class="admin-btn">Módosítások mentése</button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Támogató Szerkesztés Modal -->
+  <div id="editSponsorModal" class="admin-modal">
+    <div class="admin-modal-content" style="max-width: 500px;">
+      <button class="admin-modal-close" id="closeEditSponsorModal">&times;</button>
+      <h3 style="margin-bottom: 20px;">Támogató szerkesztése</h3>
+      <form id="form-edit-sponsor">
+        <input type="hidden" id="editSponsorId">
+        <input type="hidden" id="editSponsorOldImageUrl">
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+          <div style="flex: 0 0 200px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="width: 200px; height: 120px; background: #eee; border: 2px dashed #ccc; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+               <img id="editSponsorPreviewImg" src="" style="width: 100%; height: 100%; object-fit: contain;">
+               <input type="file" id="editSponsorImage" accept="image/*" class="admin-form-control img-input" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0; cursor: pointer;">
+            </div>
+            <small style="text-align: center; color: #666;">Kattints az új logóhoz</small>
+          </div>
+          
+          <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; justify-content: center;">
+            <div class="admin-form-group" style="margin-bottom: 0;">
+              <label for="editSponsorName">Támogató neve</label>
+              <input type="text" id="editSponsorName" class="admin-form-control" required>
+            </div>
+          </div>
+        </div>
+        
+        <button type="submit" class="admin-btn">Módosítások mentése</button>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>
