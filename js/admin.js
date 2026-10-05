@@ -2022,7 +2022,7 @@ window.loadProjectsList = async function() {
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end;">
-                    ${!isCompleted ? '<button class="admin-btn" style="background-color: var(--color-dark-blue); padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="addProjectPayment(\\'' + docSnap.id + '\\')">Befizetés rögzítése</button>' : ''}
+                    ${!isCompleted ? `<button class="admin-btn" style="background-color: var(--color-dark-blue); padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="addProjectPayment('${docSnap.id}')">Befizetés rögzítése</button>` : ''}
                     <button class="admin-btn" style="background-color: var(--color-teal); padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="editProject('${docSnap.id}')">Szerkesztés</button>
                     <button class="admin-btn" style="background-color: #dc3545; padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="deleteProject('${docSnap.id}')">Törlés</button>
                 </div>
