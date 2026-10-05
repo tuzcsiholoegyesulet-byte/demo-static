@@ -1039,8 +1039,13 @@
           const data = docSnap.data();
           const coverImage = data.imageUrl ? data.imageUrl : 'images/global/Logo_BEZS_emblema.png';
           
+          let link = data.link;
+          if (link && !link.startsWith('http://') && !link.startsWith('https://')) {
+              link = 'https://' + link;
+          }
+          
           html += `
-          <div onclick="window.openArticleViewer('${data.link}', '${data.title.replace(/'/g, "\\'")}')" style="display: block;">
+          <a href="${link}" target="_blank" rel="noopener noreferrer" style="display: block; text-decoration: none;">
             <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'">
               <img src="${coverImage}" style="width: 100%; height: 180px; object-fit: cover;">
               <div style="padding: 20px;">
@@ -1052,7 +1057,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </a>
           `;
       });
       
@@ -1073,37 +1078,7 @@
   });
 </script>
 
-<script>
-window.openArticleViewer = function(url, title) {
-    if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'https://' + url;
-    }
-    const oldModal = document.getElementById('article-viewer-modal');
-    if(oldModal) oldModal.remove();
 
-    const modalHtml = `
-    <div id="article-viewer-modal" style="position: fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:99999; display:flex; justify-content:center; align-items:center; flex-direction:column; padding: 20px; box-sizing: border-box;">
-        <div style="width: 100%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 20px; border-radius: 12px 12px 0 0;">
-            <h3 style="margin: 0; color: var(--color-dark-blue); font-size: 1.2rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 70%;">` + title + `</h3>
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <a href="` + url + `" target="_blank" style="color: var(--color-teal); text-decoration: none; font-weight: bold; font-size: 0.9rem; border: 1px solid var(--color-teal); padding: 5px 10px; border-radius: 5px;">Megnyitás külön lapon &nearr;</a>
-                <button onclick="document.getElementById('article-viewer-modal').remove()" style="background:none; border:none; font-size:28px; font-weight:bold; color:#aaa; cursor:pointer; line-height: 1;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='#aaa'">&times;</button>
-            </div>
-        </div>
-        
-        <div style="width: 100%; max-width: 1200px; height: 80vh; background: white; border-radius: 0 0 12px 12px; overflow: hidden; position: relative;">
-            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--color-gray); z-index: 1;">
-                <p>Cikk betöltése folyamatban...</p>
-                <p style="font-size: 0.85rem; max-width: 400px; margin: 0 auto;">Ha a tartalom rövid időn belül sem jelenik meg, az adott hírportál biztonsági okokból tilthatja az oldalon belüli beágyazást.<br><br>Ebben az esetben kérjük, használd a fenti <strong>"Megnyitás külön lapon"</strong> gombot!</p>
-            </div>
-            
-            <iframe src="` + url + `" style="width: 100%; height: 100%; border: none; position: relative; z-index: 2; background: white;"></iframe>
-        </div>
-    </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-};
-</script>
 
 </body>
 </html>
