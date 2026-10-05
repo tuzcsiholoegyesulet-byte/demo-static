@@ -61,6 +61,7 @@ onAuthStateChanged(auth, async (user) => {
                 loadAdminNews();
                 loadAlbums();
                 if(window.loadMediaList) window.loadMediaList();
+                if(window.loadProjectsList) window.loadProjectsList();
             } else {
                 // Be van jelentkezve, de nem admin/editor
                 alert('Nincs jogosultságod megtekinteni ezt az oldalt.');
@@ -1603,6 +1604,7 @@ window.saveMediaChanges = async function(id) {
                 });
                 alert('Projekt sikeresen mentve!');
                 formProjects.reset();
+                if(window.loadProjectsList) window.loadProjectsList();
             } catch (error) {
                 console.error("Hiba:", error);
                 alert("Hiba történt a mentés során.");
@@ -1979,3 +1981,130 @@ async function compressImage(file, maxWidth = 1920, maxHeight = 1080, quality = 
         reader.onerror = (err) => reject(err);
     });
 }
+
+// --- Projektek listázása és kezelése ---
+window.loadProjectsList = async function() {
+    try {
+        const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        const listContainer = document.getElementById('admin-projects-list');
+        if (!listContainer) return;
+        
+        let listHtml = '';
+        window.adminProjectsList = [];
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            window.adminProjectsList.push({ id: docSnap.id, ...data });
+            
+            const coverImage = data.imageUrl ? data.imageUrl : 'images/global/Logo_BEZS_emblema.png';
+            
+            listHtml += `
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd; margin-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <img src="${coverImage}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;">
+                    <div>
+                        <h4 style="margin:0 0 5px 0; color: var(--color-dark-blue);">${data.title}</h4>
+                        <div style="font-size: 12px; margin-top: 5px;">
+                            ${data.link ? \`<a href="${data.link}" target="_blank" style="color: var(--color-teal); text-decoration: none;">Támogatási link megnyitása</a>\` : '<span style="color:var(--color-gray);">Nincs link</span>'}
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="admin-btn" style="background-color: var(--color-teal); padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="editProject('${docSnap.id}')">Szerkesztés</button>
+                    <button class="admin-btn" style="background-color: #dc3545; padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="deleteProject('${docSnap.id}')">Törlés</button>
+                </div>
+            </div>
+            `;
+        });
+        
+        if (listHtml === '') listHtml = '<div style="color:var(--color-gray); font-size:14px;">Még nincsenek projektek.</div>';
+        listContainer.innerHTML = listHtml;
+    } catch (e) {
+        console.error("Hiba a projektek betöltésekor:", e);
+    }
+};
+
+window.deleteProject = async function(id) {
+    if(confirm("Biztosan törölni szeretnéd ezt a projektet?")) {
+        try {
+            await deleteDoc(doc(db, "projects", id));
+            window.loadProjectsList();
+            alert("Sikeresen törölve!");
+        } catch (e) {
+            console.error(e);
+            alert("Hiba a törlés során!");
+        }
+    }
+};
+
+window.editProject = function(id) {
+    const project = window.adminProjectsList.find(p => p.id === id);
+    if(!project) return;
+    
+    const oldModal = document.getElementById('edit-project-modal');
+    if(oldModal) oldModal.remove();
+    
+    const modalHtml = \`
+    <div id="edit-project-modal" style="position: fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:9999; display:flex; justify-content:center; align-items:center; overflow-y:auto; padding: 20px;">
+        <div style="position:relative; background:white; padding:30px; border-radius:12px; width:100%; max-width:800px; max-height:90vh; overflow-y:auto; box-shadow: 0 5px 30px rgba(0,0,0,0.5);">
+            <button onclick="document.getElementById('edit-project-modal').remove()" style="position:absolute; top:15px; right:20px; background:none; border:none; font-size:28px; font-weight:bold; color:#aaa; cursor:pointer; transition:0.2s;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='#aaa'">&times;</button>
+            
+            <h3 style="margin-bottom: 20px; color: var(--color-dark-blue);">Projekt szerkesztése</h3>
+            <div class="admin-form-group">
+                <label style="display:block; font-weight:600; margin-bottom:5px;">Projekt Címe</label>
+                <input type="text" id="editProjectTitle" class="admin-form-control" value="\${project.title.replace(/"/g, '&quot;')}" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div class="admin-form-group" style="margin-top: 15px;">
+                <label style="display:block; font-weight:600; margin-bottom:5px;">Rövid leírás</label>
+                <textarea id="editProjectDesc" class="admin-form-control" style="width:100%; box-sizing:border-box; min-height:80px;">\${project.description.replace(/"/g, '&quot;')}</textarea>
+            </div>
+            <div class="admin-form-group" style="margin-top: 15px;">
+                <label style="display:block; font-weight:600; margin-bottom:5px;">Támogatási link (URL - Opcionális)</label>
+                <input type="url" id="editProjectLink" class="admin-form-control" value="\${project.link ? project.link.replace(/"/g, '&quot;') : ''}" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div class="admin-form-group" style="margin-top: 15px;">
+                <label style="display:block; font-weight:600; margin-bottom:5px;">Új borítókép feltöltése (opcionális)</label>
+                <input type="file" id="editProjectImage" class="admin-form-control" accept="image/*" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div style="display:flex; gap:10px; margin-top:30px;">
+                <button id="btnSaveProjectChanges" class="admin-btn" style="background-color:var(--color-teal); color:white;" onclick="saveProjectChanges('\${id}')">Módosítások mentése</button>
+                <button class="admin-btn" style="background-color:#6c757d; color:white;" onclick="document.getElementById('edit-project-modal').remove()">Mégse</button>
+            </div>
+        </div>
+    </div>
+    \`;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+};
+
+window.saveProjectChanges = async function(id) {
+    const btn = document.getElementById('btnSaveProjectChanges');
+    btn.textContent = "Mentés...";
+    btn.disabled = true;
+    
+    try {
+        const updateData = {
+            title: document.getElementById('editProjectTitle').value,
+            description: document.getElementById('editProjectDesc').value,
+            link: document.getElementById('editProjectLink').value
+        };
+        
+        const fileInput = document.getElementById('editProjectImage');
+        if(fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const storageRef = ref(storage, \`projects/\${Date.now()}_optimized.webp\`);
+            const snapshot = await uploadBytes(storageRef, await compressImage(file));
+            updateData.imageUrl = await getDownloadURL(snapshot.ref);
+        }
+        
+        await updateDoc(doc(db, "projects", id), updateData);
+        alert("Sikeresen módosítva!");
+        document.getElementById('edit-project-modal').remove();
+        window.loadProjectsList();
+    } catch(e) {
+        console.error(e);
+        alert("Hiba a mentés során!");
+    } finally {
+        btn.textContent = "Módosítások mentése";
+        btn.disabled = false;
+    }
+};
