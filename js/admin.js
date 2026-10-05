@@ -1599,6 +1599,8 @@ window.saveMediaChanges = async function(id) {
                     title: document.getElementById('projectName').value,
                     description: document.getElementById('projectDesc').value,
                     link: document.getElementById('projectLink').value,
+                    targetAmount: Number(document.getElementById('projectTargetAmount').value) || 0,
+                    collectedAmount: 0,
                     imageUrl: imageUrl,
                     createdAt: serverTimestamp()
                 });
@@ -1988,39 +1990,82 @@ window.loadProjectsList = async function() {
         const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
         const snapshot = await getDocs(q);
         const listContainer = document.getElementById('admin-projects-list');
-        if (!listContainer) return;
+        const completedListContainer = document.getElementById('admin-completed-projects-list');
+        if (!listContainer || !completedListContainer) return;
         
-        let listHtml = '';
+        let activeHtml = '';
+        let completedHtml = '';
         window.adminProjectsList = [];
         snapshot.forEach(docSnap => {
             const data = docSnap.data();
             window.adminProjectsList.push({ id: docSnap.id, ...data });
             
             const coverImage = data.imageUrl ? data.imageUrl : 'images/global/Logo_BEZS_emblema.png';
+            const targetAmount = data.targetAmount || 0;
+            const collectedAmount = data.collectedAmount || 0;
+            const percentage = targetAmount > 0 ? Math.min(100, Math.floor((collectedAmount / targetAmount) * 100)) : 0;
+            const isCompleted = targetAmount > 0 && collectedAmount >= targetAmount;
             
-            listHtml += `
+            const cardHtml = `
             <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd; margin-bottom: 10px; flex-wrap: wrap; gap: 15px;">
-                <div style="display: flex; gap: 15px; align-items: center;">
+                <div style="display: flex; gap: 15px; align-items: center; flex: 1;">
                     <img src="${coverImage}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;">
-                    <div>
+                    <div style="flex: 1;">
                         <h4 style="margin:0 0 5px 0; color: var(--color-dark-blue);">${data.title}</h4>
-                        <div style="font-size: 12px; margin-top: 5px;">
+                        <div style="font-size: 13px; margin-bottom: 8px; font-weight: 500;">Cél: ${targetAmount.toLocaleString('hu-HU')} Ft | Összegyűlt: ${collectedAmount.toLocaleString('hu-HU')} Ft (${percentage}%)</div>
+                        <div style="width: 100%; max-width: 300px; background-color: #e0e0e0; border-radius: 4px; overflow: hidden; height: 8px; margin-bottom: 8px;">
+                            <div style="width: ${percentage}%; background-color: var(--color-teal); height: 100%;"></div>
+                        </div>
+                        <div style="font-size: 12px;">
                             ${data.link ? '<a href="' + data.link + '" target="_blank" style="color: var(--color-teal); text-decoration: none;">Támogatási link megnyitása</a>' : '<span style="color:var(--color-gray);">Nincs link</span>'}
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; gap: 10px;">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end;">
+                    ${!isCompleted ? '<button class="admin-btn" style="background-color: var(--color-dark-blue); padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="addProjectPayment(\\'' + docSnap.id + '\\')">Befizetés rögzítése</button>' : ''}
                     <button class="admin-btn" style="background-color: var(--color-teal); padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="editProject('${docSnap.id}')">Szerkesztés</button>
                     <button class="admin-btn" style="background-color: #dc3545; padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="deleteProject('${docSnap.id}')">Törlés</button>
                 </div>
             </div>
             `;
+            
+            if (isCompleted) {
+                completedHtml += cardHtml;
+            } else {
+                activeHtml += cardHtml;
+            }
         });
         
-        if (listHtml === '') listHtml = '<div style="color:var(--color-gray); font-size:14px;">Még nincsenek projektek.</div>';
-        listContainer.innerHTML = listHtml;
+        listContainer.innerHTML = activeHtml === '' ? '<div style="color:var(--color-gray); font-size:14px;">Még nincsenek futó projektek.</div>' : activeHtml;
+        completedListContainer.innerHTML = completedHtml === '' ? '<div style="color:var(--color-gray); font-size:14px;">Még nincsenek sikerrel zárult projektek.</div>' : completedHtml;
     } catch (e) {
         console.error("Hiba a projektek betöltésekor:", e);
+    }
+};
+
+window.addProjectPayment = async function(id) {
+    const project = window.adminProjectsList.find(p => p.id === id);
+    if (!project) return;
+    
+    const amountStr = prompt(`Mennyi készpénzes felajánlást szeretnél rögzíteni a(z) "${project.title}" projekthez (Ft)?`);
+    if (!amountStr) return;
+    
+    const amount = Number(amountStr);
+    if (isNaN(amount) || amount <= 0) {
+        alert("Kérlek érvényes, nullánál nagyobb összeget adj meg!");
+        return;
+    }
+    
+    try {
+        const newTotal = (project.collectedAmount || 0) + amount;
+        await updateDoc(doc(db, "projects", id), {
+            collectedAmount: newTotal
+        });
+        alert(`Sikeresen hozzáadva! Új egyenleg: ${newTotal.toLocaleString('hu-HU')} Ft`);
+        window.loadProjectsList();
+    } catch (e) {
+        console.error(e);
+        alert("Hiba történt a mentés során.");
     }
 };
 
@@ -2063,6 +2108,14 @@ window.editProject = function(id) {
                 <input type="url" id="editProjectLink" class="admin-form-control" value="${project.link ? project.link.replace(/"/g, '&quot;') : ''}" style="width:100%; box-sizing:border-box;">
             </div>
             <div class="admin-form-group" style="margin-top: 15px;">
+                <label style="display:block; font-weight:600; margin-bottom:5px;">Cél összeg (Ft)</label>
+                <input type="number" id="editProjectTargetAmount" class="admin-form-control" value="${project.targetAmount || 0}" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div class="admin-form-group" style="margin-top: 15px;">
+                <label style="display:block; font-weight:600; margin-bottom:5px;">Eddig összegyűlt összeg (Ft)</label>
+                <input type="number" id="editProjectCollectedAmount" class="admin-form-control" value="${project.collectedAmount || 0}" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div class="admin-form-group" style="margin-top: 15px;">
                 <label style="display:block; font-weight:600; margin-bottom:5px;">Új borítókép feltöltése (opcionális)</label>
                 <input type="file" id="editProjectImage" class="admin-form-control" accept="image/*" style="width:100%; box-sizing:border-box;">
             </div>
@@ -2085,7 +2138,9 @@ window.saveProjectChanges = async function(id) {
         const updateData = {
             title: document.getElementById('editProjectTitle').value,
             description: document.getElementById('editProjectDesc').value,
-            link: document.getElementById('editProjectLink').value
+            link: document.getElementById('editProjectLink').value,
+            targetAmount: Number(document.getElementById('editProjectTargetAmount').value) || 0,
+            collectedAmount: Number(document.getElementById('editProjectCollectedAmount').value) || 0
         };
         
         const fileInput = document.getElementById('editProjectImage');

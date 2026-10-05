@@ -1100,6 +1100,10 @@
                       <input type="url" id="projectLink" class="admin-form-control">
                     </div>
                     <div class="admin-form-group">
+                      <label for="projectTargetAmount">Cél összeg (Ft)</label>
+                      <input type="number" id="projectTargetAmount" class="admin-form-control" min="0" required>
+                    </div>
+                    <div class="admin-form-group">
                       <label>Borítókép</label>
                       <input type="file" id="projectImage" accept="image/*" class="admin-form-control" style="padding: 0.4rem;" required>
                     </div>
@@ -1109,6 +1113,11 @@
                 
                 <h4 style="margin-top:30px; margin-bottom:10px; color:var(--color-dark-blue);">Futó projektek</h4>
                 <div id="admin-projects-list">
+                    <!-- JS tölti ki -->
+                </div>
+                
+                <h4 style="margin-top:40px; margin-bottom:10px; color:var(--color-teal);">Sikerrel zárult projektjeink</h4>
+                <div id="admin-completed-projects-list">
                     <!-- JS tölti ki -->
                 </div>
               </div>
