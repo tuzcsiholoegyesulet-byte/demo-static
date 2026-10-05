@@ -2005,7 +2005,7 @@ window.loadProjectsList = async function() {
                     <div>
                         <h4 style="margin:0 0 5px 0; color: var(--color-dark-blue);">${data.title}</h4>
                         <div style="font-size: 12px; margin-top: 5px;">
-                            ${data.link ? \`<a href="${data.link}" target="_blank" style="color: var(--color-teal); text-decoration: none;">Támogatási link megnyitása</a>\` : '<span style="color:var(--color-gray);">Nincs link</span>'}
+                            ${data.link ? '<a href="' + data.link + '" target="_blank" style="color: var(--color-teal); text-decoration: none;">Támogatási link megnyitása</a>' : '<span style="color:var(--color-gray);">Nincs link</span>'}
                         </div>
                     </div>
                 </div>
@@ -2044,7 +2044,7 @@ window.editProject = function(id) {
     const oldModal = document.getElementById('edit-project-modal');
     if(oldModal) oldModal.remove();
     
-    const modalHtml = \`
+    const modalHtml = `
     <div id="edit-project-modal" style="position: fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:9999; display:flex; justify-content:center; align-items:center; overflow-y:auto; padding: 20px;">
         <div style="position:relative; background:white; padding:30px; border-radius:12px; width:100%; max-width:800px; max-height:90vh; overflow-y:auto; box-shadow: 0 5px 30px rgba(0,0,0,0.5);">
             <button onclick="document.getElementById('edit-project-modal').remove()" style="position:absolute; top:15px; right:20px; background:none; border:none; font-size:28px; font-weight:bold; color:#aaa; cursor:pointer; transition:0.2s;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='#aaa'">&times;</button>
@@ -2052,27 +2052,27 @@ window.editProject = function(id) {
             <h3 style="margin-bottom: 20px; color: var(--color-dark-blue);">Projekt szerkesztése</h3>
             <div class="admin-form-group">
                 <label style="display:block; font-weight:600; margin-bottom:5px;">Projekt Címe</label>
-                <input type="text" id="editProjectTitle" class="admin-form-control" value="\${project.title.replace(/"/g, '&quot;')}" style="width:100%; box-sizing:border-box;">
+                <input type="text" id="editProjectTitle" class="admin-form-control" value="${project.title.replace(/"/g, '&quot;')}" style="width:100%; box-sizing:border-box;">
             </div>
             <div class="admin-form-group" style="margin-top: 15px;">
                 <label style="display:block; font-weight:600; margin-bottom:5px;">Rövid leírás</label>
-                <textarea id="editProjectDesc" class="admin-form-control" style="width:100%; box-sizing:border-box; min-height:80px;">\${project.description.replace(/"/g, '&quot;')}</textarea>
+                <textarea id="editProjectDesc" class="admin-form-control" style="width:100%; box-sizing:border-box; min-height:80px;">${project.description.replace(/"/g, '&quot;')}</textarea>
             </div>
             <div class="admin-form-group" style="margin-top: 15px;">
                 <label style="display:block; font-weight:600; margin-bottom:5px;">Támogatási link (URL - Opcionális)</label>
-                <input type="url" id="editProjectLink" class="admin-form-control" value="\${project.link ? project.link.replace(/"/g, '&quot;') : ''}" style="width:100%; box-sizing:border-box;">
+                <input type="url" id="editProjectLink" class="admin-form-control" value="${project.link ? project.link.replace(/"/g, '&quot;') : ''}" style="width:100%; box-sizing:border-box;">
             </div>
             <div class="admin-form-group" style="margin-top: 15px;">
                 <label style="display:block; font-weight:600; margin-bottom:5px;">Új borítókép feltöltése (opcionális)</label>
                 <input type="file" id="editProjectImage" class="admin-form-control" accept="image/*" style="width:100%; box-sizing:border-box;">
             </div>
             <div style="display:flex; gap:10px; margin-top:30px;">
-                <button id="btnSaveProjectChanges" class="admin-btn" style="background-color:var(--color-teal); color:white;" onclick="saveProjectChanges('\${id}')">Módosítások mentése</button>
+                <button id="btnSaveProjectChanges" class="admin-btn" style="background-color:var(--color-teal); color:white;" onclick="saveProjectChanges('${id}')">Módosítások mentése</button>
                 <button class="admin-btn" style="background-color:#6c757d; color:white;" onclick="document.getElementById('edit-project-modal').remove()">Mégse</button>
             </div>
         </div>
     </div>
-    \`;
+    `;
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 };
 
@@ -2091,7 +2091,7 @@ window.saveProjectChanges = async function(id) {
         const fileInput = document.getElementById('editProjectImage');
         if(fileInput.files.length > 0) {
             const file = fileInput.files[0];
-            const storageRef = ref(storage, \`projects/\${Date.now()}_optimized.webp\`);
+            const storageRef = ref(storage, `projects/${Date.now()}_optimized.webp`);
             const snapshot = await uploadBytes(storageRef, await compressImage(file));
             updateData.imageUrl = await getDownloadURL(snapshot.ref);
         }
