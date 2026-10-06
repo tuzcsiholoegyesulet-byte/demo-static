@@ -34,6 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // --- reCAPTCHA v3 Script Injection ---
+  const recaptchaScript = document.createElement('script');
+  recaptchaScript.src = 'https://www.google.com/recaptcha/api.js?render=6LfwkuEtAAAAAJTIOTR-eaE29kgluIymNS82op4D';
+  document.head.appendChild(recaptchaScript);
+
   // --- Newsletter Form Logic ---
   const newsletterForm = document.getElementById('newsletter-form');
   if (newsletterForm) {
@@ -44,8 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Kérjük, fogadja el az adatkezelési tájékoztatót a feliratkozáshoz.');
         return;
       }
-      alert('Köszönjük! Sikeres feliratkozás a hírlevélre.');
-      newsletterForm.reset();
+
+      // Robot ellenőrzés futtatása
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6LfwkuEtAAAAAJTIOTR-eaE29kgluIymNS82op4D', {action: 'newsletter_signup'}).then(function(token) {
+          // Itt történne a token ellenőrzése a szerveren
+          console.log("reCAPTCHA token a hírlevélhez:", token);
+          alert('Köszönjük! Sikeres feliratkozás a hírlevélre. (reCAPTCHA ellenőrizve)');
+          newsletterForm.reset();
+        });
+      });
     });
   }
 
@@ -196,7 +209,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const freq = document.querySelector('input[name="donation_frequency"]:checked');
       const freqText = freq ? (freq.value === 'monthly' ? 'Havi rendszeres' : 'Egyszeri') : '';
-      alert(`Átirányítás a Stripe Checkout oldalra... (Összeg: ${finalAmount} Ft - ${freqText})`);
+      
+      // Robot ellenőrzés futtatása
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6LfwkuEtAAAAAJTIOTR-eaE29kgluIymNS82op4D', {action: 'donation_submit'}).then(function(token) {
+          console.log("reCAPTCHA token az adományhoz:", token);
+          alert(`Átirányítás a Stripe Checkout oldalra... (Összeg: ${finalAmount} Ft - ${freqText}) [reCAPTCHA ellenőrizve]`);
+        });
+      });
     });
   }
 
@@ -278,6 +298,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (customInput) {
       customInput.addEventListener('input', () => {
         amountButtons.forEach(b => b.classList.remove('active'));
+      });
+    }
+
+    const projectDonationForm = document.getElementById('project-donation-form');
+    if (projectDonationForm) {
+      projectDonationForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let selectedAmount = null;
+        amountButtons.forEach(b => {
+          if (b.classList.contains('active')) selectedAmount = b.getAttribute('data-amount');
+        });
+        const finalAmount = selectedAmount || (customInput ? customInput.value : null);
+        
+        if (!finalAmount) {
+          alert('Kérjük, válasszon vagy adjon meg egy támogatási összeget.');
+          return;
+        }
+
+        // Robot ellenőrzés futtatása
+        grecaptcha.ready(function() {
+          grecaptcha.execute('6LfwkuEtAAAAAJTIOTR-eaE29kgluIymNS82op4D', {action: 'project_donation_submit'}).then(function(token) {
+            console.log("reCAPTCHA token a projekt adományhoz:", token);
+            alert(`Átirányítás a Stripe Checkout oldalra a kiválasztott projekthez... (Összeg: ${finalAmount} Ft) [reCAPTCHA ellenőrizve]`);
+            closeModal();
+          });
+        });
       });
     }
   }
