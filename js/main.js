@@ -244,21 +244,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Project Modal Logic ---
   const projectModal = document.getElementById('project-modal');
   if (projectModal) {
-    const openButtons = document.querySelectorAll('.open-project-modal');
     const closeButton = projectModal.querySelector('.close-modal');
     const modalTitle = document.getElementById('modal-project-title');
     const amountButtons = projectModal.querySelectorAll('.donation-options .btn');
     const customInput = document.getElementById('project-custom-amount');
 
-    openButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.open-project-modal');
+      if (btn) {
         e.preventDefault();
         const projectName = btn.getAttribute('data-project');
         if (modalTitle && projectName) {
           modalTitle.textContent = `${projectName} - Támogatás`;
         }
         projectModal.classList.add('active');
-      });
+      }
     });
 
     const closeModal = () => { projectModal.classList.remove('active'); };
