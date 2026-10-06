@@ -170,9 +170,85 @@ async function loadNews() {
     }
 }
 
+// Projektek betöltése
+async function loadProjects() {
+    const activeProjectsContainer = document.getElementById('public-active-projects-list');
+    const completedProjectsContainer = document.getElementById('public-completed-projects-list');
+    
+    // Ha egyik konténer sincs az oldalon, nem csinálunk semmit
+    if (!activeProjectsContainer && !completedProjectsContainer) return;
+
+    try {
+        const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        let activeHtml = '';
+        let completedHtml = '';
+        
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const coverImage = data.imageUrl ? data.imageUrl : 'images/global/placeholder-project.jpg';
+            const targetAmount = data.targetAmount || 0;
+            const collectedAmount = data.collectedAmount || 0;
+            const percentage = targetAmount > 0 ? Math.min(100, Math.floor((collectedAmount / targetAmount) * 100)) : 0;
+            const isCompleted = targetAmount > 0 && collectedAmount >= targetAmount;
+            
+            const cardHtml = `
+            <article class="project-card">
+              <div class="project-img-wrapper">
+                <img src="${coverImage}" alt="${data.title.replace(/"/g, '&quot;')}" class="project-img" style="object-fit: cover; height: 100%; width: 100%;">
+              </div>
+              <div class="project-content" style="padding: 1.5rem; flex: 1;">
+                <div class="project-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                  <h3 style="margin-bottom: 0;">
+                    <span style="color: inherit; border: none; background: none; padding: 0; font-family: inherit; font-size: inherit; font-weight: inherit; text-align: left;">${data.title}</span>
+                  </h3>
+                  ${!isCompleted && data.link ? `<a href="${data.link}" target="_blank" class="btn btn-red" style="padding: 0.5rem 1rem; font-size: 0.9rem; text-decoration: none; position: relative; z-index: 2;">Támogatom</a>` : ''}
+                  ${!isCompleted && !data.link ? `<button class="btn btn-red open-project-modal" data-project="${data.title.replace(/"/g, '&quot;')}" style="padding: 0.5rem 1rem; font-size: 0.9rem; position: relative; z-index: 2;">Támogatom</button>` : ''}
+                </div>
+                <p style="margin-bottom: 1rem;">${data.description}</p>
+                <div class="progress-stats" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 500;">
+                  <span>Összegyűlt: ${collectedAmount.toLocaleString('hu-HU')} Ft</span>
+                  <span>Cél: ${targetAmount.toLocaleString('hu-HU')} Ft</span>
+                </div>
+                <div class="progress-container" style="background-color: #e0e0e0; border-radius: 8px; overflow: hidden; height: 10px; width: 100%;">
+                  <div class="progress-bar" style="width: ${percentage}%; background-color: var(--color-teal); height: 100%;"></div>
+                </div>
+              </div>
+            </article>
+            `;
+            
+            if (isCompleted) {
+                completedHtml += cardHtml;
+            } else {
+                activeHtml += cardHtml;
+            }
+        });
+        
+        if (activeProjectsContainer) {
+            if (activeHtml === '') {
+                activeProjectsContainer.innerHTML = '<div style="text-align:center; padding: 2rem; width: 100%; color: var(--color-gray);">Jelenleg nincsenek futó projektek.</div>';
+            } else {
+                activeProjectsContainer.innerHTML = activeHtml;
+            }
+        }
+        
+        if (completedProjectsContainer) {
+            if (completedHtml === '') {
+                completedProjectsContainer.innerHTML = '<div style="text-align:center; padding: 2rem; width: 100%; color: var(--color-gray);">Jelenleg nincsenek befejezett projektek.</div>';
+            } else {
+                completedProjectsContainer.innerHTML = completedHtml;
+            }
+        }
+    } catch (error) {
+        console.error("Hiba a projektek betöltésekor:", error);
+    }
+}
+
 // Inicializálás, ha az oldal betöltött
 document.addEventListener('DOMContentLoaded', () => {
     loadTeamMembers();
     loadSponsors();
     loadNews();
+    loadProjects();
 });
