@@ -4728,5 +4728,7 @@ body.profile-page .floating-projects-btn.auto-peek span.text {
 
 /* reCAPTCHA Badge Offset (elkerülendő az "Oldal tetejére" gombbal való átfedést) */
 .grecaptcha-badge {
-  bottom: 90px !important;
+  left: 20px !important;
+  right: auto !important;
+  bottom: 20px !important;
 }
