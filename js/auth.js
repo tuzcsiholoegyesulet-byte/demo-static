@@ -103,6 +103,11 @@ const authModalHTML = `
           <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
           Bejelentkezés Google-fiókkal
         </button>
+        <div style="text-align:center; margin-top:6px; margin-bottom:10px;">
+          <a href="#" id="linkGoogleRedirectLogin" style="font-size:0.75rem; color:var(--color-teal); text-decoration:underline;">
+            Nem sikerül a felugró ablak? Bejelentkezés közvetlen átirányítással
+          </a>
+        </div>
         
         <div class="auth-divider"><span>VAGY</span></div>
         
@@ -135,6 +140,11 @@ const authModalHTML = `
           <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
           Regisztráció Google-fiókkal
         </button>
+        <div style="text-align:center; margin-top:6px; margin-bottom:10px;">
+          <a href="#" id="linkGoogleRedirectReg" style="font-size:0.75rem; color:var(--color-teal); text-decoration:underline;">
+            Nem sikerül a felugró ablak? Regisztráció közvetlen átirányítással
+          </a>
+        </div>
         
         <div class="auth-divider"><span>VAGY E-MAILLEL</span></div>
         
@@ -317,6 +327,7 @@ window.handleGoogleAuth = async (e) => {
     provider.setCustomParameters({
         prompt: 'select_account'
     });
+    const startTime = Date.now();
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
@@ -353,16 +364,33 @@ window.handleGoogleAuth = async (e) => {
         }
     } catch (error) {
         console.error("Google Auth error:", error);
-        if (error.code === 'auth/popup-blocked') {
+        const duration = Date.now() - startTime;
+        // Ha a felugró ablakot a böngésző tiltotta, VAGY azonnal bezáródott (< 4 mp alatt pl. Cross-Origin vagy cookie hiba miatt)
+        if (error.code === 'auth/popup-blocked' || (error.code === 'auth/popup-closed-by-user' && duration < 4000) || (error.code === 'auth/cancelled-popup-request' && duration < 4000)) {
+            console.log("A felugró ablak azonnal bezárult, automatikus átváltás átirányításra (signInWithRedirect)...");
             try {
                 await signInWithRedirect(auth, provider);
                 return;
             } catch (redirErr) {
-                alert('A böngésző letiltotta a felugró ablakot. Kérlek engedélyezd a felugró ablakokat a bejelentkezéshez!');
+                alert('Hiba az átirányítás során: ' + (redirErr.message || redirErr.code));
             }
         } else if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
             alert('Hiba a Google bejelentkezés során: ' + (error.message || error.code));
         }
+    }
+};
+
+window.handleGoogleRedirectAuth = async (e) => {
+    if(e) e.preventDefault();
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+        prompt: 'select_account'
+    });
+    try {
+        await signInWithRedirect(auth, provider);
+    } catch (err) {
+        console.error("Redirect error:", err);
+        alert('Hiba az átirányítás során: ' + (err.message || err.code));
     }
 };
 
@@ -438,6 +466,10 @@ document.getElementById('registerForm').addEventListener('submit', window.handle
 document.getElementById('forgotForm').addEventListener('submit', window.handleForgotPassword);
 document.getElementById('btnGoogleLogin').addEventListener('click', window.handleGoogleAuth);
 document.getElementById('btnGoogleReg').addEventListener('click', window.handleGoogleAuth);
+const linkGoogleLogin = document.getElementById('linkGoogleRedirectLogin');
+if (linkGoogleLogin) linkGoogleLogin.addEventListener('click', window.handleGoogleRedirectAuth);
+const linkGoogleReg = document.getElementById('linkGoogleRedirectReg');
+if (linkGoogleReg) linkGoogleReg.addEventListener('click', window.handleGoogleRedirectAuth);
 
 // 4. Menüsáv frissítése bejelentkezett állapot alapján
 onAuthStateChanged(auth, (user) => {
