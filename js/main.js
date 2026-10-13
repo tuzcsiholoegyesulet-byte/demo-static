@@ -39,6 +39,47 @@ document.addEventListener('DOMContentLoaded', () => {
   recaptchaScript.src = 'https://www.google.com/recaptcha/api.js?render=6LfwkuEtAAAAAJTIOTR-eaE29kgluIymNS82op4D';
   document.head.appendChild(recaptchaScript);
 
+  // Mozgatjuk a logót egy piros sávba a lábléc alá
+  setInterval(() => {
+    const badges = document.querySelectorAll('.grecaptcha-badge');
+    if (badges.length > 0) {
+      let redBand = document.getElementById('recaptcha-red-band');
+      if (!redBand) {
+        redBand = document.createElement('div');
+        redBand.id = 'recaptcha-red-band';
+        if (document.body.classList.contains('dark-theme')) {
+          redBand.style.backgroundColor = 'var(--color-dark-blue)';
+        } else if (document.body.classList.contains('bistro-theme')) {
+          redBand.style.backgroundColor = '#3e2723';
+        } else {
+          redBand.style.backgroundColor = 'var(--color-red)';
+        }
+        redBand.style.width = '100%';
+        redBand.style.display = 'flex';
+        redBand.style.flexDirection = 'column';
+        redBand.style.alignItems = 'center';
+        redBand.style.justifyContent = 'center';
+        redBand.style.padding = '20px 0';
+        redBand.style.marginTop = 'auto'; // Ha esetleg egyedül lenne a body-ban
+        
+        const footer = document.querySelector('footer');
+        if (footer && footer.parentNode) {
+          footer.parentNode.insertBefore(redBand, footer.nextSibling);
+        } else {
+          document.body.appendChild(redBand);
+        }
+      }
+      
+      badges.forEach(badge => {
+        if (badge.parentElement !== redBand) {
+          badge.style.position = 'static';
+          badge.style.margin = '0';
+          redBand.appendChild(badge);
+        }
+      });
+    }
+  }, 1000);
+
   // --- Newsletter Form Logic ---
   const newsletterForm = document.getElementById('newsletter-form');
   if (newsletterForm) {

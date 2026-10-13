@@ -17,6 +17,13 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px; /* Offset for fixed header if there is one */
+  background-color: var(--color-red) !important; /* Mac túlgörgetés miatti fehér sáv ellen */
+}
+html:has(body.dark-theme) {
+  background-color: var(--color-dark-blue) !important;
+}
+html:has(body.bistro-theme) {
+  background-color: #3e2723 !important;
 }
 
 body {
@@ -4243,7 +4250,7 @@ input[type="checkbox"], input[type="radio"] {
   width: 0;
   opacity: 0;
   padding: 0 !important;
-  margin-left: 0;
+  margin-right: 0;
   pointer-events: none;
   overflow: hidden;
 }
@@ -4252,7 +4259,7 @@ input[type="checkbox"], input[type="radio"] {
   opacity: 1;
   padding: 10px !important;
   pointer-events: auto;
-  margin-left: 4px;
+  margin-right: 4px;
 }
 .search-nav-btn.gemini-btn svg {
   width: 24px;
@@ -4269,12 +4276,13 @@ input[type="checkbox"], input[type="radio"] {
 .profile-dropdown-menu {
   position: absolute;
   top: 100%;
-  left: 20px;
+  right: 0;
+  left: auto;
   margin-top: 15px;
   min-width: 200px;
   visibility: hidden;
   opacity: 0;
-  transform: translateX(-50%) translateY(10px);
+  transform: translateY(10px);
   pointer-events: none;
   background-color: var(--color-white);
   border-radius: 12px;
@@ -4296,7 +4304,7 @@ input[type="checkbox"], input[type="radio"] {
 .profile-dropdown-menu:hover {
   visibility: visible;
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
   pointer-events: auto;
 }
 .profile-dropdown-menu li {
@@ -4725,18 +4733,18 @@ body.profile-page .floating-projects-btn.auto-peek span.text {
   opacity: 0 !important;
   visibility: hidden !important;
 }
-
-/* reCAPTCHA Badge Offset és Balra igazítás zárt állapottal */
+/* reCAPTCHA beágyazott (inline) megjelenítés a láblécben */
 .grecaptcha-badge {
-  left: 20px !important;
+  position: static !important;
+  display: block !important;
+  margin: 20px auto 20px auto !important;
+  width: 256px !important;
+  transition: none !important;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.2) !important;
+  border-radius: 4px !important;
+  float: none !important;
   right: auto !important;
-  bottom: 20px !important;
-  z-index: 9999999 !important;
-  width: 72px !important;
-  transition: width 0.3s ease !important;
-  overflow: hidden !important;
+  left: auto !important;
+  transform: none !important;
 }
 
-.grecaptcha-badge:hover {
-  width: 256px !important;
-}

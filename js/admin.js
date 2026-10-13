@@ -2031,6 +2031,7 @@ window.loadProjectsList = async function() {
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end;">
+                    ${!isCompleted ? `<button class="admin-btn" style="background-color: #28a745; padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="completeProject('${docSnap.id}')">Sikeres gyűjtés</button>` : ''}
                     ${!isCompleted ? `<button class="admin-btn" style="background-color: var(--color-dark-blue); padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="addProjectPayment('${docSnap.id}')">Befizetés rögzítése</button>` : ''}
                     <button class="admin-btn" style="background-color: var(--color-teal); padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="editProject('${docSnap.id}')">Szerkesztés</button>
                     <button class="admin-btn" style="background-color: #dc3545; padding: 6px 12px; font-size: 0.85rem; color: white;" onclick="deleteProject('${docSnap.id}')">Törlés</button>
@@ -2075,6 +2076,30 @@ window.addProjectPayment = async function(id) {
     } catch (e) {
         console.error(e);
         alert("Hiba történt a mentés során.");
+    }
+};
+
+window.completeProject = async function(id) {
+    const project = window.adminProjectsList.find(p => p.id === id);
+    if (!project) return;
+    
+    const remaining = (project.targetAmount || 0) - (project.collectedAmount || 0);
+    if (remaining <= 0) {
+        alert("A projekt már elérte a célösszeget!");
+        return;
+    }
+
+    if(confirm(`Egy összegben megkaptátok a fennmaradó ${remaining.toLocaleString('hu-HU')} Ft készpénzes felajánlást, és lezárod a projektet?`)) {
+        try {
+            await updateDoc(doc(db, "projects", id), {
+                collectedAmount: project.targetAmount
+            });
+            alert("A projekt sikeresen lezárult, és átkerült a Sikerrel zárult projektek közé!");
+            window.loadProjectsList();
+        } catch (e) {
+            console.error(e);
+            alert("Hiba történt a művelet során.");
+        }
     }
 };
 

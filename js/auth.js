@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
@@ -16,11 +16,14 @@ import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com
 
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase App Check
-const appCheck = initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider('6LfwkuEtAAAAAJTIOTR-eaE29kgluIymNS82op4D'),
-  isTokenAutoRefreshEnabled: true
-});
+// Initialize Firebase App Check (only in production)
+let appCheck = null;
+if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    appCheck = initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider('6LfwkuEtAAAAAJTIOTR-eaE29kgluIymNS82op4D'),
+      isTokenAutoRefreshEnabled: true
+    });
+}
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
@@ -317,9 +320,18 @@ window.handleGoogleAuth = async (e) => {
         prompt: 'select_account'
     });
     try {
-        const result = await signInWithPopup(auth, provider);
+        // Redirect in the same tab instead of popup to avoid popup blockers
+        await signInWithRedirect(auth, provider);
+    } catch (error) {
+        console.error("Google Auth error:", error);
+        alert('Hiba a Google bejelentkezés során: ' + error.message);
+    }
+};
+
+// Handle redirect result when page reloads after Google login
+getRedirectResult(auth).then(async (result) => {
+    if (result) {
         const user = result.user;
-        
         let isAdmin = false;
         try {
             const userDocRef = doc(db, "users", user.uid);
@@ -336,23 +348,17 @@ window.handleGoogleAuth = async (e) => {
                 isAdmin = userDoc.data().role === 'admin';
             }
         } catch (dbError) {
-            console.warn("Firestore nem érhető el vagy jogosultság hiányzik:", dbError);
+            console.warn("Firestore nem érhető el:", dbError);
         }
         
-        authModal.close();
         if (isAdmin) {
             window.location.href = 'admin.html';
-        } else {
-            window.location.reload();
-        }
-    } catch (error) {
-        console.error("Google Auth error:", error);
-        // Csak akkor dobunk hibaüzenetet, ha nem a felhasználó zárta be az ablakot
-        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-            alert('Hiba a Google bejelentkezés során: ' + error.message);
         }
     }
-};
+}).catch((error) => {
+    console.error("Redirect Auth error:", error);
+    alert('Hiba a Google bejelentkezés során: ' + error.message);
+});
 
 window.handleLogout = async (e) => {
     if(e) e.preventDefault();
