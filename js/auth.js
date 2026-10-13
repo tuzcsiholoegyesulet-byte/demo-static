@@ -12,18 +12,7 @@ const firebaseConfig = {
   appId: "1:518169514425:web:7f71160d4de48addcca668"
 };
 
-import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-check.js";
-
 const app = initializeApp(firebaseConfig);
-
-// Initialize Firebase App Check (only in production)
-let appCheck = null;
-if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    appCheck = initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider('6LfwkuEtAAAAAJTIOTR-eaE29kgluIymNS82op4D'),
-      isTokenAutoRefreshEnabled: true
-    });
-}
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
@@ -268,10 +257,14 @@ window.handleLogin = async (e) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        authModal.close();
+        if (typeof authModal.close === 'function') {
+            authModal.close();
+        } else {
+            authModal.removeAttribute('open');
+        }
         
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists() && userDoc.data().role === 'admin') {
+        if (userDoc.exists() && (userDoc.data().role === 'admin' || userDoc.data().role === 'editor')) {
             window.location.href = 'admin.html';
         } else {
             window.location.reload();
@@ -281,6 +274,7 @@ window.handleLogin = async (e) => {
         let errorMsg = 'Helytelen e-mail cím vagy jelszó.';
         if(error.code === 'auth/user-not-found') errorMsg = 'Nincs ilyen regisztrált felhasználó.';
         if(error.code === 'auth/wrong-password') errorMsg = 'Hibás jelszó.';
+        if(error.code === 'auth/invalid-credential') errorMsg = 'Helytelen e-mail cím vagy jelszó.';
         alert(errorMsg + ' (Részletek: ' + error.code + ')');
     }
 };
@@ -302,7 +296,11 @@ window.handleRegister = async (e) => {
         });
         
         alert('Sikeres regisztráció! Üdvözlünk, ' + firstname + '!');
-        authModal.close();
+        if (typeof authModal.close === 'function') {
+            authModal.close();
+        } else {
+            authModal.removeAttribute('open');
+        }
         window.location.reload();
     } catch (error) {
         console.error(error);
@@ -320,17 +318,7 @@ window.handleGoogleAuth = async (e) => {
         prompt: 'select_account'
     });
     try {
-        // Redirect in the same tab instead of popup to avoid popup blockers
-        await signInWithRedirect(auth, provider);
-    } catch (error) {
-        console.error("Google Auth error:", error);
-        alert('Hiba a Google bejelentkezés során: ' + error.message);
-    }
-};
-
-// Handle redirect result when page reloads after Google login
-getRedirectResult(auth).then(async (result) => {
-    if (result) {
+        const result = await signInWithPopup(auth, provider);
         const user = result.user;
         let isAdmin = false;
         try {
@@ -345,19 +333,74 @@ getRedirectResult(auth).then(async (result) => {
                     createdAt: new Date().toISOString()
                 });
             } else {
-                isAdmin = userDoc.data().role === 'admin';
+                const role = userDoc.data().role;
+                isAdmin = (role === 'admin' || role === 'editor');
             }
         } catch (dbError) {
-            console.warn("Firestore nem érhető el:", dbError);
+            console.warn("Firestore hiba:", dbError);
+        }
+        
+        if (typeof authModal.close === 'function') {
+            authModal.close();
+        } else {
+            authModal.removeAttribute('open');
+        }
+
+        if (isAdmin) {
+            window.location.href = 'admin.html';
+        } else {
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error("Google Auth error:", error);
+        if (error.code === 'auth/popup-blocked') {
+            try {
+                await signInWithRedirect(auth, provider);
+                return;
+            } catch (redirErr) {
+                alert('A böngésző letiltotta a felugró ablakot. Kérlek engedélyezd a felugró ablakokat a bejelentkezéshez!');
+            }
+        } else if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+            alert('Hiba a Google bejelentkezés során: ' + (error.message || error.code));
+        }
+    }
+};
+
+// Handle redirect result when page reloads after Google login (ha a popup blokkolva volt)
+getRedirectResult(auth).then(async (result) => {
+    if (result && result.user) {
+        const user = result.user;
+        let isAdmin = false;
+        try {
+            const userDocRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userDocRef);
+            
+            if (!userDoc.exists()) {
+                await setDoc(userDocRef, {
+                    email: user.email,
+                    firstname: user.displayName || '',
+                    role: 'user',
+                    createdAt: new Date().toISOString()
+                });
+            } else {
+                const role = userDoc.data().role;
+                isAdmin = (role === 'admin' || role === 'editor');
+            }
+        } catch (dbError) {
+            console.warn("Firestore hiba:", dbError);
         }
         
         if (isAdmin) {
             window.location.href = 'admin.html';
+        } else {
+            window.location.reload();
         }
     }
 }).catch((error) => {
     console.error("Redirect Auth error:", error);
-    alert('Hiba a Google bejelentkezés során: ' + error.message);
+    if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+        alert('Hiba a Google bejelentkezés során: ' + (error.message || error.code));
+    }
 });
 
 window.handleLogout = async (e) => {
@@ -407,6 +450,7 @@ onAuthStateChanged(auth, (user) => {
             btn.setAttribute('aria-label', 'Profilom');
             btn.href = 'profil.html';
             btn.onclick = null; // Töröljük a modal nyitást, ha eddig az volt
+            btn.removeAttribute('onclick');
             
             // Készítsük el a lenyíló menüt, ha még nincs
             if (!btn.parentNode.querySelector('.profile-dropdown-menu')) {
@@ -445,7 +489,7 @@ onAuthStateChanged(auth, (user) => {
                     let displayString = user.displayName || user.email.split('@')[0];
                     if (userDoc.exists()) {
                         const data = userDoc.data();
-                        if (data.role === 'admin') {
+                        if (data.role === 'admin' || data.role === 'editor') {
                             const adminItem = dropdown.querySelector('#admin-menu-item');
                             if (adminItem) adminItem.style.display = 'block';
                         }

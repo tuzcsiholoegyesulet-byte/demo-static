@@ -12,15 +12,7 @@ const firebaseConfig = {
   appId: "1:518169514425:web:7f71160d4de48addcca668"
 };
 
-import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-check.js";
-
 const app = initializeApp(firebaseConfig);
-
-// Initialize Firebase App Check
-const appCheck = initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider('6LfwkuEtAAAAAJTIOTR-eaE29kgluIymNS82op4D'),
-  isTokenAutoRefreshEnabled: true
-});
 
 const auth = getAuth(app);
 const db = getFirestore(app);
