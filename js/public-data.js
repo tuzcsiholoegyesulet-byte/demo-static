@@ -245,10 +245,232 @@ async function loadProjects() {
     }
 }
 
+// Támogass minket mini galéria betöltése
+async function loadDonationGallery() {
+    const galleryContainer = document.getElementById('scattered-gallery');
+    if (!galleryContainer) return;
+
+    try {
+        const q = query(collection(db, "donation_gallery"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            return; // Megtartja az alapértelmezett képeket, ha még nincs semmi feltöltve
+        }
+
+        const angles = [
+            { r: '-12deg', x: '-15px', y: '10px' },
+            { r: '4deg', x: '0px', y: '-5px' },
+            { r: '16deg', x: '15px', y: '5px' },
+            { r: '-6deg', x: '-10px', y: '-8px' },
+            { r: '10deg', x: '12px', y: '12px' },
+            { r: '-15deg', x: '-5px', y: '15px' },
+            { r: '8deg', x: '8px', y: '-10px' }
+        ];
+
+        let cardsHtml = '';
+        let index = 0;
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const angle = angles[index % angles.length];
+            cardsHtml += `
+                <div class="scatter-card" data-index="${index}" style="--r: ${angle.r}; --x: ${angle.x}; --y: ${angle.y}; background-image: url('${data.imageUrl}')"></div>
+            `;
+            index++;
+        });
+
+        galleryContainer.innerHTML = `
+            <div class="scatter-group" data-group="0">
+                ${cardsHtml}
+            </div>
+        `;
+
+        if (window.refreshGalleryLightbox) {
+            window.refreshGalleryLightbox();
+        }
+    } catch (error) {
+        console.error("Hiba a Támogass minket galéria betöltésekor:", error);
+    }
+}
+
+// Gyermekvédelmi blogbejegyzések és modal kezelése
+window.childWelfarePostsMap = {};
+
+function openChildWelfareModal(id) {
+    const post = window.childWelfarePostsMap ? window.childWelfarePostsMap[id] : null;
+    if (!post) return;
+
+    const modal = document.getElementById('childWelfareModal');
+    if (!modal) return;
+
+    const imgEl = document.getElementById('modalPostImage');
+    const imgWrap = document.getElementById('modalPostImageWrapper');
+    const titleEl = document.getElementById('modalPostTitle');
+    const dateTextEl = document.getElementById('modalPostDateText');
+    const dateWrap = document.getElementById('modalPostDate');
+    const excerptEl = document.getElementById('modalPostExcerpt');
+    const contentEl = document.getElementById('modalPostContent');
+
+    if (post.imageUrl && post.imageUrl.trim() !== '') {
+        imgEl.src = post.imageUrl;
+        imgEl.alt = post.title;
+        imgWrap.style.display = 'block';
+    } else {
+        imgWrap.style.display = 'none';
+    }
+
+    let dateStr = '';
+    if (post.createdAt) {
+        const date = post.createdAt.toDate();
+        dateStr = `${date.getFullYear()}. ${String(date.getMonth() + 1).padStart(2, '0')}. ${String(date.getDate()).padStart(2, '0')}.`;
+    }
+    if (dateTextEl && dateWrap) {
+        if (dateStr) {
+            dateTextEl.textContent = dateStr;
+            dateWrap.style.display = 'flex';
+        } else {
+            dateWrap.style.display = 'none';
+        }
+    }
+
+    if (titleEl) titleEl.textContent = post.title;
+    if (excerptEl) excerptEl.textContent = post.excerpt;
+
+    if (contentEl) {
+        // Formázzuk a bekezdéseket biztonságosan
+        const rawContent = post.content || '';
+        const paragraphs = rawContent
+            .split(/\n\s*\n/)
+            .map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`)
+            .join('');
+        contentEl.innerHTML = paragraphs;
+    }
+
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeChildWelfareModal() {
+    const modal = document.getElementById('childWelfareModal');
+    if (!modal) return;
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+function initChildWelfareModalListeners() {
+    const modal = document.getElementById('childWelfareModal');
+    const closeBtn = document.getElementById('closeChildWelfareModal');
+    if (!modal) return;
+
+    if (closeBtn && !closeBtn._hasListener) {
+        closeBtn.addEventListener('click', closeChildWelfareModal);
+        closeBtn._hasListener = true;
+    }
+
+    if (!modal._hasOverlayListener) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeChildWelfareModal();
+            }
+        });
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeChildWelfareModal();
+            }
+        });
+        modal._hasOverlayListener = true;
+    }
+}
+
+async function loadChildWelfarePosts() {
+    const gridContainer = document.getElementById('child-welfare-posts-grid');
+    if (!gridContainer) return;
+
+    try {
+        const postsRef = collection(db, 'child_welfare_posts');
+        const q = query(postsRef, orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+            gridContainer.innerHTML = '<div style="text-align:center; padding: 2.5rem; width: 100%; grid-column: 1 / -1; color: var(--color-gray); background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);"><p style="margin:0; font-size:1.05rem;">Jelenleg nincsenek feltöltött gyermekvédelmi bejegyzések.</p></div>';
+            return;
+        }
+
+        gridContainer.innerHTML = '';
+        window.childWelfarePostsMap = {};
+
+        querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const id = docSnap.id;
+            window.childWelfarePostsMap[id] = data;
+
+            let dateStr = '';
+            if (data.createdAt) {
+                const date = data.createdAt.toDate();
+                dateStr = `${date.getFullYear()}. ${String(date.getMonth() + 1).padStart(2, '0')}. ${String(date.getDate()).padStart(2, '0')}.`;
+            }
+
+            const imageUrl = data.imageUrl || 'images/global/Logo_BEZS_emblema.png';
+
+            const card = document.createElement('article');
+            card.className = 'child-welfare-card';
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('aria-label', `${data.title} - Bejegyzés megnyitása`);
+            card.innerHTML = `
+                <div class="child-welfare-card-img-wrap">
+                    <img src="${imageUrl}" alt="${data.title.replace(/"/g, '&quot;')}" class="child-welfare-card-img" onerror="this.src='images/global/Logo_BEZS_emblema.png'">
+                    <span class="child-welfare-card-badge">Gyermekvédelem</span>
+                </div>
+                <div class="child-welfare-card-body">
+                    ${dateStr ? `
+                    <div class="child-welfare-card-date">
+                        <svg viewBox="0 0 448 512"><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm64 80v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm128 0v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H208c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H336zM64 400v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H208zm128 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H336c-8.8 0-16 7.2-16 16z"/></svg>
+                        <span>${dateStr}</span>
+                    </div>` : ''}
+                    <h3 class="child-welfare-card-title">${data.title}</h3>
+                    <p class="child-welfare-card-excerpt">${data.excerpt}</p>
+                    <div class="child-welfare-card-footer">
+                        <span class="child-welfare-card-btn">
+                            Elolvasom
+                            <svg viewBox="0 0 320 512"><path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"/></svg>
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            // Kattintás esemény a modal megnyitásához
+            card.addEventListener('click', () => {
+                openChildWelfareModal(id);
+            });
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openChildWelfareModal(id);
+                }
+            });
+
+            gridContainer.appendChild(card);
+        });
+
+        initChildWelfareModalListeners();
+
+    } catch (error) {
+        console.error("Hiba a gyermekvédelmi bejegyzések betöltésekor:", error);
+        gridContainer.innerHTML = '<div style="text-align:center; padding: 2rem; width: 100%; grid-column: 1 / -1; color: red;">Hiba történt a bejegyzések betöltésekor.</div>';
+    }
+}
+
 // Inicializálás, ha az oldal betöltött
 document.addEventListener('DOMContentLoaded', () => {
     loadTeamMembers();
     loadSponsors();
     loadNews();
     loadProjects();
+    loadDonationGallery();
+    loadChildWelfarePosts();
 });
+
+

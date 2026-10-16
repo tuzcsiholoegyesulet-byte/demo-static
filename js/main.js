@@ -453,17 +453,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevBtn = lightboxModal.querySelector('.lightbox-prev');
     const nextBtn = lightboxModal.querySelector('.lightbox-next');
     
-    const cards = scatteredGallery.querySelectorAll('.scatter-card');
-    const images = Array.from(cards).map(card => {
-      const bg = card.style.backgroundImage;
-      return bg.replace(/(url\(|\)|'|")/gi, '');
-    });
+    let images = [];
+    function updateImages() {
+      const cards = scatteredGallery.querySelectorAll('.scatter-card');
+      images = Array.from(cards).map(card => {
+        const bg = card.style.backgroundImage;
+        return bg.replace(/(url\(|\)|'|")/gi, '');
+      }).filter(src => src && src.trim() !== '');
+    }
+    updateImages();
+    window.refreshGalleryLightbox = updateImages;
     
     let currentIndex = 0;
 
     function openLightbox(index) {
+      updateImages();
       if (images.length === 0) return;
       currentIndex = index;
+      if (currentIndex >= images.length) currentIndex = 0;
       lightboxImg.src = images[currentIndex];
       lightboxModal.style.display = 'block';
       document.body.style.overflow = 'hidden';
@@ -475,6 +482,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function changeSlide(step) {
+      updateImages();
+      if (images.length === 0) return;
       currentIndex += step;
       if (currentIndex >= images.length) currentIndex = 0;
       if (currentIndex < 0) currentIndex = images.length - 1;
@@ -484,7 +493,14 @@ document.addEventListener('DOMContentLoaded', () => {
       lightboxImg.src = images[currentIndex];
     }
 
-    scatteredGallery.addEventListener('click', () => openLightbox(0));
+    scatteredGallery.addEventListener('click', (e) => {
+      const targetCard = e.target.closest('.scatter-card');
+      if (targetCard && targetCard.dataset.index !== undefined) {
+        openLightbox(parseInt(targetCard.dataset.index, 10));
+      } else {
+        openLightbox(0);
+      }
+    });
     closeBtn.addEventListener('click', closeLightbox);
     nextBtn.addEventListener('click', (e) => { e.stopPropagation(); changeSlide(1); });
     prevBtn.addEventListener('click', (e) => { e.stopPropagation(); changeSlide(-1); });
@@ -518,37 +534,202 @@ document.addEventListener('DOMContentLoaded', () => {
                          currentPath.includes('digitalis-bisztro.html');
 
     if (!isTargetPage) {
+      let waveIntervalId = null;
+      let waveTimeouts = [];
+      let isWaveBlocked = false;
+      let resumeTimeoutId = null;
+
+      function clearWaveTimeouts() {
+        waveTimeouts.forEach(t => clearTimeout(t));
+        waveTimeouts = [];
+      }
+
+      function stopWaveAnimation() {
+        clearWaveTimeouts();
+        if (waveIntervalId) {
+          clearInterval(waveIntervalId);
+          waveIntervalId = null;
+        }
+        floatingBtns.forEach(btn => {
+          btn.classList.remove('auto-peek');
+          btn.classList.remove('wave-fast-transition');
+        });
+      }
+
+      function isDropdownOpen() {
+        const profileDropdown = document.querySelector('.profile-dropdown-menu');
+        const loginBtn = document.querySelector('.login-nav-btn');
+        const hasProfileDropdown = document.querySelector('.has-profile-dropdown');
+
+        if (profileDropdown) {
+          if (profileDropdown.matches(':hover')) return true;
+          if (loginBtn && loginBtn.matches(':hover')) return true;
+          if (hasProfileDropdown && hasProfileDropdown.matches(':hover')) return true;
+          try {
+            const style = window.getComputedStyle(profileDropdown);
+            if (style.visibility === 'visible' && parseFloat(style.opacity) > 0.05) {
+              return true;
+            }
+          } catch (_) {}
+        }
+
+        const authModal = document.getElementById('authModal');
+        if (authModal && (authModal.open || authModal.hasAttribute('open'))) {
+          return true;
+        }
+
+        const openNavDropdown = document.querySelector('header .dropdown:hover, .nav-links .dropdown:hover');
+        if (openNavDropdown) return true;
+
+        return false;
+      }
+
+      function handleDropdownOpen() {
+        isWaveBlocked = true;
+        if (resumeTimeoutId) {
+          clearTimeout(resumeTimeoutId);
+          resumeTimeoutId = null;
+        }
+        stopWaveAnimation();
+      }
+
+      function handleDropdownClose() {
+        if (resumeTimeoutId) {
+          clearTimeout(resumeTimeoutId);
+        }
+        // Rövid késleltetés: meggyőződünk róla, hogy az egér valóban elhagyta a menüt
+        resumeTimeoutId = setTimeout(() => {
+          if (!isDropdownOpen()) {
+            isWaveBlocked = false;
+            resumeWaveTimer();
+          }
+        }, 150);
+      }
+
+      function resumeWaveTimer() {
+        if (waveIntervalId) {
+          clearInterval(waveIntervalId);
+          waveIntervalId = null;
+        }
+        if (isWaveBlocked || isDropdownOpen()) return;
+
+        // Csak a lenyitott fül bezáródása után indulhat újra az animáció (10 mp múlva)
+        waveIntervalId = setInterval(() => {
+          if (isWaveBlocked || isDropdownOpen()) {
+            stopWaveAnimation();
+            return;
+          }
+          runWave();
+        }, 10000);
+      }
+
+      // Globális elérés auth.js és egyéb modulok számára
+      window.pauseWaveAnimation = handleDropdownOpen;
+      window.resumeWaveAnimation = handleDropdownClose;
+
+      // Eseményfigyelők az egérmozgásra a lenyíló fülön és gombokon
+      document.addEventListener('mouseover', (e) => {
+        const target = e.target;
+        if (!target) return;
+        const isDropdownTarget = target.closest('.has-profile-dropdown') || 
+                                 target.closest('.profile-dropdown-menu') || 
+                                 target.closest('.login-nav-btn') ||
+                                 target.closest('header .dropdown');
+        if (isDropdownTarget) {
+          handleDropdownOpen();
+        }
+      }, { passive: true });
+
+      document.addEventListener('mouseout', (e) => {
+        const target = e.target;
+        const related = e.relatedTarget;
+        if (!target) return;
+        const wasDropdownTarget = target.closest('.has-profile-dropdown') || 
+                                  target.closest('.profile-dropdown-menu') || 
+                                  target.closest('.login-nav-btn') ||
+                                  target.closest('header .dropdown');
+        if (wasDropdownTarget) {
+          const stillInDropdown = related && (
+            related.closest('.has-profile-dropdown') || 
+            related.closest('.profile-dropdown-menu') || 
+            related.closest('.login-nav-btn') ||
+            related.closest('header .dropdown')
+          );
+          if (!stillInDropdown) {
+            handleDropdownClose();
+          }
+        }
+      }, { passive: true });
+
+      document.addEventListener('focusin', (e) => {
+        if (e.target && (e.target.closest('.has-profile-dropdown') || e.target.closest('.profile-dropdown-menu') || e.target.closest('.login-nav-btn'))) {
+          handleDropdownOpen();
+        }
+      }, { passive: true });
+
+      document.addEventListener('focusout', (e) => {
+        if (e.target && (e.target.closest('.has-profile-dropdown') || e.target.closest('.profile-dropdown-menu') || e.target.closest('.login-nav-btn'))) {
+          handleDropdownClose();
+        }
+      }, { passive: true });
+
       function runWave() {
+        if (isWaveBlocked || isDropdownOpen()) {
+          stopWaveAnimation();
+          return;
+        }
+
         const isHovering = floatingBtns.some(btn => btn.matches(':hover'));
         if (isHovering) return;
 
-        // Alkalmazzuk a gyors transition-t minden gombra a hullám idejére (nyitás és csukás is gyors lesz)
+        clearWaveTimeouts();
+
+        // Alkalmazzuk a gyors transition-t minden gombra a hullám idejére
         floatingBtns.forEach(btn => btn.classList.add('wave-fast-transition'));
 
-      // 1. Hullám (Fentről lefelé, 0-500ms)
-      floatingBtns.forEach((btn, index) => {
-        setTimeout(() => { btn.classList.add('auto-peek'); }, index * 100);
-        setTimeout(() => { btn.classList.remove('auto-peek'); }, index * 100 + 100);
-      });
+        // 1. Hullám (Fentről lefelé, 0-500ms)
+        floatingBtns.forEach((btn, index) => {
+          waveTimeouts.push(setTimeout(() => {
+            if (!isWaveBlocked && !isDropdownOpen()) {
+              btn.classList.add('auto-peek');
+            }
+          }, index * 100));
 
-      // 2. Hullám (Lentről felfelé, 500-1000ms)
-      floatingBtns.forEach((btn, index) => {
-        const reverseIndex = floatingBtns.length - 1 - index;
-        // Itt index a gomb eredeti sorszáma, reverseIndex pedig a fordított sorszám
-        setTimeout(() => { btn.classList.add('auto-peek'); }, 500 + reverseIndex * 100);
-        setTimeout(() => { btn.classList.remove('auto-peek'); }, 500 + reverseIndex * 100 + 100);
-      });
+          waveTimeouts.push(setTimeout(() => {
+            btn.classList.remove('auto-peek');
+          }, index * 100 + 100));
+        });
 
-      // A 2 hullám összesen kb 1000ms alatt fut le, így 1100ms után biztonságosan levehetjük a gyors transition-t.
+        // 2. Hullám (Lentről felfelé, 500-1000ms)
+        floatingBtns.forEach((btn, index) => {
+          const reverseIndex = floatingBtns.length - 1 - index;
+          waveTimeouts.push(setTimeout(() => {
+            if (!isWaveBlocked && !isDropdownOpen()) {
+              btn.classList.add('auto-peek');
+            }
+          }, 500 + reverseIndex * 100));
+
+          waveTimeouts.push(setTimeout(() => {
+            btn.classList.remove('auto-peek');
+          }, 500 + reverseIndex * 100 + 100));
+        });
+
+        // 1100ms után biztonságosan levehetjük a gyors transition-t
+        waveTimeouts.push(setTimeout(() => {
+          floatingBtns.forEach(btn => btn.classList.remove('wave-fast-transition'));
+          waveTimeouts = [];
+        }, 1100));
+      }
+
+      // Kezdeti indítás 3 másodperc után, majd a hullám végén újraindítjuk a számlálót
       setTimeout(() => {
-        floatingBtns.forEach(btn => btn.classList.remove('wave-fast-transition'));
-      }, 1100);
-    }
-    
-    setTimeout(() => {
-      setInterval(runWave, 10000);
-      runWave();
-    }, 3000);
+        if (!isWaveBlocked && !isDropdownOpen()) {
+          runWave();
+          resumeWaveTimer();
+        } else {
+          resumeWaveTimer();
+        }
+      }, 3000);
     }
   }
 

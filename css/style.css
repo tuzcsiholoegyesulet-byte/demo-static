@@ -69,7 +69,7 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 997;
+  z-index: 1005;
   transition: all 0.4s ease;
 }
 
@@ -867,11 +867,16 @@ footer .footer-links {
   white-space: nowrap;
 }
 
-.floating-fecske-btn svg.fecske-icon {
-  width: 32px;
-  height: 32px;
+.floating-fecske-btn svg.fecske-icon,
+.floating-fecske-btn img.fecske-icon {
+  width: 34px;
+  height: 34px;
+  max-width: 34px;
+  max-height: 34px;
   fill: currentColor;
+  object-fit: contain;
   flex-shrink: 0;
+  display: block;
 }
 
 .floating-fecske-btn span.text {
@@ -930,11 +935,16 @@ footer .footer-links {
   white-space: nowrap;
 }
 
-.floating-bistro-btn svg.bistro-icon {
-  width: 32px;
-  height: 32px;
+.floating-bistro-btn svg.bistro-icon,
+.floating-bistro-btn img.bistro-icon {
+  width: 34px;
+  height: 34px;
+  max-width: 34px;
+  max-height: 34px;
   fill: currentColor;
+  object-fit: contain;
   flex-shrink: 0;
+  display: block;
 }
 
 .floating-bistro-btn span.text {
@@ -1168,16 +1178,23 @@ body.dark-theme footer a:hover {
 }
 
 .animated-icon {
-  width: 45px;
-  height: 45px;
+  width: 54px;
+  height: 54px;
   fill: var(--color-red);
-  transition: transform 0.4s ease, fill 0.4s ease;
+  color: var(--color-red);
+  transition: transform 0.4s ease, fill 0.4s ease, color 0.4s ease;
+}
+.animated-icon path {
+  fill: inherit;
+}
+.animated-icon mask path {
+  fill: black !important;
 }
 
 /* Card 1: Red */
 .info-card.card-red::before { background-color: var(--color-red); }
 .info-card.card-red .icon-container { background-color: rgba(228, 51, 64, 0.1); }
-.info-card.card-red .animated-icon { fill: var(--color-red); }
+.info-card.card-red .animated-icon { fill: var(--color-red); color: var(--color-red); }
 .info-card.card-red:hover .icon-container { background-color: var(--color-red); }
 .info-card.card-red:hover h3 { color: var(--color-red); }
 
@@ -1197,12 +1214,40 @@ body.dark-theme footer a:hover {
 
 .info-card:hover .animated-icon {
   fill: var(--color-white);
+  color: var(--color-white);
   animation: pulse 1s infinite alternate;
 }
 
 @keyframes pulse {
   0% { transform: scale(1); }
   100% { transform: scale(1.15); }
+}
+
+/* Shopping Cart with Fecske Bird masked cutout icon */
+.animated-icon mask rect {
+  fill: white !important;
+}
+.animated-icon mask path {
+  fill: black !important;
+}
+.animated-icon.cart-bird-icon .cart-fill {
+  fill: var(--color-red);
+  transition: fill 0.4s ease;
+}
+.info-card:hover .animated-icon.cart-bird-icon .cart-fill {
+  fill: var(--color-white) !important;
+}
+
+.info-card .icon-container img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.info-card:hover .icon-container img {
+  filter: brightness(0) invert(1);
+  animation: pulse 1s infinite alternate;
 }
 
 .info-card h3 {
@@ -4289,7 +4334,7 @@ input[type="checkbox"], input[type="radio"] {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   padding: 10px 0;
   transition: all 0.3s ease;
-  z-index: 100;
+  z-index: 1100;
   list-style: none;
 }
 .profile-dropdown-menu::before {
@@ -4748,3 +4793,341 @@ body.profile-page .floating-projects-btn.auto-peek span.text {
   transform: none !important;
 }
 
+/* ==========================================================================
+   Gyermekvédelem Blog Kártyák és Felugró Ablak (Modal)
+   ========================================================================== */
+
+.child-welfare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.child-welfare-card {
+  background: var(--color-white, #ffffff);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+  outline: none;
+}
+
+.child-welfare-card:hover,
+.child-welfare-card:focus-visible {
+  transform: translateY(-8px);
+  box-shadow: 0 18px 36px rgba(18, 53, 91, 0.12);
+  border-color: rgba(13, 124, 113, 0.2);
+}
+
+.child-welfare-card-img-wrap {
+  width: 100%;
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-beige);
+}
+
+.child-welfare-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+}
+
+.child-welfare-card:hover .child-welfare-card-img {
+  transform: scale(1.06);
+}
+
+.child-welfare-card-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: var(--color-teal);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+
+.child-welfare-card-body {
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.child-welfare-card-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--color-gray);
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+}
+
+.child-welfare-card-date svg {
+  width: 14px;
+  height: 14px;
+  fill: var(--color-teal);
+  flex-shrink: 0;
+}
+
+.child-welfare-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-dark-blue);
+  line-height: 1.4;
+  margin: 0 0 0.8rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.child-welfare-card-excerpt {
+  font-size: 0.95rem;
+  color: #555555;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.child-welfare-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.child-welfare-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-red);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.child-welfare-card-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.child-welfare-card:hover .child-welfare-card-btn svg {
+  transform: translateX(5px);
+}
+
+/* Child Welfare Popup Modal */
+.child-welfare-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 25, 47, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.child-welfare-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.child-welfare-modal-container {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 780px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  transform: translateY(25px) scale(0.97);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.child-welfare-modal-overlay.active .child-welfare-modal-container {
+  transform: translateY(0) scale(1);
+}
+
+.child-welfare-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--color-dark-blue);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 0;
+}
+
+.child-welfare-modal-close:hover {
+  background: var(--color-red);
+  color: #ffffff;
+  transform: rotate(90deg) scale(1.05);
+}
+
+.child-welfare-modal-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  max-height: 90vh;
+}
+
+.child-welfare-modal-image-wrapper {
+  width: 100%;
+  max-height: 380px;
+  overflow: hidden;
+  background-color: var(--color-beige);
+  position: relative;
+}
+
+.child-welfare-modal-image {
+  width: 100%;
+  height: 100%;
+  max-height: 380px;
+  object-fit: cover;
+  display: block;
+}
+
+.child-welfare-modal-body {
+  padding: 2.2rem 2.5rem 2.5rem 2.5rem;
+}
+
+.child-welfare-modal-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.child-welfare-modal-badge {
+  background: var(--color-teal);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.child-welfare-modal-date {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--color-gray);
+  font-weight: 500;
+}
+
+.child-welfare-modal-date svg {
+  width: 14px;
+  height: 14px;
+  max-width: 14px;
+  max-height: 14px;
+  fill: var(--color-teal);
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.child-welfare-modal-title {
+  font-size: 1.85rem;
+  color: var(--color-dark-blue);
+  line-height: 1.35;
+  margin: 0 0 1.2rem 0;
+  font-weight: 700;
+}
+
+.child-welfare-modal-lead {
+  font-size: 1.15rem;
+  color: #2c3e50;
+  font-weight: 500;
+  line-height: 1.6;
+  font-style: italic;
+  border-left: 4px solid var(--color-teal);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.8rem;
+  background: #f4f8f7;
+  border-radius: 0 10px 10px 0;
+}
+
+.child-welfare-modal-divider {
+  height: 1px;
+  background: #eeeeee;
+  margin-bottom: 1.8rem;
+}
+
+.child-welfare-modal-content {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #333333;
+}
+
+.child-welfare-modal-content p {
+  margin-bottom: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .child-welfare-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .child-welfare-modal-body {
+    padding: 1.5rem;
+  }
+  .child-welfare-modal-title {
+    font-size: 1.45rem;
+  }
+  .child-welfare-modal-lead {
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+  }
+  .child-welfare-modal-content {
+    font-size: 0.98rem;
+  }
+}

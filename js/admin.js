@@ -63,6 +63,8 @@ onAuthStateChanged(auth, async (user) => {
                 loadAlbums();
                 if(window.loadMediaList) window.loadMediaList();
                 if(window.loadProjectsList) window.loadProjectsList();
+                if(window.loadDonationGallery) window.loadDonationGallery();
+                if(window.loadChildWelfarePostsList) window.loadChildWelfarePostsList();
             } else {
                 // Be van jelentkezve, de nem admin/editor
                 alert('Nincs jogosultságod megtekinteni ezt az oldalt.');
@@ -1618,6 +1620,97 @@ window.saveMediaChanges = async function(id) {
         });
     }
 
+    // 8/b. Támogass minket mini képgaléria
+    const formDonationGallery = document.getElementById('form-donation-gallery');
+    if (formDonationGallery) {
+        formDonationGallery.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = formDonationGallery.querySelector('button[type="submit"]');
+            const fileInput = document.getElementById('donationGalleryImages');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Kérlek válassz ki legalább egy képet!');
+                return;
+            }
+            btn.textContent = 'Feltöltés folyamatban...';
+            btn.disabled = true;
+            try {
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const file = fileInput.files[i];
+                    const storagePath = `donation_gallery/${Date.now()}_optimized_${i}.webp`;
+                    const storageRef = ref(storage, storagePath);
+                    const compressed = await compressImage(file);
+                    const snapshot = await uploadBytes(storageRef, compressed);
+                    const imageUrl = await getDownloadURL(snapshot.ref);
+                    
+                    await addDoc(collection(db, "donation_gallery"), {
+                        imageUrl: imageUrl,
+                        storagePath: storagePath,
+                        createdAt: serverTimestamp()
+                    });
+                }
+                alert('Kép(ek) sikeresen feltöltve a Támogass minket galériába!');
+                formDonationGallery.reset();
+                if (window.loadDonationGallery) window.loadDonationGallery();
+            } catch (error) {
+                console.error("Hiba a galéria feltöltésekor:", error);
+                alert("Hiba történt a feltöltés során: " + error.message);
+            } finally {
+                btn.textContent = 'Kép(ek) Feltöltése';
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // 8.5. Gyermekvédelem Blogbejegyzés Feltöltése
+    const formChildWelfarePost = document.getElementById('form-child-welfare-post');
+    if (formChildWelfarePost) {
+        formChildWelfarePost.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = formChildWelfarePost.querySelector('button[type="submit"]');
+            btn.textContent = 'Közzététel folyamatban...';
+            btn.disabled = true;
+
+            try {
+                const title = document.getElementById('childWelfarePostTitle').value.trim();
+                const excerpt = document.getElementById('childWelfarePostExcerpt').value.trim();
+                const content = document.getElementById('childWelfarePostContent').value.trim();
+                const fileInput = document.getElementById('childWelfarePostImage');
+
+                let imageUrl = 'images/global/Logo_BEZS_emblema.png';
+                let storagePath = '';
+
+                if (fileInput && fileInput.files && fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    storagePath = `child_welfare/${Date.now()}_post.webp`;
+                    const storageRef = ref(storage, storagePath);
+                    const compressed = await compressImage(file);
+                    const snapshot = await uploadBytes(storageRef, compressed);
+                    imageUrl = await getDownloadURL(snapshot.ref);
+                }
+
+                await addDoc(collection(db, "child_welfare_posts"), {
+                    title: title,
+                    excerpt: excerpt,
+                    content: content,
+                    imageUrl: imageUrl,
+                    storagePath: storagePath,
+                    createdAt: serverTimestamp(),
+                    published: true
+                });
+
+                alert('Gyermekvédelmi blogbejegyzés sikeresen közzétéve!');
+                formChildWelfarePost.reset();
+                if (window.loadChildWelfarePostsList) window.loadChildWelfarePostsList();
+            } catch (error) {
+                console.error("Hiba a gyermekvédelmi bejegyzés közzétételekor:", error);
+                alert("Hiba történt a mentés során: " + error.message);
+            } finally {
+                btn.textContent = 'Blogbejegyzés Közzététele';
+                btn.disabled = false;
+            }
+        });
+    }
+
     // 9. Gyermekvédelem Szakmai Anyagok (PDF)
     const formChildDocs = document.getElementById('form-child-docs');
     if (formChildDocs) {
@@ -2189,3 +2282,239 @@ window.saveProjectChanges = async function(id) {
         btn.disabled = false;
     }
 };
+
+window.loadDonationGallery = async function() {
+    const listContainer = document.getElementById('admin-donation-gallery-list');
+    if (!listContainer) return;
+    
+    try {
+        const q = query(collection(db, "donation_gallery"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            listContainer.innerHTML = '<div style="grid-column: 1 / -1; color: var(--color-gray); font-size: 14px; padding: 10px 0;">Még nincsenek feltöltött képek a mini galériához. (Ilyenkor az alapértelmezett bemutató képek jelennek meg a felületen.)</div>';
+            return;
+        }
+        
+        let html = '';
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            let dateStr = '';
+            if (data.createdAt) {
+                const d = data.createdAt.toDate();
+                dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+            }
+            html += `
+            <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <div style="width: 100%; height: 160px; border-radius: 6px; overflow: hidden; background: #f0f0f0;">
+                    <img src="${data.imageUrl}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.src='images/global/Logo_BEZS_emblema.png'">
+                </div>
+                ${dateStr ? `<span style="font-size: 11px; color: var(--color-gray);">${dateStr}</span>` : ''}
+                <button class="admin-btn" style="background-color: #dc3545; padding: 5px 10px; font-size: 0.8rem; color: white; width: 100%;" onclick="deleteDonationGalleryItem('${docSnap.id}', '${data.storagePath || ''}')">Törlés</button>
+            </div>
+            `;
+        });
+        
+        listContainer.innerHTML = html;
+    } catch (e) {
+        console.error("Hiba a Támogass minket galéria betöltésekor:", e);
+        listContainer.innerHTML = '<div style="color: red; font-size: 14px;">Hiba történt a képek betöltésekor.</div>';
+    }
+};
+
+window.deleteDonationGalleryItem = async function(id, storagePath) {
+    if (!confirm("Biztosan törölni szeretnéd ezt a képet a Támogass minket galériából?")) return;
+    
+    try {
+        await deleteDoc(doc(db, "donation_gallery", id));
+        if (storagePath) {
+            try {
+                const storageRef = ref(storage, storagePath);
+                await deleteObject(storageRef);
+            } catch (storageErr) {
+                console.warn("Storage törlés sikertelen (lehet már törölve volt):", storageErr);
+            }
+        }
+        alert("Kép sikeresen törölve!");
+        window.loadDonationGallery();
+    } catch (e) {
+        console.error("Hiba a kép törlésekor:", e);
+        alert("Hiba történt a törlés során: " + e.message);
+    }
+};
+
+// --- Gyermekvédelem Blogbejegyzések Kezelése ---
+window.childWelfarePostsCache = {};
+
+window.loadChildWelfarePostsList = async function() {
+    const listContainer = document.getElementById('admin-child-welfare-posts-list');
+    if (!listContainer) return;
+
+    try {
+        const q = query(collection(db, "child_welfare_posts"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            listContainer.innerHTML = '<div style="grid-column: 1 / -1; color: var(--color-gray); font-size: 14px; padding: 10px 0;">Még nincsenek feltöltött gyermekvédelmi bejegyzések.</div>';
+            return;
+        }
+
+        listContainer.innerHTML = '';
+        window.childWelfarePostsCache = {};
+
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const id = docSnap.id;
+            window.childWelfarePostsCache[id] = data;
+
+            let dateStr = 'Ismeretlen dátum';
+            if (data.createdAt) {
+                const d = data.createdAt.toDate();
+                dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+            }
+
+            const imageUrl = data.imageUrl || 'images/global/Logo_BEZS_emblema.png';
+
+            const html = `
+            <div class="admin-news-card" id="child-welfare-row-${id}" style="background: white; border: 1px solid var(--color-border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-sm);">
+                <div style="height: 160px; background: url('${imageUrl}') center/cover; position: relative; border-bottom: 1px solid #eee;">
+                    <span style="position: absolute; top: 10px; right: 10px; background: var(--color-teal); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">Blogbejegyzés</span>
+                </div>
+                <div style="padding: 1rem; flex-grow: 1; display: flex; flex-direction: column;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-size: 1.05rem; color: var(--color-dark-blue); line-height: 1.3;">${data.title}</h4>
+                    <p style="margin: 0 0 0.6rem 0; color: var(--color-gray); font-size: 0.8rem;">${dateStr}</p>
+                    <p style="margin: 0 0 1rem 0; color: #555; font-size: 0.85rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${data.excerpt || ''}</p>
+                    <div style="margin-top: auto; display: flex; gap: 0.5rem;">
+                        <button class="btn-edit" onclick="window.openEditChildWelfarePostModal('${id}')" style="flex: 1; padding: 0.5rem; background: var(--color-teal); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: background 0.2s;" onmouseover="this.style.background='#0d7c71'" onmouseout="this.style.background='var(--color-teal)'">Szerkesztés</button>
+                        <button class="btn-delete" onclick="window.deleteChildWelfarePost('${id}', '${data.storagePath || ''}')" style="flex: 1; padding: 0.5rem; background: transparent; color: var(--color-red); border: 1px solid var(--color-red); border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.background='var(--color-red)'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='var(--color-red)';">Törlés</button>
+                    </div>
+                </div>
+            </div>
+            `;
+            listContainer.insertAdjacentHTML('beforeend', html);
+        });
+
+    } catch (e) {
+        console.error("Hiba a gyermekvédelmi bejegyzések betöltésekor:", e);
+        listContainer.innerHTML = '<div style="color: red; font-size: 14px;">Hiba történt a bejegyzések betöltésekor.</div>';
+    }
+};
+
+window.openEditChildWelfarePostModal = function(id) {
+    const post = window.childWelfarePostsCache[id];
+    if (!post) return;
+
+    document.getElementById('editChildWelfarePostId').value = id;
+    document.getElementById('editChildWelfarePostOldImageUrl').value = post.imageUrl || '';
+    document.getElementById('editChildWelfarePostOldStoragePath').value = post.storagePath || '';
+    document.getElementById('editChildWelfarePostTitle').value = post.title || '';
+    document.getElementById('editChildWelfarePostExcerpt').value = post.excerpt || '';
+    document.getElementById('editChildWelfarePostContent').value = post.content || '';
+    
+    const preview = document.getElementById('editChildWelfarePostPreview');
+    if (post.imageUrl) {
+        preview.src = post.imageUrl;
+        preview.style.display = 'block';
+    } else {
+        preview.style.display = 'none';
+    }
+
+    const modal = document.getElementById('editChildWelfarePostModal');
+    if (modal) modal.classList.add('show');
+};
+
+window.closeEditChildWelfarePostModal = function() {
+    const modal = document.getElementById('editChildWelfarePostModal');
+    if (modal) modal.classList.remove('show');
+};
+
+document.getElementById('closeEditChildWelfarePostModal')?.addEventListener('click', window.closeEditChildWelfarePostModal);
+
+const modalEditChildWelfare = document.getElementById('editChildWelfarePostModal');
+if (modalEditChildWelfare) {
+    modalEditChildWelfare.addEventListener('click', (e) => {
+        if (e.target === modalEditChildWelfare) {
+            window.closeEditChildWelfarePostModal();
+        }
+    });
+}
+
+const formEditChildWelfarePost = document.getElementById('form-edit-child-welfare-post');
+if (formEditChildWelfarePost) {
+    formEditChildWelfarePost.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = formEditChildWelfarePost.querySelector('button[type="submit"]');
+        btn.textContent = 'Mentés folyamatban...';
+        btn.disabled = true;
+
+        try {
+            const id = document.getElementById('editChildWelfarePostId').value;
+            const title = document.getElementById('editChildWelfarePostTitle').value.trim();
+            const excerpt = document.getElementById('editChildWelfarePostExcerpt').value.trim();
+            const content = document.getElementById('editChildWelfarePostContent').value.trim();
+            const oldImageUrl = document.getElementById('editChildWelfarePostOldImageUrl').value;
+            const oldStoragePath = document.getElementById('editChildWelfarePostOldStoragePath').value;
+            const fileInput = document.getElementById('editChildWelfarePostImage');
+
+            let imageUrl = oldImageUrl;
+            let storagePath = oldStoragePath;
+
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                storagePath = `child_welfare/${Date.now()}_post.webp`;
+                const storageRef = ref(storage, storagePath);
+                const compressed = await compressImage(file);
+                const snapshot = await uploadBytes(storageRef, compressed);
+                imageUrl = await getDownloadURL(snapshot.ref);
+
+                if (oldStoragePath) {
+                    try {
+                        await deleteObject(ref(storage, oldStoragePath));
+                    } catch (err) {
+                        console.warn("Régi kép törlése sikertelen:", err);
+                    }
+                }
+            }
+
+            await updateDoc(doc(db, "child_welfare_posts", id), {
+                title: title,
+                excerpt: excerpt,
+                content: content,
+                imageUrl: imageUrl,
+                storagePath: storagePath
+            });
+
+            alert('Bejegyzés sikeresen módosítva!');
+            window.closeEditChildWelfarePostModal();
+            if (window.loadChildWelfarePostsList) window.loadChildWelfarePostsList();
+        } catch (error) {
+            console.error("Hiba a módosítás mentésekor:", error);
+            alert("Hiba történt a módosítás során: " + error.message);
+        } finally {
+            btn.textContent = 'Módosítások Mentése';
+            btn.disabled = false;
+        }
+    });
+}
+
+window.deleteChildWelfarePost = async function(id, storagePath) {
+    if (!confirm("Biztosan törölni szeretnéd ezt a gyermekvédelmi blogbejegyzést?")) return;
+
+    try {
+        await deleteDoc(doc(db, "child_welfare_posts", id));
+        if (storagePath) {
+            try {
+                await deleteObject(ref(storage, storagePath));
+            } catch (storageErr) {
+                console.warn("Storage törlés sikertelen:", storageErr);
+            }
+        }
+        alert("Bejegyzés sikeresen törölve!");
+        if (window.loadChildWelfarePostsList) window.loadChildWelfarePostsList();
+    } catch (e) {
+        console.error("Hiba a bejegyzés törlésekor:", e);
+        alert("Hiba történt a törlés során: " + e.message);
+    }
+};
+
+

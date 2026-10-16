@@ -7,7 +7,7 @@
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
-  <link rel="stylesheet" href="css/style.css?v=13">
+  <link rel="stylesheet" href="css/style.css?v=18">
   <style>
     /* Admin speciális stílusok (Javított, robusztus elrendezés) */
     body.admin-dashboard {
@@ -1123,17 +1123,79 @@
               </div>
             </div>
 
+            <!-- Támogass minket mini képgaléria kezelése -->
+            <div class="accordion-item sub-accordion">
+              <div class="accordion-header">
+                <span>Támogass minket mini képgaléria</span>
+                <svg viewBox="0 0 320 512"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
+              </div>
+              <div class="accordion-body">
+                <div class="module-card" style="box-shadow: none; border: none; margin: 0; padding-top: 0;">
+                  <form id="form-donation-gallery">
+                    <div class="admin-form-group">
+                      <label for="donationGalleryImages">Új kép(ek) feltöltése a Támogass minket kártya polaroid mini galériájába</label>
+                      <input type="file" id="donationGalleryImages" accept="image/*" multiple class="admin-form-control" style="padding: 0.4rem;" required>
+                      <small style="color: var(--color-gray); display: block; margin-top: 5px;">Egyszerre több kép is kiválasztható. A feltöltött képek automatikusan optimalizálásra kerülnek és megjelennek a Hogyan segíthetsz oldali támogatási kártya mini galériájában és felugró nagyítójában.</small>
+                    </div>
+                    <button type="submit" class="admin-btn">Kép(ek) Feltöltése</button>
+                  </form>
+                </div>
+                
+                <h4 style="margin-top:30px; margin-bottom:15px; color:var(--color-dark-blue);">Feltöltött galéria képek</h4>
+                <div id="admin-donation-gallery-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">
+                    <!-- JS tölti ki -->
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
         <!-- Accordion 5: Gyermekvédelem -->
         <div class="accordion-item" data-role="editor,admin">
           <div class="accordion-header">
-            <span>Gyermekvédelem (Szakmai anyagok, Podcast)</span>
+            <span>Gyermekvédelem (A gyermekvédelemről, Szakmai anyagok, Podcast)</span>
             <svg viewBox="0 0 320 512"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
           </div>
           <div class="accordion-body">
             
+            <!-- 1. A gyermekvédelemről (Blogbejegyzések) -->
+            <div class="accordion-item sub-accordion">
+              <div class="accordion-header">
+                <span>A gyermekvédelemről (Blogbejegyzések)</span>
+                <svg viewBox="0 0 320 512"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
+              </div>
+              <div class="accordion-body">
+                <div class="module-card" style="box-shadow: none; border: none; margin: 0; padding-top: 0;">
+                  <form id="form-child-welfare-post">
+                    <div class="admin-form-group">
+                      <label for="childWelfarePostTitle">Bejegyzés Címe *</label>
+                      <input type="text" id="childWelfarePostTitle" class="admin-form-control" placeholder="pl. Gyermekvédelem a mindennapokban" required>
+                    </div>
+                    <div class="admin-form-group">
+                      <label for="childWelfarePostExcerpt">Rövid bevezető / Kivonat (a kártyán jelenik meg) *</label>
+                      <textarea id="childWelfarePostExcerpt" class="admin-form-control" rows="3" placeholder="Rövid, figyelemfelkeltő összefoglaló szöveg..." required></textarea>
+                    </div>
+                    <div class="admin-form-group">
+                      <label for="childWelfarePostContent">Részletes tartalom (a felugró ablakban nyílik meg kattintásra) *</label>
+                      <textarea id="childWelfarePostContent" class="admin-form-control" rows="8" placeholder="A bejegyzés teljes szövege... Az új bekezdésekhez hagyj ki egy üres sort." required></textarea>
+                    </div>
+                    <div class="admin-form-group">
+                      <label for="childWelfarePostImage">Borítókép</label>
+                      <input type="file" id="childWelfarePostImage" accept="image/*" class="admin-form-control" style="padding: 0.4rem;">
+                      <small style="color: var(--color-gray); display: block; margin-top: 5px;">Ajánlott fekvő arányú kép (JPG, PNG, WebP). Ha nincs megadva, az egyesület emblémája jelenik meg kártyaképként.</small>
+                    </div>
+                    <button type="submit" class="admin-btn">Blogbejegyzés Közzététele</button>
+                  </form>
+                </div>
+
+                <h4 style="margin-top:30px; margin-bottom:15px; color:var(--color-dark-blue);">Feltöltött gyermekvédelmi bejegyzések</h4>
+                <div id="admin-child-welfare-posts-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+                    <!-- JS tölti ki -->
+                </div>
+              </div>
+            </div>
+
             <div class="accordion-item sub-accordion">
               <div class="accordion-header">
                 <span>Szakmai anyag (PDF) feltöltése</span>
@@ -1202,7 +1264,7 @@
     </div>
   </main>
 
-  <script type="module" src="js/admin.js?v=5"></script>
+  <script type="module" src="js/admin.js?v=6"></script>
 
   <!-- Hír Szerkesztés Modal -->
   <div id="editNewsModal" class="admin-modal">
@@ -1397,6 +1459,38 @@
         </div>
         
         <button type="submit" class="admin-btn">Módosítások mentése</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Gyermekvédelmi Bejegyzés Szerkesztés Modal -->
+  <div id="editChildWelfarePostModal" class="admin-modal">
+    <div class="admin-modal-content" style="max-width: 750px; max-height: 90vh; overflow-y: auto;">
+      <button class="admin-modal-close" id="closeEditChildWelfarePostModal">&times;</button>
+      <h3 style="margin-bottom: 20px;">Gyermekvédelmi bejegyzés szerkesztése</h3>
+      <form id="form-edit-child-welfare-post">
+        <input type="hidden" id="editChildWelfarePostId">
+        <input type="hidden" id="editChildWelfarePostOldImageUrl">
+        <input type="hidden" id="editChildWelfarePostOldStoragePath">
+        
+        <div class="admin-form-group">
+          <label for="editChildWelfarePostTitle">Bejegyzés Címe *</label>
+          <input type="text" id="editChildWelfarePostTitle" class="admin-form-control" required>
+        </div>
+        <div class="admin-form-group">
+          <label for="editChildWelfarePostExcerpt">Rövid bevezető / Kivonat *</label>
+          <textarea id="editChildWelfarePostExcerpt" class="admin-form-control" rows="3" required></textarea>
+        </div>
+        <div class="admin-form-group">
+          <label for="editChildWelfarePostContent">Részletes tartalom *</label>
+          <textarea id="editChildWelfarePostContent" class="admin-form-control" rows="8" required></textarea>
+        </div>
+        <div class="admin-form-group">
+          <label>Új borítókép (hagyd üresen, ha nem módosítod)</label>
+          <input type="file" id="editChildWelfarePostImage" accept="image/*" class="admin-form-control" style="padding: 0.4rem;">
+          <img id="editChildWelfarePostPreview" src="" style="width: 150px; height: auto; margin-top: 10px; display: none; border-radius: 8px;">
+        </div>
+        <button type="submit" class="admin-btn">Módosítások Mentése</button>
       </form>
     </div>
   </div>
